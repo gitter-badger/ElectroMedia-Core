@@ -24,12 +24,12 @@ double convertIntToFrequency(int index)
 // accomplishes dynamicity by taking a percentage (as defined in "stdafx.h") of the
 // maximum within the dataset and returning the higher value between the dynamic and
 // static noise floors
-//
+// ...
 // Performance: O(n)
 int calculateDynamicNoiseFloor(double* data, int lowerBound, int upperBound)
 {
 	int dynamicNoiseFloor_ = -1, 
-		preNFMaximum_ = -1;
+		preNFMaximum_ = 0;
 
 	// Iterate through the frequency band and determine the maximum in the data set
 	for(int i = lowerBound; i < upperBound; i++)
