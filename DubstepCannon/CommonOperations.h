@@ -10,4 +10,4 @@ double convertIntToFrequency(int index);
 int calculateDynamicNoiseFloor(double* data, int lowerBound, int upperBound);
 
 // Pipes out a line of text to cerr if and only if DEBUG_ENABLED == true
-void debug(std::string debugComment); //
+void debug(std::string debugComment); 
