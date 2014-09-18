@@ -9,6 +9,8 @@ extern "C"
 	#include "dev\include\libswscale\swscale.h"
 }
 
+// THIS FILE IS DEDICATED TO WORKING WITH FFTW3
+
 #define INBUF_SIZE 4096
 #define AUDIO_INBUF_SIZE 20480
 #define AUDIO_REFILL_THRESH 4096
@@ -81,10 +83,6 @@ int decodeMusic(char *filename)
 		{
 			int check = 0; 
 			int result = avcodec_decode_audio4 (aCodecCtxt,decode_frame,&check, &avPkt);
-			//cout << "Decoded : "<< (int) decode_frame->data[0] <<", "<< "Check : " << check << ", Format :" << decode_frame->format <<" " << decode_frame->linesize[0]<< " "<<cnt <<endl;
-			//int data_size = av_samples_get_buffer_size(NULL, aCodecCtxt->channels, decode_frame->nb_samples, aCodecCtxt->sample_fmt, 1);
-			//int data_size = av_samples_get_buffer_size(NULL, aCodecCtxt->channels, decode_frame->nb_samples, aCodecCtxt->sample_fmt, decode_frame->linesize[0]);
-            //fwrite(decode_frame->data[0], 1, data_size, outfile);
 			fwrite(decode_frame->data[0],1, decode_frame->linesize[0], outfile);
 		}
 		av_free_packet(&avPkt);
