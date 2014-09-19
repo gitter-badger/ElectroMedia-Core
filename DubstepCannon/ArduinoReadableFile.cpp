@@ -143,10 +143,7 @@ void ArduinoReadableFile::write(double* dataToWrite)
 		break;
 
 	default:
-		if(DEBUG_ENABLED)
-		{
-			std::cerr << "ArduinoReadableFile writer cannot write as it is in an undefined mode!";
-		}
+		debug("ArduinoReadableFile writer cannot write as it is in an undefined mode!");
 	}
 }
 
