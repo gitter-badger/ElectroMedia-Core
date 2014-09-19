@@ -9,7 +9,7 @@ public:
 	~ArduinoReadableFile();
 	
 	// Public methods interfacing with ofstream
-	bool addFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment);
+	bool addFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm* processor);
 	void setMode(int newMode);
 	bool isTextWritable();
 	void write(std::string stringToWrite);

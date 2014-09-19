@@ -1,11 +1,18 @@
 #include "stdafx.h"
 #include "FrequencyRangeProfile.h"
 
-// FrequencyRangeProfile Constructor
+// Empty FrequencyRangeProfile Constructor 
 // ---
 // ...
 FrequencyRangeProfile::FrequencyRangeProfile()
 	: lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range")
+{ }
+
+// FrequencyRangeProfile Constructor with SignalProcessingAlgorithm param
+// ---
+// ...
+FrequencyRangeProfile::FrequencyRangeProfile(SignalProcessingAlgorithm processor)
+	: lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range"), processor_(&processor)
 { }
 
 // FrequencyRangeProfile Destructor
@@ -13,6 +20,15 @@ FrequencyRangeProfile::FrequencyRangeProfile()
 // If we have stuff to dealloc, do it here
 FrequencyRangeProfile::~FrequencyRangeProfile()
 { }
+
+// setProcessor(SignalProcessingAlgorithm)
+// ---
+// Set or redefine the algorithm that this FRP is using
+void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm processor)
+{
+	processor_ = &processor;
+	processor.setBounds(lowerBound_,upperBound_); // Not sure if this is necessary
+}
 
 // format(double*,double*,enum int)
 // ---
@@ -71,6 +87,9 @@ void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int a
 
 	lowerBound_ = convertFrequencyToInt(lowerFrequency);
 	upperBound_ = convertFrequencyToInt(upperFrequency);
+
+	// Tell the processor that we updated our bounds
+	processor_->setBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
@@ -82,6 +101,9 @@ void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upp
 
 	lowerBound_ = convertFrequencyToInt(lowerFrequency);
 	upperBound_ = convertFrequencyToInt(upperFrequency);
+
+	// Tell the processor that we updated our bounds
+	processor_->setBounds(lowerBound_,upperBound_);
 }
 
 // std::string = convertToBits(double*, int)
@@ -96,56 +118,5 @@ void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upp
 // Uses an algorithm specified by an enumerated int to determine which bits should be on.
 std::string FrequencyRangeProfile::convertToBits(double* dataToConvert, int noiseFloor)
 {
-	std::string outputString = "";
-	int bitLength = (upperBound_ - lowerBound_) / bits_;
-	bool wasAbove;
-
-	for(int bit_ = 0; bit_ < bits_; bit_++)
-	{
-		wasAbove = false;
-		for(int step = 0; !wasAbove && step < bitLength; step ++)
-		{
-			if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
-			{
-				wasAbove = true; 
-			}
-		}
-	
-		if(wasAbove) 
-		{
-			outputString.append("1");
-		}
-		else outputString.append("0");
-	}
-
-	return outputString;
-}
-
-// --
-
-std::string IntensityFRP::convertToBits(double* dataToConvert, int noiseFloor)
-{
-	std::string outputString = "";
-	int bitLength = (upperBound_ - lowerBound_) / bits_;
-	bool wasAbove;
-
-	for(int bit_ = 0; bit_ < bits_; bit_++)
-	{
-		/*wasAbove = false;
-		for(int step = 0; !wasAbove && step < bitLength; step ++)
-		{
-			if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
-			{
-				wasAbove = true; 
-			}
-		}
-	
-		if(wasAbove) 
-		{
-			outputString.append("1");
-		}
-		else */outputString.append("1");
-	}
-
-	return outputString;
+	return processor_->convertToBits(dataToConvert,noiseFloor);
 }

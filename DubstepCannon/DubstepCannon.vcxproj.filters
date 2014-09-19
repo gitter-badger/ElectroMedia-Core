@@ -48,6 +48,9 @@
     <ClInclude Include="FrequencyRangeProfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SignalProcessingAlgorithms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FrequencyRangeProfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SignalProcessingAlgorithms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
