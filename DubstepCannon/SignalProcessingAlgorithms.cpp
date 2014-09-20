@@ -20,28 +20,29 @@ SignalProcessingAlgorithm::~SignalProcessingAlgorithm()
 // the same algorithm tied to it. This forces the SPA to keep the same
 // algorithm as before assignment, but changes its bits and frequency
 // bounds to that of the assigner.
-SignalProcessingAlgorithm& SignalProcessingAlgorithm::operator=(const SignalProcessingAlgorithm& other)
-{
-	if(this != &other)
-	{
-		this->bits_ = (int)&other.bits_;
-		this->lowerBound_ = (int)&other.lowerBound_;
-		this->upperBound_ = (int)&other.upperBound_;
-	}
-	return *this;
-}
+//SignalProcessingAlgorithm& SignalProcessingAlgorithm::operator=(const SignalProcessingAlgorithm& other)
+//{
+//	if(this != &other)
+//	{
+//		this->bits_ = (int)&other.bits_;
+//		this->lowerBound_ = (int)&other.lowerBound_;
+//		this->upperBound_ = (int)&other.upperBound_;
+//	}
+//	return *this;
+//}
 
 // setbounds(int,int)
 // ---
 // Redeclares the lower and upper bounds as dictated by the FrequencyRangeProfile
-void SignalProcessingAlgorithm::setBounds(int lower, int upper)
+void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 {
-	lowerBound_ = lower;
-	upperBound_ = upper;
+	lowerBound_ = (int)lower;
+	this->upperBound_ = upper;
 }
 
 std::string SignalProcessingAlgorithm::convertToBits(double* dataToConvert, int noiseFloor) 
 {	
+	debug("Now in ConvertToBits");
 	return "bbbbbbbb";
 	/*std::string outputString = "";
 	int bitLength = (upperBound_ - lowerBound_) / bits_;

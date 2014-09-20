@@ -36,8 +36,8 @@ bool ArduinoReadableFile::addFrequencyRange(double lowerFrequency, double upperF
 	// If we have room for one more frequency range, add it and set the boundaries as necessary
 	if(numberOfFrequencyRanges_ < MAXIMUM_NUMBER_OF_FREQUENCY_RANGES)
 	{
+		frequencyRanges_[numberOfFrequencyRanges_].setFrequencyBoundsONLY(lowerFrequency,upperFrequency,adjustment);
 		frequencyRanges_[numberOfFrequencyRanges_++].setProcessor(*processor);
-		frequencyRanges_[numberOfFrequencyRanges_].setFrequencyBounds(lowerFrequency,upperFrequency,adjustment);
 
 		return true;
 	}

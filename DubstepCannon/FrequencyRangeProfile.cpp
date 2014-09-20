@@ -26,7 +26,7 @@ FrequencyRangeProfile::~FrequencyRangeProfile()
 // Set or redefine the algorithm that this FRP is using
 void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm processor)
 {
-	processor_ = &processor;
+	this->processor_ = &processor;
 	processor.setBounds(lowerBound_,upperBound_); // Not sure if this is necessary
 }
 
@@ -98,12 +98,21 @@ void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int a
 void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
 {
 	format(&lowerFrequency, &upperFrequency, adjustmentType);
-
-	lowerBound_ = convertFrequencyToInt(lowerFrequency);
-	upperBound_ = convertFrequencyToInt(upperFrequency);
-
+	int lower = convertFrequencyToInt(lowerFrequency);
+	lowerBound_ = lower;
+	int upper = convertFrequencyToInt(upperFrequency);
+	upperBound_ = upper;
 	// Tell the processor that we updated our bounds
-	processor_->setBounds(lowerBound_,upperBound_);
+	processor_->setBounds(lower,upper);
+}
+
+void FrequencyRangeProfile::setFrequencyBoundsONLY(double lowerFrequency, double upperFrequency, int adjustmentType)
+{
+	format(&lowerFrequency, &upperFrequency, adjustmentType);
+	int lower = convertFrequencyToInt(lowerFrequency);
+	lowerBound_ = lower;
+	int upper = convertFrequencyToInt(upperFrequency);
+	upperBound_ = upper;
 }
 
 // std::string = convertToBits(double*, int)
@@ -118,5 +127,22 @@ void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upp
 // Uses an algorithm specified by an enumerated int to determine which bits should be on.
 std::string FrequencyRangeProfile::convertToBits(double* dataToConvert, int noiseFloor)
 {
+	debug("Attempting to convert to bits");
+	debug("Starting nullptr checks");
+	if(processor_->bits_ == NULL) debug("No bits_!");
+	else debug("bits_ has valid pointer");
+	if(processor_->lowerBound_ == NULL) debug("No lowerBound_!");
+	else debug("lowerbound_ has valid pointer");
+	if(processor_->upperBound_ == NULL) debug("No upperBound_!");
+	debug( "upperBound_ has valid pointer");
+
+	debug("starting param checks");
+
+	if(dataToConvert == NULL) debug( "No Data!");
+	else debug("Has data");
+	if(noiseFloor == NULL) debug("No noise floor!");
+	else debug("Has a noise floor");
+
+	debug("Entering processor convertToBits");
 	return processor_->convertToBits(dataToConvert,noiseFloor);
 }

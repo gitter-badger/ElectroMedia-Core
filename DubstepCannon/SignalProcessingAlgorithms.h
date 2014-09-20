@@ -5,14 +5,14 @@ class SignalProcessingAlgorithm
 public:
 	SignalProcessingAlgorithm();
 	~SignalProcessingAlgorithm();
-	SignalProcessingAlgorithm& operator=(const SignalProcessingAlgorithm& other);
+	//SignalProcessingAlgorithm& operator=(const SignalProcessingAlgorithm& other);
 	
 	// Heart and soul of the Signal Processing Algorithm
 	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);
-	void setBounds(int lower, int upper);
-
-protected:
+	void setBounds(const int lower, const int upper);
+	
 	int lowerBound_, upperBound_, bits_;
+protected:
 };
 
 //=====================
@@ -23,14 +23,14 @@ protected:
 class SPAIntensity : public SignalProcessingAlgorithm
 {
 public:
-	std::string convertToBits(double* dataToConvert, int noiseFloor) override;
+	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 };
 
  // Watches only an exact frequency; returns 1 bit
 class SPAWatchFrequency : public SignalProcessingAlgorithm
 {
 public:
-	std::string convertToBits(double* dataToConvert, int noiseFloor) override;
+	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 	void setWatchFrequency(double watchFrequency);
 
 private:
@@ -42,7 +42,7 @@ private:
 class SPAPercussion : public SignalProcessingAlgorithm
 {
 public:
-	std::string convertToBits(double* dataToConvert, int noiseFloor) override;
+	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 
 	// CONFIG STUFF
 };
@@ -52,5 +52,5 @@ public:
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
 public: 
-	std::string convertToBits(double* dataToConvert, int noiseFloor) override;
+	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 };
