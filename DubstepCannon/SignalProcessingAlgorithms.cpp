@@ -42,9 +42,7 @@ void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 
 std::string SignalProcessingAlgorithm::convertToBits(double* dataToConvert, int noiseFloor) 
 {	
-	debug("Now in ConvertToBits");
-	return "bbbbbbbb";
-	/*std::string outputString = "";
+	std::string outputString = "";
 	int bitLength = (upperBound_ - lowerBound_) / bits_;
 	bool wasAbove;
 
@@ -66,15 +64,15 @@ std::string SignalProcessingAlgorithm::convertToBits(double* dataToConvert, int 
 		else outputString.append("0");
 	}
 
-	return outputString;*/
+	return outputString;
 }
 
 std::string SPAHillEffect::convertToBits(double* dataToConvert, int noiseFloor)
 {	
-	return "hhhhhhhh";
+	return "HHHHHHHH";
 }
 
 std::string SPAIntensity::convertToBits(double* dataToConvert, int noiseFloor)
 {	
-	return "iiiiiiii";
+	return "IIIIIIII";
 }

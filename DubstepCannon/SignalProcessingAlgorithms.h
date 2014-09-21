@@ -22,15 +22,19 @@ protected:
 // Watches Intensity of a specific frequency range; returns 1 bit
 class SPAIntensity : public SignalProcessingAlgorithm
 {
+	//using SignalProcessingAlgorithm::convertToBits;
+
 public:
-	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 };
 
  // Watches only an exact frequency; returns 1 bit
 class SPAWatchFrequency : public SignalProcessingAlgorithm
 {
+	//using SignalProcessingAlgorithm::convertToBits;
+
 public:
-	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 	void setWatchFrequency(double watchFrequency);
 
 private:
@@ -41,8 +45,10 @@ private:
 // For instance, on HATS make all bits go to a value of 1, or etc.
 class SPAPercussion : public SignalProcessingAlgorithm
 {
+//	using SignalProcessingAlgorithm::convertToBits;
+
 public:
-	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 
 	// CONFIG STUFF
 };
@@ -51,6 +57,8 @@ public:
 // Useful for climbing frequency effects as in "Contact" by Daft Punk
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
+	//using SignalProcessingAlgorithm::convertToBits;
+
 public: 
-	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
 };

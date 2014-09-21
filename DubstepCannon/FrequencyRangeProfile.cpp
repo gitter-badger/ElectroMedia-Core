@@ -24,7 +24,7 @@ FrequencyRangeProfile::~FrequencyRangeProfile()
 // setProcessor(SignalProcessingAlgorithm)
 // ---
 // Set or redefine the algorithm that this FRP is using
-void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm processor)
+void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm& processor)
 {
 	this->processor_ = &processor;
 	processor.setBounds(lowerBound_,upperBound_); // Not sure if this is necessary
@@ -127,22 +127,5 @@ void FrequencyRangeProfile::setFrequencyBoundsONLY(double lowerFrequency, double
 // Uses an algorithm specified by an enumerated int to determine which bits should be on.
 std::string FrequencyRangeProfile::convertToBits(double* dataToConvert, int noiseFloor)
 {
-	debug("Attempting to convert to bits");
-	debug("Starting nullptr checks");
-	if(processor_->bits_ == NULL) debug("No bits_!");
-	else debug("bits_ has valid pointer");
-	if(processor_->lowerBound_ == NULL) debug("No lowerBound_!");
-	else debug("lowerbound_ has valid pointer");
-	if(processor_->upperBound_ == NULL) debug("No upperBound_!");
-	debug( "upperBound_ has valid pointer");
-
-	debug("starting param checks");
-
-	if(dataToConvert == NULL) debug( "No Data!");
-	else debug("Has data");
-	if(noiseFloor == NULL) debug("No noise floor!");
-	else debug("Has a noise floor");
-
-	debug("Entering processor convertToBits");
-	return processor_->convertToBits(dataToConvert,noiseFloor);
+	return processor_->convertToBits(dataToConvert,noiseFloor);;
 }

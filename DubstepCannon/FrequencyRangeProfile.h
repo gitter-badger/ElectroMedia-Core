@@ -8,7 +8,7 @@ public:
 	FrequencyRangeProfile(SignalProcessingAlgorithm processor);
 	~FrequencyRangeProfile();
 	
-	void setProcessor(SignalProcessingAlgorithm processor);
+	void setProcessor(SignalProcessingAlgorithm& processor);
 	void setIndexBounds(int lower, int upper, int adjustmentType);
 	void setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType);
 	void setFrequencyBoundsONLY(double lowerFrequency, double upperFrequency, int adjustmentType);
