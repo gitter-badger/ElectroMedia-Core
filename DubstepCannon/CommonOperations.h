@@ -9,5 +9,8 @@ double convertIntToFrequency(int index);
 // corresponds to noise floor amplitude
 int calculateDynamicNoiseFloor(double* data, int lowerBound, int upperBound);
 
+// NEED NOTES
+double calculateIntensityScalar(double frequency);
+
 // Pipes out a line of text to cerr if and only if DEBUG_ENABLED == true
 void debug(std::string debugComment); 

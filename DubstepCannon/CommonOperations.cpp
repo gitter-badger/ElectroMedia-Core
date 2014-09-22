@@ -45,6 +45,12 @@ int calculateDynamicNoiseFloor(double* data, int lowerBound, int upperBound)
 	return (dynamicNoiseFloor_ > NOISE_FLOOR ? dynamicNoiseFloor_ : NOISE_FLOOR);
 }
 
+// NEED NOTES; Also probably broken
+double calculateIntensityScalar(double frequency)
+{
+	return (std::pow(0.5 * frequency + 10, 1/3)) - 1.15;
+}
+
 // debug(std::string)
 // ---
 // Pipes a line of text into the std::cerr stream if DEBUG_ENABLED is set to true

@@ -39,39 +39,56 @@ std::string SignalProcessingAlgorithm::convertToBits(const double* dataToConvert
 	int bitLength = (upperBound_ - lowerBound_) / bits_;
 	bool wasAbove;
 
-	// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
-	// between frequencies (according to the boundaries set by owning FRP_
-	for(int bit_ = 0; bit_ < bits_; bit_++)
-	{
-		wasAbove = false;
-		for(int step = 0; step < bitLength; step ++)
-		{
-			if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
-			{
-				wasAbove = true;
-				break;
-			}
-		}
-	
-		if(wasAbove) 
-		{
-			outputString.append("1");
-		}
-		else outputString.append("0");
-	}
-
 	// By default, this result is Big Endian due to the nature of frequencies increasing 
 	// left-to-right. The nature of the output can be altered by changing the 
 	// OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
-	if(!OUTPUT_IS_BIG_ENDIAN)
+	if(OUTPUT_IS_BIG_ENDIAN)
 	{
-		std::string reversedOutput = "";
-		for (std::string::reverse_iterator rit=outputString.rbegin(); rit!=outputString.rend(); ++rit)
+		// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
+		// between frequencies (according to the boundaries set by owning FRP_
+		for(int bit_ = 0; bit_ < bits_; bit_++)
 		{
-			reversedOutput.append("" + *rit);
+			wasAbove = false;
+			for(int step = 0; step < bitLength; step ++)
+			{
+				if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
+				{
+					wasAbove = true;
+					break;
+				}
+			}
+	
+			if(wasAbove) 
+			{
+				outputString.append("1");
+			}
+			else outputString.append("0");
 		}
-		return reversedOutput;
 	}
+	else
+	{
+		// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
+		// between frequencies (according to the boundaries set by owning FRP_
+		for(int bit_ = bits_; bit_ >= 0; bit_--)
+		{
+			wasAbove = false;
+			for(int step = 0; step < bitLength; step ++)
+			{
+				if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
+				{
+					wasAbove = true;
+					break;
+				}
+			}
+	
+			if(wasAbove) 
+			{
+				outputString.append("1");
+			}
+			else outputString.append("0");
+		}
+	}
+
 
 	return outputString;
 }
@@ -90,7 +107,6 @@ std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseF
 	int bitLength = (upperBound_ - lowerBound_) / bits_;
 	
 	double maxAmplitude = noiseFloor, maxIndex = -1;
-	//int numBitsPassed = 0;
 
 	// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
 	// between frequencies (according to the boundaries set by owning FRP)
@@ -122,7 +138,7 @@ std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseF
 			else outputString.append("0");
 		}
 	}
-	else
+	else // ! OUTPUT_IS_BIG_ENDIAN
 	{
 		for(int bit_ = bits_; bit_ >= 0; bit_--)
 		{

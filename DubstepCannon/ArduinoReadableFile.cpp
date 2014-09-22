@@ -13,10 +13,10 @@ ArduinoReadableFile::ArduinoReadableFile(char* nameOfARF)
 	// are in Hz and correspond to lower and upper frequency bounds. The third
 	// argument is an enumerated option that selects which of the two boundaries
 	// are altered for bit-wise optimization
-	addFrequencyRange(50,  200,  ADJUSTMENT_TYPE_CHANGE_UPPER, new SPAHillEffect());
+	addFrequencyRange(50,  200,  ADJUSTMENT_TYPE_CHANGE_UPPER, new SignalProcessingAlgorithm());
 	addFrequencyRange(200, 400,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
 	addFrequencyRange(300, 600,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
-	addFrequencyRange(500, 1000, ADJUSTMENT_TYPE_CHANGE_LOWER, new SignalProcessingAlgorithm());
+	addFrequencyRange(500, 2000, ADJUSTMENT_TYPE_CHANGE_LOWER, new SPAHillEffect());
 }
 
 // ArduinoReadableFile Destructor
