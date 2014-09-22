@@ -14,23 +14,6 @@ SignalProcessingAlgorithm::SignalProcessingAlgorithm()
 SignalProcessingAlgorithm::~SignalProcessingAlgorithm()
 { }
 
-// Operator = Overload
-// ---
-// When we use the assignment operator with an SPA, it is likely to not have
-// the same algorithm tied to it. This forces the SPA to keep the same
-// algorithm as before assignment, but changes its bits and frequency
-// bounds to that of the assigner.
-//SignalProcessingAlgorithm& SignalProcessingAlgorithm::operator=(const SignalProcessingAlgorithm& other)
-//{
-//	if(this != &other)
-//	{
-//		this->bits_ = (int)&other.bits_;
-//		this->lowerBound_ = (int)&other.lowerBound_;
-//		this->upperBound_ = (int)&other.upperBound_;
-//	}
-//	return *this;
-//}
-
 // setbounds(int,int)
 // ---
 // Redeclares the lower and upper bounds as dictated by the FrequencyRangeProfile
@@ -40,20 +23,33 @@ void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 	this->upperBound_ = upper;
 }
 
-std::string SignalProcessingAlgorithm::convertToBits(double* dataToConvert, int noiseFloor) 
+// BASE
+// convertToBits(double*, int)
+// ---
+// Main variant of the processor.convertToBits(); function. This takes the array of
+// data doubles and performs some algorithm (as defined by derived/child classes)
+// to return a string/bytestream. In this main variety, the algorithm merely checks
+// for signficant (above noise floor) frequencies, and marks the indices as high.
+// 
+// Result is by default Big Endian, but this can be changed through config by
+// setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
+std::string SignalProcessingAlgorithm::convertToBits(const double* dataToConvert, int noiseFloor) 
 {	
 	std::string outputString = "";
 	int bitLength = (upperBound_ - lowerBound_) / bits_;
 	bool wasAbove;
 
+	// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
+	// between frequencies (according to the boundaries set by owning FRP_
 	for(int bit_ = 0; bit_ < bits_; bit_++)
 	{
 		wasAbove = false;
-		for(int step = 0; !wasAbove && step < bitLength; step ++)
+		for(int step = 0; step < bitLength; step ++)
 		{
 			if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
 			{
-				wasAbove = true; 
+				wasAbove = true;
+				break;
 			}
 		}
 	
@@ -64,15 +60,84 @@ std::string SignalProcessingAlgorithm::convertToBits(double* dataToConvert, int 
 		else outputString.append("0");
 	}
 
+	// By default, this result is Big Endian due to the nature of frequencies increasing 
+	// left-to-right. The nature of the output can be altered by changing the 
+	// OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
+	if(!OUTPUT_IS_BIG_ENDIAN)
+	{
+		std::string reversedOutput = "";
+		for (std::string::reverse_iterator rit=outputString.rbegin(); rit!=outputString.rend(); ++rit)
+		{
+			reversedOutput.append("" + *rit);
+		}
+		return reversedOutput;
+	}
+
 	return outputString;
 }
 
-std::string SPAHillEffect::convertToBits(double* dataToConvert, int noiseFloor)
+// HILL EFFECT
+// convertToBits(double*, int)
+// ---
+// Attempts to find any frequency amplitude above the noise floor, and then sets all bits high
+// if they are lower than the maximum significant frequency within bounds.
+// 
+// Result is by default Big Endian, but this can be changed through config by
+// setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
+std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseFloor)
 {	
-	return "HHHHHHHH";
+	std::string outputString = "";
+	int bitLength = (upperBound_ - lowerBound_) / bits_;
+	
+	double maxAmplitude = noiseFloor, maxIndex = -1;
+	//int numBitsPassed = 0;
+
+	// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
+	// between frequencies (according to the boundaries set by owning FRP)
+	for(int bit_ = 0; bit_ < bits_; bit_++)
+	{
+		for(int step = 0; step < bitLength; step ++)
+		{
+			double currentAmplitude = dataToConvert[lowerBound_ + bitLength * bit_ + step];
+			if(currentAmplitude > maxAmplitude)
+			{
+				maxAmplitude = currentAmplitude;
+				maxIndex = bit_; // Does this continually point to bit_? Or is it set to the value?
+			}
+		}
+	}
+
+	// By default, this result is Big Endian due to the nature of frequencies increasing 
+	// left-to-right. The nature of the output can be altered by changing the 
+	// OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
+	if(OUTPUT_IS_BIG_ENDIAN)
+	{
+		// Should find a cleaner way to do this
+		for(int bit_ = 0; bit_ < bits_; bit_++)
+		{
+			if(bit_ <= maxIndex)
+			{
+				outputString.append("1");
+			}
+			else outputString.append("0");
+		}
+	}
+	else
+	{
+		for(int bit_ = bits_; bit_ >= 0; bit_--)
+		{
+			if(bit_ <= maxIndex)
+			{
+				outputString.append("1");
+			}
+			else outputString.append("0");
+		}
+	}
+
+	return outputString;
 }
 
-std::string SPAIntensity::convertToBits(double* dataToConvert, int noiseFloor)
+std::string SPAIntensity::convertToBits(const double* dataToConvert, int noiseFloor)
 {	
 	return "IIIIIIII";
 }

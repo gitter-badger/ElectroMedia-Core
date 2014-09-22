@@ -5,10 +5,9 @@ class SignalProcessingAlgorithm
 public:
 	SignalProcessingAlgorithm();
 	~SignalProcessingAlgorithm();
-	//SignalProcessingAlgorithm& operator=(const SignalProcessingAlgorithm& other);
 	
 	// Heart and soul of the Signal Processing Algorithm
-	virtual std::string convertToBits(double* dataToConvert, int noiseFloor);
+	virtual std::string convertToBits(const double* dataToConvert, int noiseFloor);
 	void setBounds(const int lower, const int upper);
 	
 	int lowerBound_, upperBound_, bits_;
@@ -22,19 +21,15 @@ protected:
 // Watches Intensity of a specific frequency range; returns 1 bit
 class SPAIntensity : public SignalProcessingAlgorithm
 {
-	//using SignalProcessingAlgorithm::convertToBits;
-
 public:
-	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
 };
 
  // Watches only an exact frequency; returns 1 bit
 class SPAWatchFrequency : public SignalProcessingAlgorithm
 {
-	//using SignalProcessingAlgorithm::convertToBits;
-
 public:
-	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
 	void setWatchFrequency(double watchFrequency);
 
 private:
@@ -45,10 +40,8 @@ private:
 // For instance, on HATS make all bits go to a value of 1, or etc.
 class SPAPercussion : public SignalProcessingAlgorithm
 {
-//	using SignalProcessingAlgorithm::convertToBits;
-
 public:
-	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
 
 	// CONFIG STUFF
 };
@@ -57,8 +50,6 @@ public:
 // Useful for climbing frequency effects as in "Contact" by Daft Punk
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
-	//using SignalProcessingAlgorithm::convertToBits;
-
 public: 
-	std::string convertToBits(double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
 };

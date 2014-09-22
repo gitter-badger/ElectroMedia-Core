@@ -13,7 +13,7 @@ ArduinoReadableFile::ArduinoReadableFile(char* nameOfARF)
 	// are in Hz and correspond to lower and upper frequency bounds. The third
 	// argument is an enumerated option that selects which of the two boundaries
 	// are altered for bit-wise optimization
-	addFrequencyRange(50,  200,  ADJUSTMENT_TYPE_CHANGE_UPPER, new SignalProcessingAlgorithm());
+	addFrequencyRange(50,  200,  ADJUSTMENT_TYPE_CHANGE_UPPER, new SPAHillEffect());
 	addFrequencyRange(200, 400,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
 	addFrequencyRange(300, 600,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
 	addFrequencyRange(500, 1000, ADJUSTMENT_TYPE_CHANGE_LOWER, new SignalProcessingAlgorithm());
@@ -33,10 +33,10 @@ ArduinoReadableFile::~ArduinoReadableFile()
 // true if addition was successful.
 bool ArduinoReadableFile::addFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm* processor)
 {
-	// If we have room for one more frequency range, add it and set the boundaries as necessary
+	// If we have an available frequencyRange_, initialize its bounds, add it, and then set its processor
 	if(numberOfFrequencyRanges_ < MAXIMUM_NUMBER_OF_FREQUENCY_RANGES)
 	{
-		frequencyRanges_[numberOfFrequencyRanges_].setFrequencyBoundsONLY(lowerFrequency,upperFrequency,adjustment);
+		frequencyRanges_[numberOfFrequencyRanges_].initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustment);
 		frequencyRanges_[numberOfFrequencyRanges_++].setProcessor(*processor);
 
 		return true;
@@ -45,7 +45,7 @@ bool ArduinoReadableFile::addFrequencyRange(double lowerFrequency, double upperF
 	return false;
 }
 
-// setMode(int)
+// setMode(int)	
 // ---
 // Change the way that the write() function behaves
 void ArduinoReadableFile::setMode(int newMode)

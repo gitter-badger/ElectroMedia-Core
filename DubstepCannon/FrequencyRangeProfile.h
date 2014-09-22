@@ -11,7 +11,7 @@ public:
 	void setProcessor(SignalProcessingAlgorithm& processor);
 	void setIndexBounds(int lower, int upper, int adjustmentType);
 	void setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType);
-	void setFrequencyBoundsONLY(double lowerFrequency, double upperFrequency, int adjustmentType);
+	void initializeFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType);
 	std::string convertToBits(double* dataToConvert, int noiseFloor);
 
 protected:

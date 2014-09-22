@@ -19,7 +19,9 @@ FrequencyRangeProfile::FrequencyRangeProfile(SignalProcessingAlgorithm processor
 // ---
 // If we have stuff to dealloc, do it here
 FrequencyRangeProfile::~FrequencyRangeProfile()
-{ }
+{
+	delete processor_;
+}
 
 // setProcessor(SignalProcessingAlgorithm)
 // ---
@@ -82,11 +84,16 @@ void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int a
 {
 	double lowerFrequency = convertIntToFrequency(lowerIndex);
 	double upperFrequency = convertIntToFrequency(upperIndex);
+	
+	setFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
+}
 
-	format(&lowerFrequency, &upperFrequency,adjustmentType);
-
-	lowerBound_ = convertFrequencyToInt(lowerFrequency);
-	upperBound_ = convertFrequencyToInt(upperFrequency);
+// setIndexBounds(double, double, enum int)
+// ---
+// Functionally identical to setIndexBounds, except takes frequency inputs instead of indices
+void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
+{
+	initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
 
 	// Tell the processor that we updated our bounds
 	processor_->setBounds(lowerBound_,upperBound_);
@@ -95,24 +102,12 @@ void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int a
 // setIndexBounds(double, double, enum int)
 // ---
 // Functionally identical to setIndexBounds, except takes frequency inputs instead of indices
-void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
+void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
 {
 	format(&lowerFrequency, &upperFrequency, adjustmentType);
-	int lower = convertFrequencyToInt(lowerFrequency);
-	lowerBound_ = lower;
-	int upper = convertFrequencyToInt(upperFrequency);
-	upperBound_ = upper;
-	// Tell the processor that we updated our bounds
-	processor_->setBounds(lower,upper);
-}
 
-void FrequencyRangeProfile::setFrequencyBoundsONLY(double lowerFrequency, double upperFrequency, int adjustmentType)
-{
-	format(&lowerFrequency, &upperFrequency, adjustmentType);
-	int lower = convertFrequencyToInt(lowerFrequency);
-	lowerBound_ = lower;
-	int upper = convertFrequencyToInt(upperFrequency);
-	upperBound_ = upper;
+	lowerBound_ = convertFrequencyToInt(lowerFrequency);
+	upperBound_ = convertFrequencyToInt(upperFrequency);
 }
 
 // std::string = convertToBits(double*, int)
