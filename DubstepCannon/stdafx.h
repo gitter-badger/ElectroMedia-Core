@@ -17,6 +17,7 @@
 // CONSTANT FLAGS
 const bool DEBUG_ENABLED = true;
 const bool OUTPUT_IS_BIG_ENDIAN = false;
+const bool USE_MAXIMUM_FREQUENCY = true;
 
 // CONSTANTS
 const int WINDOW_SIZE = 8192;

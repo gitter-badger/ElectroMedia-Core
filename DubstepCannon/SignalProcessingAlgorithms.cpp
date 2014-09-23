@@ -6,21 +6,41 @@
 // ...
 SignalProcessingAlgorithm::SignalProcessingAlgorithm()
 	: lowerBound_(0), upperBound_(0), bits_(8)
-{ }
+{ /* - No op - */ }
 
 // SignalProcessingAlgorithm Destructor
 // ---
 // If we have stuff to dealloc, do it here
 SignalProcessingAlgorithm::~SignalProcessingAlgorithm()
-{ }
+{ /* - No op - */ }
 
 // setbounds(int,int)
 // ---
 // Redeclares the lower and upper bounds as dictated by the FrequencyRangeProfile
 void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 {
-	lowerBound_ = (int)lower;
-	this->upperBound_ = upper;
+	lowerBound_ = lower;
+	upperBound_ = upper;
+}
+
+// checkBit(double*, int, int, int)
+// ---
+// Hidden function accessible only within the base SignalProcessingAlgorithm class.
+// Checks to see whether a bit is high (true) or low (false) by stepping through the
+// spectral data at a given point in time and comparing it to the noiseFloor param.
+bool SignalProcessingAlgorithm::checkBit(const double* dataToConvert, int bitNumber, int noiseFloor)
+{
+	int bitResolution = (upperBound_ - lowerBound_) / bits_;
+
+	for(int step = 0; step < bitResolution; step ++)
+	{
+		if(dataToConvert[lowerBound_ + bitResolution * bitNumber + step] > noiseFloor) 
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 // BASE
@@ -36,8 +56,6 @@ void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 std::string SignalProcessingAlgorithm::convertToBits(const double* dataToConvert, int noiseFloor) 
 {	
 	std::string outputString = "";
-	int bitLength = (upperBound_ - lowerBound_) / bits_;
-	bool wasAbove;
 
 	// By default, this result is Big Endian due to the nature of frequencies increasing 
 	// left-to-right. The nature of the output can be altered by changing the 
@@ -48,47 +66,26 @@ std::string SignalProcessingAlgorithm::convertToBits(const double* dataToConvert
 		// between frequencies (according to the boundaries set by owning FRP_
 		for(int bit_ = 0; bit_ < bits_; bit_++)
 		{
-			wasAbove = false;
-			for(int step = 0; step < bitLength; step ++)
-			{
-				if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
-				{
-					wasAbove = true;
-					break;
-				}
-			}
-	
-			if(wasAbove) 
+			if(checkBit(dataToConvert,bit_,noiseFloor))
 			{
 				outputString.append("1");
 			}
 			else outputString.append("0");
 		}
 	}
-	else
+	else // ! OUTPUT_IS_BIG_ENDIAN
 	{
 		// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
 		// between frequencies (according to the boundaries set by owning FRP_
 		for(int bit_ = bits_; bit_ >= 0; bit_--)
 		{
-			wasAbove = false;
-			for(int step = 0; step < bitLength; step ++)
-			{
-				if(dataToConvert[lowerBound_ + bitLength * bit_ + step] > noiseFloor) 
-				{
-					wasAbove = true;
-					break;
-				}
-			}
-	
-			if(wasAbove) 
+			if(checkBit(dataToConvert,bit_,noiseFloor))
 			{
 				outputString.append("1");
 			}
 			else outputString.append("0");
 		}
 	}
-
 
 	return outputString;
 }
@@ -115,10 +112,21 @@ std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseF
 		for(int step = 0; step < bitLength; step ++)
 		{
 			double currentAmplitude = dataToConvert[lowerBound_ + bitLength * bit_ + step];
-			if(currentAmplitude > maxAmplitude)
+
+			if(USE_MAXIMUM_FREQUENCY)
 			{
-				maxAmplitude = currentAmplitude;
-				maxIndex = bit_; // Does this continually point to bit_? Or is it set to the value?
+				if(currentAmplitude > noiseFloor)
+				{
+					maxIndex = bit_;
+				}
+			}
+			else
+			{			
+				if(currentAmplitude > maxAmplitude)
+				{
+					maxAmplitude = currentAmplitude;
+					maxIndex = bit_;
+				}
 			}
 		}
 	}
@@ -127,7 +135,10 @@ std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseF
 	// left-to-right. The nature of the output can be altered by changing the 
 	// OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
 	if(OUTPUT_IS_BIG_ENDIAN)
-	{
+	{/*
+		outputString.append("1",maxIndex);
+		outputString.append("0",bits_ - maxIndex);*/
+
 		// Should find a cleaner way to do this
 		for(int bit_ = 0; bit_ < bits_; bit_++)
 		{
@@ -139,7 +150,9 @@ std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseF
 		}
 	}
 	else // ! OUTPUT_IS_BIG_ENDIAN
-	{
+	{/*
+		outputString.append("0",bits_ - maxIndex);
+		outputString.append("1",maxIndex);*/
 		for(int bit_ = bits_; bit_ >= 0; bit_--)
 		{
 			if(bit_ <= maxIndex)

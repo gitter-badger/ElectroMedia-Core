@@ -16,7 +16,7 @@ ArduinoReadableFile::ArduinoReadableFile(char* nameOfARF)
 	addFrequencyRange(50,  200,  ADJUSTMENT_TYPE_CHANGE_UPPER, new SignalProcessingAlgorithm());
 	addFrequencyRange(200, 400,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
 	addFrequencyRange(300, 600,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
-	addFrequencyRange(500, 2000, ADJUSTMENT_TYPE_CHANGE_LOWER, new SPAHillEffect());
+	addFrequencyRange(200, 1000, ADJUSTMENT_TYPE_CHANGE_LOWER, new SPAHillEffect());
 }
 
 // ArduinoReadableFile Destructor

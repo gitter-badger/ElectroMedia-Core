@@ -6,12 +6,17 @@ public:
 	SignalProcessingAlgorithm();
 	~SignalProcessingAlgorithm();
 	
-	// Heart and soul of the Signal Processing Algorithm
-	virtual std::string convertToBits(const double* dataToConvert, int noiseFloor);
+	// Define lower and upper bounds (as indices) for this processor
 	void setBounds(const int lower, const int upper);
 	
-	int lowerBound_, upperBound_, bits_;
+	// Heart and soul of the Signal Processing Algorithm
+	virtual std::string convertToBits(const double* dataToConvert, int noiseFloor);
+	
 protected:
+	int lowerBound_, upperBound_, bits_;
+
+private:
+	bool checkBit(const double* dataToConvert, int bit, int noiseFloor);
 };
 
 //=====================
@@ -22,14 +27,15 @@ protected:
 class SPAIntensity : public SignalProcessingAlgorithm
 {
 public:
-	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor);
 };
 
+// ---
  // Watches only an exact frequency; returns 1 bit
 class SPAWatchFrequency : public SignalProcessingAlgorithm
 {
 public:
-	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor);
 	void setWatchFrequency(double watchFrequency);
 
 private:
@@ -41,7 +47,7 @@ private:
 class SPAPercussion : public SignalProcessingAlgorithm
 {
 public:
-	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor);
 
 	// CONFIG STUFF
 };
@@ -51,5 +57,5 @@ public:
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
 public: 
-	std::string convertToBits(const double* dataToConvert, int noiseFloor);// override;
+	std::string convertToBits(const double* dataToConvert, int noiseFloor); // If false, determines frequency based on Maximum Amplitude
 };
