@@ -29,7 +29,7 @@ FrequencyRangeProfile::~FrequencyRangeProfile()
 void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm& processor)
 {
 	this->processor_ = &processor;
-	processor.setBounds(lowerBound_,upperBound_); // Not sure if this is necessary
+	processor.setBounds(lowerBound_,upperBound_);
 }
 
 // format(double*,double*,enum int)
@@ -82,10 +82,10 @@ void FrequencyRangeProfile::format(double* lowerFrequency, double* upperFrequenc
 // the first two parameters. The third parameter functions the same as in format(d,d,ei)
 void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int adjustmentType)
 {
-	double lowerFrequency = convertIntToFrequency(lowerIndex);
-	double upperFrequency = convertIntToFrequency(upperIndex);
+	initializeFrequencyBounds(convertIntToFrequency(lowerIndex),convertIntToFrequency(upperIndex),adjustmentType);
 	
-	setFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
+	// Tell the processor that we updated our bounds
+	processor_->setBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
@@ -94,14 +94,17 @@ void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int a
 void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
 {
 	initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
-
+	
 	// Tell the processor that we updated our bounds
 	processor_->setBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
 // ---
-// Functionally identical to setIndexBounds, except takes frequency inputs instead of indices
+// IMPORTANT! This is CRITICALLY different from setFrequencyBounds and setIndexBounds in the
+// fact that this does NOT attempt to interface with the processor. At the point of time when
+// this method is called processor should NOT be initialized and the other two functions are 
+// likely to lead to nullptrs. Use this if you are not interfacing with the processor.
 void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
 {
 	format(&lowerFrequency, &upperFrequency, adjustmentType);
@@ -115,7 +118,7 @@ void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, dou
 // [+ Work in Progress +]
 //
 // Creates an array of bits of length <bits_> which correspond to specific output pins
-// of the Arduino device selected in the active ArduinoReadableFile writer, and then turns
+// of the Arduino device selected in the active ArduinoReadableFileWriter writer, and then turns
 // specific bits on according to an algorithm.
 //
 // TODO:

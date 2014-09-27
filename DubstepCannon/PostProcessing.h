@@ -7,7 +7,6 @@
 
 
 #include "stdafx.h"
-#include "SignalProcessing.h"
 #include <vector>
 
 FrequencyMaximum* AnalyzeBand(double* data, int windowWidth, double* frequencyBand, int numMaxima);

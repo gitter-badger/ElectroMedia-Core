@@ -113,7 +113,7 @@ std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseF
 		{
 			double currentAmplitude = dataToConvert[lowerBound_ + bitLength * bit_ + step];
 
-			if(USE_MAXIMUM_FREQUENCY)
+			if(HILL_EFFECT_USES_MAXIMUM_FREQUENCY)
 			{
 				if(currentAmplitude > noiseFloor)
 				{
@@ -166,6 +166,7 @@ std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseF
 	return outputString;
 }
 
+// Need an intensity function!
 std::string SPAIntensity::convertToBits(const double* dataToConvert, int noiseFloor)
 {	
 	return "IIIIIIII";

@@ -84,12 +84,11 @@
   <ItemGroup>
     <ClInclude Include="CommonOperations.h" />
     <ClInclude Include="FrequencyRangeProfile.h" />
-    <ClInclude Include="PostProcessing.h" />
-    <ClInclude Include="ArduinoReadableFile.h" />
+    <ClInclude Include="ArduinoReadableFileWriter.h" />
     <ClInclude Include="FrequencyMaximum.h" />
     <ClInclude Include="MP3toData.h" />
     <ClInclude Include="fftw3.h" />
-    <ClInclude Include="SignalProcessing.h" />
+    <ClInclude Include="FFTPreprocessing.h" />
     <ClInclude Include="SignalProcessingAlgorithms.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -97,12 +96,11 @@
   <ItemGroup>
     <ClCompile Include="CommonOperations.cpp" />
     <ClCompile Include="FrequencyRangeProfile.cpp" />
-    <ClCompile Include="PostProcessing.cpp" />
-    <ClCompile Include="ArduinoReadableFile.cpp" />
+    <ClCompile Include="ArduinoReadableFileWriter.cpp" />
     <ClCompile Include="FrequencyMaximum.cpp" />
     <ClCompile Include="MP3toData.cpp" />
-    <ClCompile Include="DubstepCannon.cpp" />
-    <ClCompile Include="SignalProcessing.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="FFTPreprocessing.cpp" />
     <ClCompile Include="SignalProcessingAlgorithms.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -2,7 +2,7 @@
 #include "fftw3.h"
 #include "FrequencyMaximum.h"
 
-// Pre Processing
+// FFT PreProcessing
 
 void copyAndPadData(const double* dataIn, double* dataOut);
 void normalize(double* data);

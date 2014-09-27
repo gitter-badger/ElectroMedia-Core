@@ -2,8 +2,8 @@
 
 #include "stdafx.h"
 #include "MP3toData.h"
-#include "PostProcessing.h"
-#include "ArduinoReadableFile.h"
+#include "FFTPreprocessing.h"
+#include "ArduinoReadableFileWriter.h"
 #include <cmath>
 
 // Signed 16-bit PCM Little-Endian
@@ -16,7 +16,7 @@ int main(int argc, char *argv[], char *envp[])
 	// If we are not given that second argument, error out and return.
 	if(argc < 2) 
 	{     
-		cout << "ERROR: You must specify a .mp3 file for decoding!";
+		cout << "ERROR: You must specify a .mp3 file for decoding!\n";
 		return -1; 
 	}
 	
@@ -26,7 +26,7 @@ int main(int argc, char *argv[], char *envp[])
 	strcat(filename, ".arf");
 
 	// Open the ARF Writer object
-	ArduinoReadableFile arfile = ArduinoReadableFile(filename);
+	ArduinoReadableFileWriter arfile = ArduinoReadableFileWriter(filename);
 	arfile.setMode(arfile.MODE_TEXT);
 
 	// Process the MP3 File
