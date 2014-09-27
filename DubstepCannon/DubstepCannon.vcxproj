@@ -14,6 +14,7 @@
     <ProjectGuid>{CD652CE5-58AE-49C9-AB2B-B8A539846975}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>DubstepCannon</RootNamespace>
+    <ProjectName>EMC</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

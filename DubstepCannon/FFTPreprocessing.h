@@ -4,7 +4,7 @@
 
 // FFT PreProcessing
 
-void copyAndPadData(const double* dataIn, double* dataOut);
+double* copyAndPadData(const double* dataIn);
 void normalize(double* data);
 double hanningMultiplier(int indexOfHanningFunction);
 double* applyHanningWindow(const int* dataIn);

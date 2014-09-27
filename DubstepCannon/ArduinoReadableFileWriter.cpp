@@ -126,9 +126,11 @@ void ArduinoReadableFileWriter::write(double* dataToWrite)
 		debug("arfStream is not initialized -- cannot write data to an unopen file!");
 		return;
 	}
-	
+
+	// Variables that are used within all sections of the switch statements
 	std::string outputString;
 	int dynamicNoiseFloor;
+
 	switch(mode_)
 	{
 	// Text mode is meant to be human-readable and is used for debug purposes

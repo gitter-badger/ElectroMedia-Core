@@ -66,12 +66,16 @@ int* obtainDataFromFile(char* fileName, long fileSize)
 // ---
 // Copies all of the data from dataIn to dataOut, while also zero-padding the points
 // where there is no actual data to copy
-void copyAndPadData(const double* dataIn, double* dataOut)
+double* copyAndPadData(const double* dataIn)
 {
+	double* dataOut = new double[WINDOW_SIZE];
+
 	for(int i = 0; i < WINDOW_SIZE; i++)
 	{
 		dataOut[i] = dataIn[i] ? dataIn[i] : 0;
 	}
+
+	return dataOut;
 }
 
 // fftw_complex* =  startFFT (double*, int)
@@ -86,7 +90,9 @@ fftw_complex* fastFourierTransform(const double* data)
 
 	// Generate a plan for FFTW to execute
 	fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, out, FFTW_MEASURE);
-	copyAndPadData(data,workingDoubleArray_);
+	
+	// workingDoubleArray_ is called via reference in fftw_execute
+	workingDoubleArray_ = copyAndPadData(data);
 
 	// Execute the plan
 	fftw_execute(new_plan);
