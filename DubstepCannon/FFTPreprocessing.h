@@ -13,5 +13,6 @@ double* prepareAndExecuteFFT(const int* dataIn);
 // Fast Fourier Transform
 fftw_complex* fastFourierTransform(const double* data);
 
+// More Tests
 long calculateDataFileSize(char* fileName);
 int* obtainDataFromFile(char* fileName, long fileSize);
