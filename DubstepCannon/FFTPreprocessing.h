@@ -10,6 +10,7 @@ double hanningMultiplier(int indexOfHanningFunction);
 double* applyHanningWindow(const int* dataIn);
 double* prepareAndExecuteFFT(const int* dataIn);
 
+// Fast Fourier Transform
 fftw_complex* fastFourierTransform(const double* data);
 
 long calculateDataFileSize(char* fileName);
