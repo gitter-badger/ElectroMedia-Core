@@ -174,25 +174,13 @@
     <ClInclude Include="MP3toData.h" />
     <ClInclude Include="fftw3.h" />
     <ClInclude Include="FFTPreprocessing.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SignalProcessingAlgorithms.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonOperations.cpp" />
-    <ClCompile Include="dev\doc\examples\avcodec.c" />
-    <ClCompile Include="dev\doc\examples\avio_reading.c" />
-    <ClCompile Include="dev\doc\examples\demuxing_decoding.c" />
-    <ClCompile Include="dev\doc\examples\filtering_audio.c" />
-    <ClCompile Include="dev\doc\examples\filtering_video.c" />
-    <ClCompile Include="dev\doc\examples\filter_audio.c" />
-    <ClCompile Include="dev\doc\examples\metadata.c" />
-    <ClCompile Include="dev\doc\examples\muxing.c" />
-    <ClCompile Include="dev\doc\examples\remuxing.c" />
-    <ClCompile Include="dev\doc\examples\resampling_audio.c" />
-    <ClCompile Include="dev\doc\examples\scaling_video.c" />
-    <ClCompile Include="dev\doc\examples\transcode_aac.c" />
-    <ClCompile Include="dev\doc\examples\transcoding.c" />
     <ClCompile Include="FrequencyRangeProfile.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />
     <ClCompile Include="FrequencyMaximum.cpp" />
@@ -206,38 +194,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DubstepCannon.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="dev\doc\developer.html" />
-    <None Include="dev\doc\faq.html" />
-    <None Include="dev\doc\fate.html" />
-    <None Include="dev\doc\ffmpeg-all.html" />
-    <None Include="dev\doc\ffmpeg-bitstream-filters.html" />
-    <None Include="dev\doc\ffmpeg-codecs.html" />
-    <None Include="dev\doc\ffmpeg-devices.html" />
-    <None Include="dev\doc\ffmpeg-filters.html" />
-    <None Include="dev\doc\ffmpeg-formats.html" />
-    <None Include="dev\doc\ffmpeg-protocols.html" />
-    <None Include="dev\doc\ffmpeg-resampler.html" />
-    <None Include="dev\doc\ffmpeg-scaler.html" />
-    <None Include="dev\doc\ffmpeg-utils.html" />
-    <None Include="dev\doc\ffmpeg.html" />
-    <None Include="dev\doc\ffplay-all.html" />
-    <None Include="dev\doc\ffplay.html" />
-    <None Include="dev\doc\ffprobe-all.html" />
-    <None Include="dev\doc\ffprobe.html" />
-    <None Include="dev\doc\general.html" />
-    <None Include="dev\doc\git-howto.html" />
-    <None Include="dev\doc\libavcodec.html" />
-    <None Include="dev\doc\libavdevice.html" />
-    <None Include="dev\doc\libavfilter.html" />
-    <None Include="dev\doc\libavformat.html" />
-    <None Include="dev\doc\libavutil.html" />
-    <None Include="dev\doc\libswresample.html" />
-    <None Include="dev\doc\libswscale.html" />
-    <None Include="dev\doc\nut.html" />
-    <None Include="dev\doc\platform.html" />
     <None Include="dev\lib\avcodec-55.def" />
     <None Include="dev\lib\avdevice-55.def" />
     <None Include="dev\lib\avfilter-4.def" />
@@ -246,6 +202,13 @@
     <None Include="dev\lib\postproc-52.def" />
     <None Include="dev\lib\swresample-0.def" />
     <None Include="dev\lib\swscale-2.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\DubstepCannon\DubstepCannon\libfftw3-3.lib" />
+    <Library Include="dev\lib\libfftw3-3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DubstepCannon.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

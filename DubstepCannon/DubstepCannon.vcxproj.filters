@@ -300,6 +300,9 @@
     <ClInclude Include="dev\include\libswscale\version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -329,81 +332,8 @@
     <ClCompile Include="FFTPreprocessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dev\doc\examples\avcodec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\avio_reading.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\demuxing_decoding.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\filtering_audio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\filtering_video.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\filter_audio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\metadata.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\muxing.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\remuxing.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\resampling_audio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\scaling_video.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\transcode_aac.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dev\doc\examples\transcoding.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DubstepCannon.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="dev\doc\developer.html" />
-    <None Include="dev\doc\faq.html" />
-    <None Include="dev\doc\fate.html" />
-    <None Include="dev\doc\ffmpeg-all.html" />
-    <None Include="dev\doc\ffmpeg-bitstream-filters.html" />
-    <None Include="dev\doc\ffmpeg-codecs.html" />
-    <None Include="dev\doc\ffmpeg-devices.html" />
-    <None Include="dev\doc\ffmpeg-filters.html" />
-    <None Include="dev\doc\ffmpeg-formats.html" />
-    <None Include="dev\doc\ffmpeg-protocols.html" />
-    <None Include="dev\doc\ffmpeg-resampler.html" />
-    <None Include="dev\doc\ffmpeg-scaler.html" />
-    <None Include="dev\doc\ffmpeg-utils.html" />
-    <None Include="dev\doc\ffmpeg.html" />
-    <None Include="dev\doc\ffplay-all.html" />
-    <None Include="dev\doc\ffplay.html" />
-    <None Include="dev\doc\ffprobe-all.html" />
-    <None Include="dev\doc\ffprobe.html" />
-    <None Include="dev\doc\general.html" />
-    <None Include="dev\doc\git-howto.html" />
-    <None Include="dev\doc\libavcodec.html" />
-    <None Include="dev\doc\libavdevice.html" />
-    <None Include="dev\doc\libavfilter.html" />
-    <None Include="dev\doc\libavformat.html" />
-    <None Include="dev\doc\libavutil.html" />
-    <None Include="dev\doc\libswresample.html" />
-    <None Include="dev\doc\libswscale.html" />
-    <None Include="dev\doc\nut.html" />
-    <None Include="dev\doc\platform.html" />
     <None Include="dev\lib\avcodec-55.def">
       <Filter>Source Files</Filter>
     </None>
@@ -428,5 +358,14 @@
     <None Include="dev\lib\swscale-2.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\DubstepCannon\DubstepCannon\libfftw3-3.lib" />
+    <Library Include="dev\lib\libfftw3-3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DubstepCannon.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
