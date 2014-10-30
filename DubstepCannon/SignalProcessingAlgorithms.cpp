@@ -132,6 +132,10 @@ bool* SPAHillEffect::evaluateBits(const double* processedData, const int bitLeng
             maxIndex = bit_;
         }
     }
+
+	bool* newBool = new bool[10];
+
+	return newBool;
 }
 
 // Need an intensity function!

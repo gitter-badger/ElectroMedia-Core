@@ -41,21 +41,21 @@ void FrequencyRangeProfile::format(double* lowerFrequency, double* upperFrequenc
 {
     double spectralResolution_ = double(*upperFrequency - *lowerFrequency) / 8;
     double newResolution_ = double(ceil(spectralResolution_ / BOUNDARY_CONVERSION_SCALAR) * BOUNDARY_CONVERSION_SCALAR);
-    int center_ = 0;
+	auto centeredFrequencies = new double[2];
 
     switch(adjustmentType)
     {
         // In this case, we change the lower bound UNLESS we go below 0 Hz, whereupon we set the 
         // lower bound equal to 0 and change the upper bound appropriately
     case(ADJUSTMENT_TYPE_CHANGE_LOWER):
-        *lowerFrequency = formatChangeLower(*upperFrequency,newResolution_)_;
+        *lowerFrequency = formatChangeLower(*upperFrequency,newResolution_);
         return;
 
         // In the centering case, we set the lower and upper bounds to 4 spectral bit widths from
         // the calculated center UNLESS we go below 0 Hz, whereupon we follow the same protocol as
         // in ADJUSTMENT_TYPE_CHANGE_LOWER
     case(ADJUSTMENT_TYPE_CENTER):
-        auto centeredFrequencies = formatCenter(*lowerFrequency,*upperFrequency,newResolution_);
+        centeredFrequencies = formatCenter(*lowerFrequency,*upperFrequency,newResolution_);
         *lowerFrequency = centeredFrequencies[0];
         *upperFrequency = centeredFrequencies[1];
         return;
@@ -66,7 +66,7 @@ void FrequencyRangeProfile::format(double* lowerFrequency, double* upperFrequenc
     }
 }
 
-double* formatCenter(double lowerFrequency, double upperFrequency, double resolution)
+double* FrequencyRangeProfile::formatCenter(double lowerFrequency, double upperFrequency, double resolution)
 {
     double newFrequencies[] = {lowerFrequency, upperFrequency};
     int center_ = int(newFrequencies[0] + newFrequencies[1]) / 2;
@@ -82,12 +82,12 @@ double* formatCenter(double lowerFrequency, double upperFrequency, double resolu
     return newFrequencies;
 }
 
-double formatChangeUpper(double lowerFrequency, double resolution)
+double FrequencyRangeProfile::formatChangeUpper(double lowerFrequency, double resolution)
 {
     return lowerFrequency + int(resolution * 8);
 }
 
-double formatChangeLower(double upperFrequency, double resolution)
+double FrequencyRangeProfile::formatChangeLower(double upperFrequency, double resolution)
 {
     double newLowerFrequency = upperFrequency - int(resolution * 8);
     if(newLowerFrequency < BOUNDARY_CONVERSION_OFFSET)

@@ -25,6 +25,9 @@ protected:
 private:
     // Format (bounds). Adjusts the frequency boundaries according to byte/frequency rules
     void format(double* lowerFrequency, double* upperFrequency, int adjustmentType);
+	double formatChangeLower(double upperFrequency, double resolution);
+	double formatChangeUpper(double lowerFrequency, double resolution);
+	double* formatCenter(double lowerFrequency, double upperFrequency, double resolution);
 
     // Private Variables
     SignalProcessingAlgorithm* processor_;
