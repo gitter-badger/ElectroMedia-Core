@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CD652CE5-58AE-49C9-AB2B-B8A539846975}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>DubstepCannon</RootNamespace>
+    <RootNamespace>EMC</RootNamespace>
     <ProjectName>EMC</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -58,7 +58,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Projects\EMC\Source\Dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Projects\EMC\Source\Dependencies\include\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;libfftw3-3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -204,7 +204,7 @@
     <None Include="dev\lib\swscale-2.def" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\DubstepCannon\DubstepCannon\libfftw3-3.lib" />
+    <Library Include="..\..\Source\Dependencies\Include\libfftw3-3.lib" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DubstepCannon.rc" />
