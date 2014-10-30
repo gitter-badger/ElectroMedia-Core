@@ -2,25 +2,25 @@
 #include "FrequencyMaximum.h"
 
 FrequencyMaximum::FrequencyMaximum()
-	: maximum_ (0), amplitude_ (0), bounds_ (new double[2])
+    : maximum_ (0), amplitude_ (0), bounds_ (new double[2])
 {}
 
 double FrequencyMaximum::getMaximum()
 {
-	return maximum_;
+    return maximum_;
 }
 
 void FrequencyMaximum::setMaximum(double newMaximum_)
 {
-	maximum_ = newMaximum_;
+    maximum_ = newMaximum_;
 }
 
 double FrequencyMaximum::getAmplitude()
 {
-	return amplitude_;
+    return amplitude_;
 }
 
 void FrequencyMaximum::setAmplitude(double newAmplitude_)
 {
-	amplitude_ = newAmplitude_;
+    amplitude_ = newAmplitude_;
 }

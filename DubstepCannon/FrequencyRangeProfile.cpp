@@ -5,14 +5,14 @@
 // ---
 // ...
 FrequencyRangeProfile::FrequencyRangeProfile()
-	: lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range")
+    : lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range")
 { }
 
 // FrequencyRangeProfile Constructor with SignalProcessingAlgorithm param
 // ---
 // ...
 FrequencyRangeProfile::FrequencyRangeProfile(SignalProcessingAlgorithm processor)
-	: lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range"), processor_(&processor)
+    : lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range"), processor_(&processor)
 { }
 
 // FrequencyRangeProfile Destructor
@@ -20,7 +20,7 @@ FrequencyRangeProfile::FrequencyRangeProfile(SignalProcessingAlgorithm processor
 // If we have stuff to dealloc, do it here
 FrequencyRangeProfile::~FrequencyRangeProfile()
 {
-	delete processor_;
+    delete processor_;
 }
 
 // setProcessor(SignalProcessingAlgorithm)
@@ -28,8 +28,8 @@ FrequencyRangeProfile::~FrequencyRangeProfile()
 // Set or redefine the algorithm that this FRP is using
 void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm& processor)
 {
-	this->processor_ = &processor;
-	processor.setBounds(lowerBound_,upperBound_);
+    this->processor_ = &processor;
+    processor.setBounds(lowerBound_,upperBound_);
 }
 
 // format(double*,double*,enum int)
@@ -39,31 +39,31 @@ void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm& processor)
 // of BOUNDARY_CONVERSION_SCALAR (typically 10.91 Hz).
 void FrequencyRangeProfile::format(double* lowerFrequency, double* upperFrequency, int adjustmentType)
 {
-	double spectralResolution_ = double(*upperFrequency - *lowerFrequency) / 8;
-	double newResolution_ = double(ceil(spectralResolution_ / BOUNDARY_CONVERSION_SCALAR) * BOUNDARY_CONVERSION_SCALAR);
-	int center_ = 0;
+    double spectralResolution_ = double(*upperFrequency - *lowerFrequency) / 8;
+    double newResolution_ = double(ceil(spectralResolution_ / BOUNDARY_CONVERSION_SCALAR) * BOUNDARY_CONVERSION_SCALAR);
+    int center_ = 0;
 
-	switch(adjustmentType)
-	{
-	// In this case, we change the lower bound UNLESS we go below 0 Hz, whereupon we set the 
-	// lower bound equal to 0 and change the upper bound appropriately
-	case(ADJUSTMENT_TYPE_CHANGE_LOWER):
+    switch(adjustmentType)
+    {
+        // In this case, we change the lower bound UNLESS we go below 0 Hz, whereupon we set the 
+        // lower bound equal to 0 and change the upper bound appropriately
+    case(ADJUSTMENT_TYPE_CHANGE_LOWER):
         *lowerFrequency = formatChangeLower(*upperFrequency,newResolution_)_;
         return;
 
-	// In the centering case, we set the lower and upper bounds to 4 spectral bit widths from
-	// the calculated center UNLESS we go below 0 Hz, whereupon we follow the same protocol as
-	// in ADJUSTMENT_TYPE_CHANGE_LOWER
-	case(ADJUSTMENT_TYPE_CENTER):
+        // In the centering case, we set the lower and upper bounds to 4 spectral bit widths from
+        // the calculated center UNLESS we go below 0 Hz, whereupon we follow the same protocol as
+        // in ADJUSTMENT_TYPE_CHANGE_LOWER
+    case(ADJUSTMENT_TYPE_CENTER):
         auto centeredFrequencies = formatCenter(*lowerFrequency,*upperFrequency,newResolution_);
         *lowerFrequency = centeredFrequencies[0];
         *upperFrequency = centeredFrequencies[1];
-		return;
+        return;
 
-	// All other cases we deem to be equal to ADJUSTMENT_TYPE_CHANGE_UPPER
-	default:
+        // All other cases we deem to be equal to ADJUSTMENT_TYPE_CHANGE_UPPER
+    default:
         *upperFrequency = formatChangeUpper(*lowerFrequency, newResolution_);
-	}
+    }
 }
 
 double* formatCenter(double lowerFrequency, double upperFrequency, double resolution)
@@ -72,12 +72,12 @@ double* formatCenter(double lowerFrequency, double upperFrequency, double resolu
     int center_ = int(newFrequencies[0] + newFrequencies[1]) / 2;
 
     newFrequencies[0] = center_ - int(resolution * 4);
-	if(newFrequencies[0] < BOUNDARY_CONVERSION_OFFSET)
-	{
+    if(newFrequencies[0] < BOUNDARY_CONVERSION_OFFSET)
+    {
         newFrequencies[0] = BOUNDARY_CONVERSION_OFFSET;
         newFrequencies[1] = int(resolution* 8) + BOUNDARY_CONVERSION_OFFSET;
-	}
-	else newFrequencies[1] = center_ + int(resolution * 4);
+    }
+    else newFrequencies[1] = center_ + int(resolution * 4);
 
     return newFrequencies;
 }
@@ -91,10 +91,10 @@ double formatChangeLower(double upperFrequency, double resolution)
 {
     double newLowerFrequency = upperFrequency - int(resolution * 8);
     if(newLowerFrequency < BOUNDARY_CONVERSION_OFFSET)
-	{
+    {
         newLowerFrequency = BOUNDARY_CONVERSION_OFFSET;
         upperFrequency = int(resolution * 8) + BOUNDARY_CONVERSION_OFFSET;
-	}
+    }
     return newLowerFrequency;
 }
 
@@ -104,10 +104,10 @@ double formatChangeLower(double upperFrequency, double resolution)
 // the first two parameters. The third parameter functions the same as in format(d,d,ei)
 void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int adjustmentType)
 {
-	initializeFrequencyBounds(convertIntToFrequency(lowerIndex),convertIntToFrequency(upperIndex),adjustmentType);
-	
-	// Tell the processor that we updated our bounds
-	processor_->setBounds(lowerBound_,upperBound_);
+    initializeFrequencyBounds(convertIntToFrequency(lowerIndex),convertIntToFrequency(upperIndex),adjustmentType);
+
+    // Tell the processor that we updated our bounds
+    processor_->setBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
@@ -115,10 +115,10 @@ void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int a
 // Functionally identical to setIndexBounds, except takes frequency inputs instead of indices
 void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
 {
-	initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
-	
-	// Tell the processor that we updated our bounds
-	processor_->setBounds(lowerBound_,upperBound_);
+    initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
+
+    // Tell the processor that we updated our bounds
+    processor_->setBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
@@ -129,10 +129,10 @@ void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upp
 // likely to lead to nullptrs. Use this if you are not interfacing with the processor.
 void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType)
 {
-	format(&lowerFrequency, &upperFrequency, adjustmentType);
+    format(&lowerFrequency, &upperFrequency, adjustmentType);
 
-	lowerBound_ = convertFrequencyToInt(lowerFrequency);
-	upperBound_ = convertFrequencyToInt(upperFrequency);
+    lowerBound_ = convertFrequencyToInt(lowerFrequency);
+    upperBound_ = convertFrequencyToInt(upperFrequency);
 }
 
 // std::string = convertToBits(double*, int)
@@ -147,5 +147,5 @@ void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, dou
 // Uses an algorithm specified by an enumerated int to determine which bits should be on.
 std::string FrequencyRangeProfile::convertToBits(double* dataToConvert, int noiseFloor)
 {
-	return processor_->convertToBits(dataToConvert,noiseFloor);;
+    return processor_->convertToBits(dataToConvert,noiseFloor);;
 }

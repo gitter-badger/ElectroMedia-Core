@@ -4,9 +4,9 @@
 
 extern "C" 
 {
-	#include "dev\include\libavcodec\avcodec.h"
-	#include "dev\include\libavformat\avformat.h"
-	#include "dev\include\libswscale\swscale.h"
+#include "dev\include\libavcodec\avcodec.h"
+#include "dev\include\libavformat\avformat.h"
+#include "dev\include\libswscale\swscale.h"
 }
 
 // THIS FILE IS DEDICATED TO WORKING WITH FFTW3
@@ -21,77 +21,77 @@ extern "C"
 // several functions from FFMPEG.
 int decodeMusic(char *filename)
 {
-	int audioStream = -1;
+    int audioStream = -1;
 
-	AVCodec         *aCodec;
-	AVPacket        avPkt;
-	AVFrame         *decode_frame = av_frame_alloc();
+    AVCodec         *aCodec;
+    AVPacket        avPkt;
+    AVFrame         *decode_frame = av_frame_alloc();
 
-	AVCodecContext  *aCodecCtxt;
-	AVFormatContext *pFormatCtxt = NULL;
+    AVCodecContext  *aCodecCtxt;
+    AVFormatContext *pFormatCtxt = NULL;
 
-	av_register_all();  //Initialize CODEC
-	avformat_network_init();
-	av_init_packet (&avPkt);
+    av_register_all();  //Initialize CODEC
+    avformat_network_init();
+    av_init_packet (&avPkt);
 
-	// open the file if it exists
-	 if (avformat_open_input (&pFormatCtxt, filename,NULL,NULL)!= 0 )
-	 { 
-		 _tprintf(_T("No file found!\n"));
-		 return -2;
-	 }
+    // open the file if it exists
+    if (avformat_open_input (&pFormatCtxt, filename,NULL,NULL)!= 0 )
+    { 
+        _tprintf(_T("No file found!\n"));
+        return -2;
+    }
 
-	 //Get Streams Info 
-	 if(avformat_find_stream_info (pFormatCtxt,NULL) < 0)
-	 { 
-		 return -3; 
-	 }
-	 //Testing the transfer.
-	 AVStream *stream = NULL;
+    //Get Streams Info 
+    if(avformat_find_stream_info (pFormatCtxt,NULL) < 0)
+    { 
+        return -3; 
+    }
+    //Testing the transfer.
+    AVStream *stream = NULL;
 
-	 //Find Audio Stream
-	 for (int i = 0;  i < pFormatCtxt->nb_streams ; i++) 
-		 if (pFormatCtxt->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
-			 audioStream = i;
+    //Find Audio Stream
+    for (int i = 0;  i < pFormatCtxt->nb_streams ; i++) 
+        if (pFormatCtxt->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+            audioStream = i;
 
-	 aCodecCtxt = pFormatCtxt ->streams [audioStream]->codec; // opening decoder   
-	 aCodec = avcodec_find_decoder( pFormatCtxt->streams [audioStream] ->codec->codec_id);
+    aCodecCtxt = pFormatCtxt ->streams [audioStream]->codec; // opening decoder   
+    aCodec = avcodec_find_decoder( pFormatCtxt->streams [audioStream] ->codec->codec_id);
 
-	 if (!aCodec)
-		 return -8;
+    if (!aCodec)
+        return -8;
 
-	 if (avcodec_open2(aCodecCtxt,aCodec,NULL)!=0)
-		 return -9; 
+    if (avcodec_open2(aCodecCtxt,aCodec,NULL)!=0)
+        return -9; 
 
-	int cnt = 0;
-	static uint8_t **audio_dst_data = NULL;
-	static int       audio_dst_linesize;
-	uint8_t inbuf[AUDIO_INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
-	FILE *f, *outfile;
+    int cnt = 0;
+    static uint8_t **audio_dst_data = NULL;
+    static int       audio_dst_linesize;
+    uint8_t inbuf[AUDIO_INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+    FILE *f, *outfile;
 
-	outfile = fopen("test.txt", "wb");
-	if(!outfile)
-	{
-		av_free(aCodecCtxt);
-		std::cout << "No outfile";
-		exit(1);
-	}
+    outfile = fopen("test.txt", "wb");
+    if(!outfile)
+    {
+        av_free(aCodecCtxt);
+        std::cout << "No outfile";
+        exit(1);
+    }
 
-	while(av_read_frame(pFormatCtxt,&avPkt) >= 0 )
-	{
-		if (avPkt.stream_index == audioStream)
-		{
-			int check = 0; 
-			int result = avcodec_decode_audio4 (aCodecCtxt,decode_frame,&check, &avPkt);
-			fwrite(decode_frame->data[0],1, decode_frame->linesize[0], outfile);
-		}
-		av_free_packet(&avPkt);
+    while(av_read_frame(pFormatCtxt,&avPkt) >= 0 )
+    {
+        if (avPkt.stream_index == audioStream)
+        {
+            int check = 0; 
+            int result = avcodec_decode_audio4 (aCodecCtxt,decode_frame,&check, &avPkt);
+            fwrite(decode_frame->data[0],1, decode_frame->linesize[0], outfile);
+        }
+        av_free_packet(&avPkt);
 
-		cnt++;
-	}
+        cnt++;
+    }
 
-	fclose(outfile);
+    fclose(outfile);
 
-	avcodec_close(aCodecCtxt);
-	av_free(aCodecCtxt);
+    avcodec_close(aCodecCtxt);
+    av_free(aCodecCtxt);
 }

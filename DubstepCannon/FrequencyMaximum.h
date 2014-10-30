@@ -9,18 +9,18 @@
 class FrequencyMaximum
 {
 public:
-	// Constructors / Destructors
-	FrequencyMaximum();
-	
-	// Private Member Getters
-	double getMaximum();
-	double getAmplitude();
-	
-	// Private Member Setters
-	void setMaximum(double newMaximum_);
-	void setAmplitude(double newAmplitude_);
+    // Constructors / Destructors
+    FrequencyMaximum();
+
+    // Private Member Getters
+    double getMaximum();
+    double getAmplitude();
+
+    // Private Member Setters
+    void setMaximum(double newMaximum_);
+    void setAmplitude(double newAmplitude_);
 
 private:
-	double maximum_, amplitude_;
-	double* bounds_;
+    double maximum_, amplitude_;
+    double* bounds_;
 };

@@ -9,12 +9,12 @@
 // determined through the use of a calibration curve
 int convertFrequencyToInt(double frequencyBand)
 { 
-	return int((frequencyBand - BOUNDARY_CONVERSION_OFFSET) / BOUNDARY_CONVERSION_SCALAR); 
+    return int((frequencyBand - BOUNDARY_CONVERSION_OFFSET) / BOUNDARY_CONVERSION_SCALAR); 
 }
 
 double convertIntToFrequency(int index)
 {
-	return double(index * BOUNDARY_CONVERSION_SCALAR + BOUNDARY_CONVERSION_OFFSET);
+    return double(index * BOUNDARY_CONVERSION_SCALAR + BOUNDARY_CONVERSION_OFFSET);
 }
 
 // int = calculateDynamicNoiseFloor(double*, int, int)
@@ -28,27 +28,27 @@ double convertIntToFrequency(int index)
 // Performance: O(n)
 int calculateDynamicNoiseFloor(double* data, int lowerBound, int upperBound)
 {
-	int dynamicNoiseFloor_ = -1, 
-		preNFMaximum_ = 0;
+    int dynamicNoiseFloor_ = -1, 
+        preNFMaximum_ = 0;
 
-	// Iterate through the frequency band and determine the maximum in the data set
-	for(int i = lowerBound; i < upperBound; i++)
-	{
-		preNFMaximum_ = (data[i] > preNFMaximum_ ? data[i] : preNFMaximum_ );
-	}
+    // Iterate through the frequency band and determine the maximum in the data set
+    for(int i = lowerBound; i < upperBound; i++)
+    {
+        preNFMaximum_ = (data[i] > preNFMaximum_ ? data[i] : preNFMaximum_ );
+    }
 
-	// Set the dynamic noise floor value to be equal to a certain percentage of the maximum if it is higher
-	// than the default noise floor of 50 A
-	dynamicNoiseFloor_ = preNFMaximum_ * (double(NOISE_FLOOR_PCT) / 100);
+    // Set the dynamic noise floor value to be equal to a certain percentage of the maximum if it is higher
+    // than the default noise floor of 50 A
+    dynamicNoiseFloor_ = preNFMaximum_ * (double(NOISE_FLOOR_PCT) / 100);
 
-	// Compare the dynamic and static Noise Floors, then return the greater of the two
-	return (dynamicNoiseFloor_ > NOISE_FLOOR ? dynamicNoiseFloor_ : NOISE_FLOOR);
+    // Compare the dynamic and static Noise Floors, then return the greater of the two
+    return (dynamicNoiseFloor_ > NOISE_FLOOR ? dynamicNoiseFloor_ : NOISE_FLOOR);
 }
 
 // NEED NOTES; Also probably broken
 double calculateIntensityScalar(double frequency)
 {
-	return (std::pow(0.5 * frequency + 10, 1/3)) - 1.15;
+    return (std::pow(0.5 * frequency + 10, 1/3)) - 1.15;
 }
 
 // debug(std::string)
@@ -57,8 +57,8 @@ double calculateIntensityScalar(double frequency)
 // in stdafx.h.
 void debug(std::string debugComment)
 {
-	if(DEBUG_ENABLED)
-	{
-		std::cerr << debugComment << endl;
-	}
+    if(DEBUG_ENABLED)
+    {
+        std::cerr << debugComment << endl;
+    }
 }
