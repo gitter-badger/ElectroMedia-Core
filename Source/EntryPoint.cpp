@@ -34,32 +34,52 @@ int main(int argc, char *argv[], char *envp[])
 
     // Process the raw data file and put the data into fulldata
     long filesize = calculateDataFileSize((char*)DECODED_FILE_NAME.c_str());
-    int* dataFromFile = obtainDataFromFile((char*)DECODED_FILE_NAME.c_str(), filesize);
+    vector<double> dataFromFile = *obtainDataFromFile((char*)DECODED_FILE_NAME.c_str(), filesize);
+
+   /* for (int i = 0; i < filesize; i++)
+    {
+        cout << i << " " << dataFromFile[i] << "\n";
+    }*/
+
     int sweeps = -1;
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
     // It is rewritten in every loop, whereas dataFromFile is constant.
-    int* preProcessData = new int[WINDOW_SIZE];
+    vector<double> preProcessData(WINDOW_SIZE);
 
     //cout << "The number of samples in this file is " << filesize/sizeof(int) << endl;
 
     cout << "Beginning song to *.arf process...\n";
-    while((++sweeps)*WINDOW_SHIFT_AMOUNT < (filesize/sizeof(int) - SONG_ENDING_PAD*WINDOW_SHIFT_AMOUNT))
-    {
+  //  while((++sweeps)*WINDOW_SHIFT_AMOUNT < (filesize/sizeof(int) - SONG_ENDING_PAD*WINDOW_SHIFT_AMOUNT))
+    //{
+        int index = 0;
+
         // Switch pointer's location in memory to the location of the new window, then copy from
         // that point in memory through the length of the WINDOW_SIZE in integers
-        void* shiftedWindowOrigin_ = dataFromFile + (sizeof(int)*sweeps * WINDOW_SHIFT_AMOUNT);
-        memcpy(preProcessData, shiftedWindowOrigin_,sizeof(int)*WINDOW_SIZE);
+        auto shiftedWindowOrigin_ = sweeps * WINDOW_SHIFT_AMOUNT;
+
+
+        vector<double>::iterator it = dataFromFile.begin();
+       // it += shiftedWindowOrigin_;
+
+        while (it != dataFromFile.end() && index < WINDOW_SIZE)
+        { // Vector Subscript out of range
+            preProcessData[index++] = (double) dataFromFile[index];
+            ++it;
+        }
+
+
+
+        // memcpy(preProcessData, shiftedWindowOrigin_,sizeof(int)*WINDOW_SIZE);
 
         // FFT STUFF HERE
-        double* dataFromFFT = prepareAndExecuteFFT(preProcessData);
-        arfile.write(dataFromFFT);
-    }
+        auto dataFromFFT = prepareAndExecuteFFT(preProcessData);
+        arfile.write(*dataFromFFT);
+  //  }
 
     cout << "Process complete.\n";
 
     // Garbage Collection -- deallocate
-    delete[] preProcessData, dataFromFile;
     arfile.close();
 
     return 1;

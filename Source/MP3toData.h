@@ -3,4 +3,4 @@
 
 // The Decoder uses FFMPEG, an Open-Source Library available via GPL.
 
-int decodeMusic(char *filename);
+int decodeMusic(char filename[]);

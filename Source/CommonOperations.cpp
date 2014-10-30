@@ -26,7 +26,7 @@ double convertIntToFrequency(int index)
 // static noise floors
 // ...
 // Performance: O(n)
-int calculateDynamicNoiseFloor(double* data, int lowerBound, int upperBound)
+int calculateDynamicNoiseFloor(vector<double> data, int lowerBound, int upperBound)
 {
     int dynamicNoiseFloor_ = -1, 
         preNFMaximum_ = 0;
@@ -61,4 +61,19 @@ void debug(std::string debugComment)
     {
         std::cerr << debugComment << endl;
     }
+}
+
+double* convertVectorToPointerArray(vector<double> vectorIn, int lengthOfNewArray)
+{
+    double* newArray = new double[lengthOfNewArray];
+    int elements = 0;
+    std::vector<double>::iterator it = vectorIn.begin();
+
+    while (it != vectorIn.end() && elements++ < lengthOfNewArray)
+    {
+        newArray[elements] = *it;
+        ++it;
+    }
+
+    return newArray;
 }

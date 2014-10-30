@@ -22,5 +22,5 @@ public:
 
 private:
     double maximum_, amplitude_;
-    double* bounds_;
+    double bounds_[];
 };

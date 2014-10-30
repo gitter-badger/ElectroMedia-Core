@@ -19,7 +19,7 @@ extern "C"
 
 // This is the primary decoding mechanism. DubstepCannon.cpp calls this function to invoke
 // several functions from FFMPEG.
-int decodeMusic(char *filename)
+int decodeMusic(char filename[])
 {
     int audioStream = -1;
 
@@ -66,7 +66,7 @@ int decodeMusic(char *filename)
     int cnt = 0;
     static uint8_t **audio_dst_data = NULL;
     static int       audio_dst_linesize;
-    uint8_t inbuf[AUDIO_INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+    //uint8_t inbuf[AUDIO_INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
     FILE *f, *outfile;
 
     outfile = fopen("test.txt", "wb");

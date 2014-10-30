@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "FFTPreprocessing.h"
-#include <math.h>
 
 // long = obtainDataFromFile(char*, int*)
 // ---
@@ -13,7 +12,7 @@
 // but right now this is the only way to do it
 //
 // Performance: O(n)
-long calculateDataFileSize(char* fileName)
+long calculateDataFileSize(char fileName[])
 {	
     // Read the file indicated by Filename argument
     std::ifstream dataFileIn_(fileName, std::ios::binary);
@@ -37,11 +36,11 @@ long calculateDataFileSize(char* fileName)
     return counted_;
 }
 
-int* obtainDataFromFile(char* fileName, long fileSize)
+vector<double>* obtainDataFromFile(char fileName[], long fileSize)
 {	
     // Read the file indicated by Filename argument
     std::ifstream dataFileIn_(fileName, std::ios::binary);
-    int* dataOut = new int[fileSize];
+    vector<double> dataOut(fileSize);
 
     long counted_ = 0;
     while (dataFileIn_ && counted_ < fileSize)
@@ -59,46 +58,48 @@ int* obtainDataFromFile(char* fileName, long fileSize)
 
     // Close the file and then return the filesize
     dataFileIn_.close();
-    return dataOut;
+    return &dataOut;
 }
 
 // copyAndPadData(double*, double*, int)
 // ---
 // Copies all of the data from dataIn to dataOut, while also zero-padding the points
 // where there is no actual data to copy
-double* copyAndPadData(const double* dataIn)
+vector<double>* copyAndPadData(vector<double> dataIn)
 {
-    double* dataOut = new double[WINDOW_SIZE];
+    vector<double> dataOut(WINDOW_SIZE);
 
     for(int i = 0; i < WINDOW_SIZE; i++)
     {
-        dataOut[i] = dataIn[i] ? dataIn[i] : 0;
+        if (dataIn[i])
+        {
+            dataOut[i] = dataIn[i];
+        }
+        else dataOut[i] = 0;
     }
 
-    return dataOut;
+    return &dataOut;
 }
 
 // fftw_complex* =  startFFT (double*, int)
 // ---
 // Interface with the FFTW FOSS library. Indirectly performs the Fast Fourier
 // Transform to the data set of length (int)
-fftw_complex* fastFourierTransform(const double* data)
+fftw_complex* fastFourierTransform(vector<double> data)
 {
     // Allocate memory for the fftw_complex array and working double*
-    double* workingDoubleArray_ = new double[WINDOW_SIZE];// (double *)malloc(sizeof(double) * WINDOW_SIZE);
-    fftw_complex* out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
+    auto workingDoubleArray_ = new double[WINDOW_SIZE];
+    auto out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
 
     // Generate a plan for FFTW to execute
-    fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, out, FFTW_MEASURE);
+    auto new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, out, FFTW_MEASURE);
 
     // workingDoubleArray_ is called via reference in fftw_execute
-    workingDoubleArray_ = copyAndPadData(data);
+     auto workingDoubleVector = copyAndPadData(data); // must convert to a pointer....?
+     workingDoubleArray_ = convertVectorToPointerArray(*workingDoubleVector, WINDOW_SIZE);
 
     // Execute the plan
-    fftw_execute(new_plan);
-
-    // Clean up workingDoubleArray_
-    delete[] workingDoubleArray_;
+    fftw_execute(new_plan);;
 
     // Return the array of fftw_complex objects
     return out;
@@ -110,9 +111,10 @@ fftw_complex* fastFourierTransform(const double* data)
 // value, and then normalizes the original data set based on that maximum.
 //
 // Performance: O(n)
-void normalize(double* data)
+vector<double>* normalize(vector<double> data)
 {
     double maxOfData_ = -1;
+    vector<double> dataOut (WINDOW_SIZE);
 
     // Iterate through the input data looking for the maximum
     for(int i = 0; i < WINDOW_SIZE; i++)
@@ -123,8 +125,10 @@ void normalize(double* data)
     // Once we have the max, use it to normalize the data set
     for(int i = 0; i < WINDOW_SIZE; i++)
     {
-        data[i] /= maxOfData_;
+       data[i] / maxOfData_;
     }
+
+    return &dataOut;
 }
 
 // double = hanningMultiplier(int, int)
@@ -142,9 +146,9 @@ double hanningMultiplier(int indexOfHanningFunction)
 // Immediately normalizes the data after the hanning window is applied.
 //
 // Performance: O(n)
-double* applyHanningWindow(const int* dataIn)
+vector<double>* applyHanningWindow(vector<double> dataIn)
 {
-    double* dataOut = new double[WINDOW_SIZE];
+    auto dataOut = vector<double>(dataIn);
 
     // Actually go through each point of the original function and multiply it by the 
     // correct value of the Hanning window function at that point in time
@@ -154,28 +158,28 @@ double* applyHanningWindow(const int* dataIn)
     }
 
     // Normalize the data before we finish
-    normalize(dataOut);
-
-    return dataOut;
+    return normalize(dataOut);
 }
 
 // double* = prepareAndExecuteFFT(const int*)
 // ---
 // Execute the FFT, convert the results from the complex frequency domain to the
 // frequency-vs-time spectral domain and then save the results into a debug file.
-double* prepareAndExecuteFFT(const int* dataIn)
+vector<double>* prepareAndExecuteFFT(vector<double> dataIn)
 {
-    double* windowedData = applyHanningWindow(dataIn);
-    double* dataOut = new double[WINDOW_SIZE];
+    auto windowedData = applyHanningWindow(dataIn);
+    vector<double> dataOut(WINDOW_SIZE);
+    auto maxFrequency = convertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED);
 
     // Execute the FFT
-    fftw_complex* results = fastFourierTransform(windowedData);
+    fftw_complex* results = fastFourierTransform(*windowedData);
     std::ofstream fftResultsFile ("Results.csv");
 
     // Iterate through the results up to the Maximum Frequency we care about, then
     // convert the data from the complex frequency domain to spectral frequency
-    for(int i=0; i<convertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED); i++)
+    for(int i=0; i < maxFrequency; i++)
     {		
+        cout << "i " << results[i][0] << " + " << results[i][1] << "\n";
         // This uses the simplified complex distance formula
         dataOut[i] = sqrt(results[i][0]*results[i][0] + results[i][1]*results[i][1]);
 
@@ -184,5 +188,5 @@ double* prepareAndExecuteFFT(const int* dataIn)
     }
 
     fftResultsFile.close();
-    return dataOut;
+    return &dataOut;
 }

@@ -5,7 +5,7 @@ class ArduinoReadableFileWriter
 {
 public:
     // Constructors / Destructors
-    ArduinoReadableFileWriter(char* nameOfARF);
+    ArduinoReadableFileWriter(char nameOfARF[]);
     ~ArduinoReadableFileWriter();
 
     // Add a FrequencyRangeProfile with specified characteristics; will probabyl be rewritten such
@@ -18,7 +18,7 @@ public:
     // Overloaded write options; only double* variant is used to write legitimate ARFs
     void write(std::string stringToWrite);
     void write(int intToWrite);
-    void write(double* dataToWrite);
+    void write(vector<double> dataToWrite);
     void close();
 
     // Enumerated Lists
@@ -28,7 +28,7 @@ private:
     // Internal function for dealing with whether or not to write as BYTE or std::string
     bool isTextWritable();
     void addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm* processor);
-    void writeDoubleInTextMode(double* dataToWrite);
+    void writeDoubleInTextMode(vector<double> dataToWrite);
 
     // Private variables
     std::ofstream arfStream;

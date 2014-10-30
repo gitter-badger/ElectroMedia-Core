@@ -13,6 +13,7 @@
 #include <cmath>
 #include <string>
 #include "CommonOperations.h"
+#include <vector>
 
 // CONSTANT FLAGS
 const bool DEBUG_ENABLED = true;
@@ -46,3 +47,4 @@ const enum adjustmentType { ADJUSTMENT_TYPE_CHANGE_UPPER, ADJUSTMENT_TYPE_CHANGE
 // NAMESPACES
 using std::cout;
 using std::endl;
+using std::vector;

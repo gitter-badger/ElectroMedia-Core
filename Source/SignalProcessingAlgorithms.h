@@ -11,7 +11,7 @@ public:
     void setBounds(const int lower, const int upper);
 
     // Heart and soul of the Signal Processing Algorithm. 
-    virtual std::string convertToBits(const double* dataToConvert, int noiseFloor);
+    virtual std::string convertToBits(vector<double> dataToConvert, int noiseFloor);
 
 protected:
 
@@ -24,11 +24,11 @@ protected:
     //		is not in TEXT mode.
     // 4. ___EndianConvert -- Called according to endianness as indicated in the config
     //		file, this converts a bool[] into a string
-    virtual double* preProcessForConversion(const double* dataToConvert);
-    virtual double* applyNoiseFloor(const double* preProcesedData, int noiseFloor);
-    virtual bool* evaluateBits(const double* processedData, const int bitLength);
-    virtual std::string bigEndianConvert(const bool* processedBits);
-    virtual std::string littleEndianConvert(const bool* processedBits);
+    virtual vector<double>* preProcessForConversion(vector<double> dataToConvert);
+    virtual vector<double>* applyNoiseFloor(vector<double> preProcesedData, int noiseFloor);
+    virtual vector<bool>* evaluateBits(vector<double> processedData);
+    virtual std::string bigEndianConvert(vector<bool> processedBits);
+    virtual std::string littleEndianConvert(vector<bool> processedBits);
 
     // These are used within the convertToBits methods
     int lowerBound_, upperBound_, bits_;
@@ -47,7 +47,7 @@ private:
 class SPAIntensity : public SignalProcessingAlgorithm
 {
 public:
-    std::string convertToBits(const double* dataToConvert, int noiseFloor);
+    std::string convertToBits(const double dataToConvert[], int noiseFloor);
 };
 
 // WATCH FREQUENCY
@@ -56,7 +56,7 @@ public:
 class SPAWatchFrequency : public SignalProcessingAlgorithm
 {
 public:
-    std::string convertToBits(const double* dataToConvert, int noiseFloor);
+    std::string convertToBits(const double dataToConvert[], int noiseFloor);
     void setWatchFrequency(double watchFrequency);
 
 private:
@@ -71,7 +71,7 @@ private:
 class SPAPercussion : public SignalProcessingAlgorithm
 {
 public:
-    std::string convertToBits(const double* dataToConvert, int noiseFloor);
+    std::string convertToBits(const double dataToConvert[], int noiseFloor);
 
 private:
     // If setHighOnHat is true, the entire range goes high when the hat sounds
@@ -85,5 +85,5 @@ private:
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
 protected:
-    bool* evaluateBits(const double* processedData, const int bitLength);
+    vector<bool>* evaluateBits(vector<double> processedData, const int bitLength);
 };

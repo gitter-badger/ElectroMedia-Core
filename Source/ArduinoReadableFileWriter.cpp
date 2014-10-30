@@ -4,7 +4,7 @@
 // ArduinoReadableFileWriter Constructor
 // ---
 // Initialize our Arduino-Readable-file stream
-ArduinoReadableFileWriter::ArduinoReadableFileWriter(char* nameOfARF) 
+ArduinoReadableFileWriter::ArduinoReadableFileWriter(char nameOfARF[]) 
     : arfStream(nameOfARF), mode_(MODE_ARDUINO), numberOfOutputs_(-1), numberOfFrequencyRanges_(0)
 {
     frequencyRanges_ = new FrequencyRangeProfile[MAXIMUM_NUMBER_OF_FREQUENCY_RANGES];
@@ -123,7 +123,7 @@ void ArduinoReadableFileWriter::write(int intToWrite)
 // ---
 // Deciphers the data and transforms it into byte format; writes bytes to the output file
 // [WIP]
-void ArduinoReadableFileWriter::write(double* dataToWrite)
+void ArduinoReadableFileWriter::write(vector<double> dataToWrite)
 {
     if(!arfStream.is_open())
     {
@@ -151,9 +151,9 @@ void ArduinoReadableFileWriter::write(double* dataToWrite)
     }
 }
 
-void ArduinoReadableFileWriter::writeDoubleInTextMode(double* dataToWrite)
+void ArduinoReadableFileWriter::writeDoubleInTextMode(std::vector<double> dataToWrite)
 {
-    auto dynamicNoiseFloor = calculateDynamicNoiseFloor(dataToWrite,0,200);
+    auto dynamicNoiseFloor = (int)calculateDynamicNoiseFloor(dataToWrite,0,200);
 
     for(int i=0; i<numberOfFrequencyRanges_; i++)
     {

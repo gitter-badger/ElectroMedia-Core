@@ -4,15 +4,15 @@
 
 // FFT PreProcessing
 
-double* copyAndPadData(const double* dataIn);
-void normalize(double* data);
 double hanningMultiplier(int indexOfHanningFunction);
-double* applyHanningWindow(const int* dataIn);
-double* prepareAndExecuteFFT(const int* dataIn);
+vector<double>* copyAndPadData(vector<double> dataIn);
+vector<double>* normalize(vector<double> data);
+vector<double>* applyHanningWindow(vector<double> dataIn);
+vector<double>* prepareAndExecuteFFT(vector<double> dataIn);
 
 // Fast Fourier Transform
-fftw_complex* fastFourierTransform(const double* data);
+fftw_complex* fastFourierTransform(vector<double> dataIn);
 
 // More Tests 2
-long calculateDataFileSize(char* fileName);
-int* obtainDataFromFile(char* fileName, long fileSize);
+long calculateDataFileSize(char fileName[]);
+vector<double>* obtainDataFromFile(char fileName[], long fileSize);
