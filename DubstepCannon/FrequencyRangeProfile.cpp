@@ -48,32 +48,54 @@ void FrequencyRangeProfile::format(double* lowerFrequency, double* upperFrequenc
 	// In this case, we change the lower bound UNLESS we go below 0 Hz, whereupon we set the 
 	// lower bound equal to 0 and change the upper bound appropriately
 	case(ADJUSTMENT_TYPE_CHANGE_LOWER):
-		*lowerFrequency = *upperFrequency - int(newResolution_ * 8);
-		if(*lowerFrequency < BOUNDARY_CONVERSION_OFFSET)
-		{
-			*lowerFrequency = BOUNDARY_CONVERSION_OFFSET;
-			*upperFrequency = int(newResolution_ * 8) + BOUNDARY_CONVERSION_OFFSET;
-		}
-		return;
+        *lowerFrequency = formatChangeLower(*upperFrequency,newResolution_)_;
+        return;
 
 	// In the centering case, we set the lower and upper bounds to 4 spectral bit widths from
 	// the calculated center UNLESS we go below 0 Hz, whereupon we follow the same protocol as
 	// in ADJUSTMENT_TYPE_CHANGE_LOWER
 	case(ADJUSTMENT_TYPE_CENTER):
-		center_ = int(*upperFrequency + *lowerFrequency) / 2;
-		*lowerFrequency = center_ - int(newResolution_ * 4);
-		if(*lowerFrequency < BOUNDARY_CONVERSION_OFFSET)
-		{
-			*lowerFrequency = BOUNDARY_CONVERSION_OFFSET;
-			*upperFrequency = int(newResolution_ * 8) + BOUNDARY_CONVERSION_OFFSET;
-		}
-		else *upperFrequency = center_ + int(newResolution_ * 4);
+        auto centeredFrequencies = formatCenter(*lowerFrequency,*upperFrequency,newResolution_);
+        *lowerFrequency = centeredFrequencies[0];
+        *upperFrequency = centeredFrequencies[1];
 		return;
 
 	// All other cases we deem to be equal to ADJUSTMENT_TYPE_CHANGE_UPPER
 	default:
-		*upperFrequency = *lowerFrequency + int(newResolution_ * 8);
+        *upperFrequency = formatChangeUpper(*lowerFrequency, newResolution_);
 	}
+}
+
+double* formatCenter(double lowerFrequency, double upperFrequency, double resolution)
+{
+    double newFrequencies[] = {lowerFrequency, upperFrequency};
+    int center_ = int(newFrequencies[0] + newFrequencies[1]) / 2;
+
+    newFrequencies[0] = center_ - int(resolution * 4);
+	if(newFrequencies[0] < BOUNDARY_CONVERSION_OFFSET)
+	{
+        newFrequencies[0] = BOUNDARY_CONVERSION_OFFSET;
+        newFrequencies[1] = int(resolution* 8) + BOUNDARY_CONVERSION_OFFSET;
+	}
+	else newFrequencies[1] = center_ + int(resolution * 4);
+
+    return newFrequencies;
+}
+
+double formatChangeUpper(double lowerFrequency, double resolution)
+{
+    return lowerFrequency + int(resolution * 8);
+}
+
+double formatChangeLower(double upperFrequency, double resolution)
+{
+    double newLowerFrequency = upperFrequency - int(resolution * 8);
+    if(newLowerFrequency < BOUNDARY_CONVERSION_OFFSET)
+	{
+        newLowerFrequency = BOUNDARY_CONVERSION_OFFSET;
+        upperFrequency = int(resolution * 8) + BOUNDARY_CONVERSION_OFFSET;
+	}
+    return newLowerFrequency;
 }
 
 // setIndexBounds(int, int, enum int)

@@ -10,17 +10,31 @@ public:
 	// Define lower and upper bounds (as indices) for this processor
 	void setBounds(const int lower, const int upper);
 	
-	// Heart and soul of the Signal Processing Algorithm
+	// Heart and soul of the Signal Processing Algorithm. 
 	virtual std::string convertToBits(const double* dataToConvert, int noiseFloor);
-	
+
 protected:
-	// These are used within the convertToBits methods and thus must be protected
+
+	// The following are part of convertToBits, which should only be modified in extreme
+	// cases. The program flow is as follows
+	// 1. preProcessForConversion -- does any necessary preProcessing to the data
+	// 2. evaluateNoiseFloor -- scrapes out any values below noise floor
+	// 3. evaluateBits -- determines which bits are high or low and generates a bool[].
+	//	  - NOTE: The program flow ends here and returns the bool[] if the ARFWriter 
+	//		is not in TEXT mode.
+	// 4. ___EndianConvert -- Called according to endianness as indicated in the config
+	//		file, this converts a bool[] into a string
+    virtual double* preProcessForConversion(const double* dataToConvert);
+    virtual double* applyNoiseFloor(const double* preProcesedData, int noiseFloor);
+    virtual bool* evaluateBits(const double* processedData, const int bitLength);
+    virtual std::string bigEndianConvert(const bool* processedBits);
+    virtual std::string littleEndianConvert(const bool* processedBits);
+	
+	// These are used within the convertToBits methods
 	int lowerBound_, upperBound_, bits_;
 
 private:
-	// Hidden function used exclusively by base class; checks to see if a specific
-	// bit should be set to high
-	bool checkBit(const double* dataToConvert, int bit, int noiseFloor);
+    std::string checkBit(bool bitToCheck);
 };
 
 //=====================
@@ -70,6 +84,6 @@ private:
 // Useful for climbing frequency effects as in "Contact" by Daft Punk
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
-public: 
-	std::string convertToBits(const double* dataToConvert, int noiseFloor);
+protected:
+    bool* evaluateBits(const double* processedData, const int bitLength);
 };

@@ -23,26 +23,6 @@ void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 	upperBound_ = upper;
 }
 
-// checkBit(double*, int, int, int)
-// ---
-// Hidden function accessible only within the base SignalProcessingAlgorithm class.
-// Checks to see whether a bit is high (true) or low (false) by stepping through the
-// spectral data at a given point in time and comparing it to the noiseFloor param.
-bool SignalProcessingAlgorithm::checkBit(const double* dataToConvert, int bitNumber, int noiseFloor)
-{
-	int bitResolution = (upperBound_ - lowerBound_) / bits_;
-
-	for(int step = 0; step < bitResolution; step ++)
-	{
-		if(dataToConvert[lowerBound_ + bitResolution * bitNumber + step] > noiseFloor) 
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 // BASE
 // convertToBits(double*, int)
 // ---
@@ -55,115 +35,103 @@ bool SignalProcessingAlgorithm::checkBit(const double* dataToConvert, int bitNum
 // setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
 std::string SignalProcessingAlgorithm::convertToBits(const double* dataToConvert, int noiseFloor) 
 {	
-	std::string outputString = "";
+	auto bitLength = (upperBound_ - lowerBound_) / bits_;
+
+    auto preparedData = preProcessForConversion(dataToConvert);
+    auto flooredData = applyNoiseFloor(preparedData, noiseFloor);
+    auto resultingBits = evaluateBits(flooredData, bitLength);
 
 	// By default, this result is Big Endian due to the nature of frequencies increasing 
 	// left-to-right. The nature of the output can be altered by changing the 
 	// OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
 	if(OUTPUT_IS_BIG_ENDIAN)
 	{
-		// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
-		// between frequencies (according to the boundaries set by owning FRP_
-		for(int bit_ = 0; bit_ < bits_; bit_++)
-		{
-			if(checkBit(dataToConvert,bit_,noiseFloor))
-			{
-				outputString.append("1");
-			}
-			else outputString.append("0");
-		}
+        return bigEndianConvert(resultingBits);
 	}
-	else // ! OUTPUT_IS_BIG_ENDIAN
-	{
-		// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
-		// between frequencies (according to the boundaries set by owning FRP_
-		for(int bit_ = bits_; bit_ >= 0; bit_--)
-		{
-			if(checkBit(dataToConvert,bit_,noiseFloor))
-			{
-				outputString.append("1");
-			}
-			else outputString.append("0");
-		}
-	}
+	
+    return littleEndianConvert(resultingBits);
+}
 
+double* SignalProcessingAlgorithm::preProcessForConversion(const double* dataToConvert)
+{
+    // Nothing should really happen in the parent method
+    auto returnVal = (double*)dataToConvert;
+    return returnVal;
+}
+
+double checkAgainstNoiseFloor(double frequency, int noiseFloor)
+{
+    if(frequency < noiseFloor)
+    {
+        return 0;
+    }
+
+    return frequency;
+}
+
+double* SignalProcessingAlgorithm::applyNoiseFloor(const double* preProcesedData, int noiseFloor)
+{
+    auto processingData = (double*)preProcesedData;
+
+    for(int freqIndex = lowerBound_; freqIndex < upperBound_; freqIndex++)
+    {
+        checkAgainstNoiseFloor(processingData[freqIndex],noiseFloor);
+    }
+
+    return processingData;
+}
+
+std::string SignalProcessingAlgorithm::checkBit(bool bitToCheck)
+{
+    if(bitToCheck)
+    {
+        return "1";
+    }
+
+    return "0";
+}
+
+std::string SignalProcessingAlgorithm::bigEndianConvert(const bool* processedBits)
+{
+	auto outputString = (std::string)"";
+
+	for(int bit_ = 0; bit_ < bits_; bit_++)
+	{
+        outputString.append( checkBit(processedBits[bit_]) );
+	}
+	
 	return outputString;
 }
 
-// HILL EFFECT
-// convertToBits(double*, int)
-// ---
-// Attempts to find any frequency amplitude above the noise floor, and then sets all bits high
-// if they are lower than the maximum significant frequency within bounds.
-// 
-// Result is by default Big Endian, but this can be changed through config by
-// setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
-std::string SPAHillEffect::convertToBits(const double* dataToConvert, int noiseFloor)
-{	
-	std::string outputString = "";
-	int bitLength = (upperBound_ - lowerBound_) / bits_;
+std::string SignalProcessingAlgorithm::littleEndianConvert(const bool* processedBits)
+{
+	auto outputString = (std::string)"";
+
+	for(int bit_ = bits_; bit_ >= 0; bit_--)
+	{
+        outputString.append( checkBit( processedBits[bit_] ) );
+	}
 	
-	double maxAmplitude = noiseFloor, maxIndex = -1;
+	return outputString;
+}
+
+// -- Hill Effect -- //
+bool* SPAHillEffect::evaluateBits(const double* processedData, const int bitLength)
+{	
+	double maxAmplitude = -1, maxIndex = -1;
 
 	// Basic algorithm: Iterates through the bits, using a scalar value to interpolate
 	// between frequencies (according to the boundaries set by owning FRP)
-	for(int bit_ = 0; bit_ < bits_; bit_++)
+    for(int bit_ = lowerBound_; bit_ < upperBound_; bit_++)
 	{
-		for(int step = 0; step < bitLength; step ++)
-		{
-			double currentAmplitude = dataToConvert[lowerBound_ + bitLength * bit_ + step];
+        double currentAmplitude = processedData[bit_];
 
-			if(HILL_EFFECT_USES_MAXIMUM_FREQUENCY)
-			{
-				if(currentAmplitude > noiseFloor)
-				{
-					maxIndex = bit_;
-				}
-			}
-			else
-			{			
-				if(currentAmplitude > maxAmplitude)
-				{
-					maxAmplitude = currentAmplitude;
-					maxIndex = bit_;
-				}
-			}
+		if(currentAmplitude > maxAmplitude)
+		{
+			maxAmplitude = currentAmplitude;
+			maxIndex = bit_;
 		}
 	}
-
-	// By default, this result is Big Endian due to the nature of frequencies increasing 
-	// left-to-right. The nature of the output can be altered by changing the 
-	// OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
-	if(OUTPUT_IS_BIG_ENDIAN)
-	{/*
-		outputString.append("1",maxIndex);
-		outputString.append("0",bits_ - maxIndex);*/
-
-		// Should find a cleaner way to do this
-		for(int bit_ = 0; bit_ < bits_; bit_++)
-		{
-			if(bit_ <= maxIndex)
-			{
-				outputString.append("1");
-			}
-			else outputString.append("0");
-		}
-	}
-	else // ! OUTPUT_IS_BIG_ENDIAN
-	{/*
-		outputString.append("0",bits_ - maxIndex);
-		outputString.append("1",maxIndex);*/
-		for(int bit_ = bits_; bit_ >= 0; bit_--)
-		{
-			if(bit_ <= maxIndex)
-			{
-				outputString.append("1");
-			}
-			else outputString.append("0");
-		}
-	}
-
-	return outputString;
 }
 
 // Need an intensity function!

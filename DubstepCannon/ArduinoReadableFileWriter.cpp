@@ -40,13 +40,17 @@ bool ArduinoReadableFileWriter::addFrequencyRange(double lowerFrequency, double 
 	// If we have an available frequencyRange_, initialize its bounds, add it, and then set its processor
 	if(numberOfFrequencyRanges_ < MAXIMUM_NUMBER_OF_FREQUENCY_RANGES)
 	{
-		frequencyRanges_[numberOfFrequencyRanges_].initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustment);
-		frequencyRanges_[numberOfFrequencyRanges_++].setProcessor(*processor);
-
+		addAndInitializeFrequencyBound(lowerFrequency,upperFrequency,adjustment,processor);
 		return true;
 	}
 
 	return false;
+}
+
+void ArduinoReadableFileWriter::addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm* processor)
+{
+	frequencyRanges_[numberOfFrequencyRanges_].initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustment);
+	frequencyRanges_[numberOfFrequencyRanges_++].setProcessor(*processor);
 }
 
 // setMode(int)	
@@ -127,21 +131,11 @@ void ArduinoReadableFileWriter::write(double* dataToWrite)
 		return;
 	}
 
-	// Variables that are used within all sections of the switch statements
-	std::string outputString;
-	int dynamicNoiseFloor;
-
 	switch(mode_)
 	{
 	// Text mode is meant to be human-readable and is used for debug purposes
 	case(MODE_TEXT):
-		dynamicNoiseFloor = calculateDynamicNoiseFloor(dataToWrite,0,200);
-		for(int i=0; i<numberOfFrequencyRanges_; i++)
-		{
-			outputString = (frequencyRanges_[i].convertToBits(dataToWrite, dynamicNoiseFloor));
-			ArduinoReadableFileWriter::arfStream << outputString << ".";
-		}
-		ArduinoReadableFileWriter::arfStream << "\n";
+		writeDoubleInTextMode(dataToWrite);
 		break;
 
 	// Regular Arduino Mode uses 16 output pins
@@ -155,6 +149,18 @@ void ArduinoReadableFileWriter::write(double* dataToWrite)
 	default:
 		debug("ArduinoReadableFileWriter writer cannot write as it is in an undefined mode!");
 	}
+}
+
+void ArduinoReadableFileWriter::writeDoubleInTextMode(double* dataToWrite)
+{
+	auto dynamicNoiseFloor = calculateDynamicNoiseFloor(dataToWrite,0,200);
+
+	for(int i=0; i<numberOfFrequencyRanges_; i++)
+	{
+		auto outputString = (frequencyRanges_[i].convertToBits(dataToWrite, dynamicNoiseFloor));
+		ArduinoReadableFileWriter::arfStream << outputString << ".";
+	}
+	ArduinoReadableFileWriter::arfStream << "\n";
 }
 
 // close()

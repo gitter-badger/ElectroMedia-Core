@@ -27,6 +27,8 @@ public:
 private:
 	// Internal function for dealing with whether or not to write as BYTE or std::string
 	bool isTextWritable();
+	void addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm* processor);
+	void writeDoubleInTextMode(double* dataToWrite);
 
 	// Private variables
 	std::ofstream arfStream;
