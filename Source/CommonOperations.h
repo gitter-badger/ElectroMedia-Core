@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <vector>
 
 // Basic methods which convert an integer index to a frequency value, or vice versa
 int convertFrequencyToInt(double frequencyBand);
@@ -16,5 +15,4 @@ double calculateIntensityScalar(double frequency);
 // Pipes out a line of text to cerr if and only if DEBUG_ENABLED == true
 void debug(std::string debugComment); 
 
-int calculateDynamicNoiseFloor(std::vector<double> data, int lowerBound, int upperBound);
-double* convertVectorToPointerArray(std::vector<double> vectorIn, int lengthOfNewArray);
+//int calculateDynamicNoiseFloor(dataSet& data, int lowerBound, int upperBound);

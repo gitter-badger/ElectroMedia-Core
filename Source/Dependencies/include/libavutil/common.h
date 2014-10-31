@@ -48,7 +48,7 @@ typedef unsigned long long uint64_t;
 
 #include "attributes.h"
 #include "version.h"
-#include "libavutil/avconfig.h"
+#include "Dependencies/include/libavutil/avconfig.h"
 
 #if AV_HAVE_BIGENDIAN
 #   define AV_NE(be, le) (be)

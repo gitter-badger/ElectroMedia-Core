@@ -27,7 +27,7 @@
  *
  */
 
-#include "libavutil/avconfig.h"
+#include "Dependencies/include/libavutil/avconfig.h"
 #include "version.h"
 
 #define AVPALETTE_SIZE 1024

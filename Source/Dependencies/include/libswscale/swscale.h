@@ -29,9 +29,9 @@
 
 #include <stdint.h>
 
-#include "libavutil/avutil.h"
-#include "libavutil/log.h"
-#include "libavutil/pixfmt.h"
+#include "Dependencies/include/libavutil/avutil.h"
+#include "Dependencies/include/libavutil/log.h"
+#include "Dependencies/include/libavutil/pixfmt.h"
 #include "version.h"
 
 /**

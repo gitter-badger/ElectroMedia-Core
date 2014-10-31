@@ -1,15 +1,22 @@
-// DubstepCannon.cpp : Defines the entry point for the console application.
-
 #include "stdafx.h"
 #include "MP3toData.h"
 #include "FFTPreprocessing.h"
 #include "ArduinoReadableFileWriter.h"
 #include <cmath>
 
+/*
+ * Note 01 == Vectors of smart pointers are not copyable! Don't try to copy them!
+ *            This is the reason that xutility is breaking. Boost and VC++ don't
+ *            seem to play well together, and thus it thinks it can copy... but
+ *            the compiler doesn't like that.
+ *
+ * Note 02 == Need to rewrite everything that involves "dataSet" such that it
+ *            works with the correct smart pointers, and handles them 
+ *            appropriately... a daunting task, for sure.
+ */
+
 // Signed 16-bit PCM Little-Endian
 
-// MAIN -- This is the primary loop for the EMusic Cannon. This will invoke several
-// other functions, but the bulk of the data interpretation starts here.
 int main(int argc, char *argv[], char *envp[])
 {
     // We absolutely require at least two arguments, as the second is the filename.
@@ -34,48 +41,29 @@ int main(int argc, char *argv[], char *envp[])
 
     // Process the raw data file and put the data into fulldata
     long filesize = calculateDataFileSize((char*)DECODED_FILE_NAME.c_str());
-    vector<double> dataFromFile = *obtainDataFromFile((char*)DECODED_FILE_NAME.c_str(), filesize);
-
-   /* for (int i = 0; i < filesize; i++)
-    {
-        cout << i << " " << dataFromFile[i] << "\n";
-    }*/
-
+    double* dataFromFile = obtainDataFromFile((char*)DECODED_FILE_NAME.c_str(), filesize);
     int sweeps = -1;
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
     // It is rewritten in every loop, whereas dataFromFile is constant.
-    vector<double> preProcessData(WINDOW_SIZE);
+    dataSet preProcessData(WINDOW_SIZE);
 
     //cout << "The number of samples in this file is " << filesize/sizeof(int) << endl;
 
     cout << "Beginning song to *.arf process...\n";
-  //  while((++sweeps)*WINDOW_SHIFT_AMOUNT < (filesize/sizeof(int) - SONG_ENDING_PAD*WINDOW_SHIFT_AMOUNT))
-    //{
+    while((++sweeps)*WINDOW_SHIFT_AMOUNT < (filesize/sizeof(int) - SONG_ENDING_PAD*WINDOW_SHIFT_AMOUNT))
+    {
         int index = 0;
 
         // Switch pointer's location in memory to the location of the new window, then copy from
         // that point in memory through the length of the WINDOW_SIZE in integers
         auto shiftedWindowOrigin_ = sweeps * WINDOW_SHIFT_AMOUNT;
-
-
-        vector<double>::iterator it = dataFromFile.begin();
-       // it += shiftedWindowOrigin_;
-
-        while (it != dataFromFile.end() && index < WINDOW_SIZE)
-        { // Vector Subscript out of range
-            preProcessData[index++] = (double) dataFromFile[index];
-            ++it;
-        }
-
-
-
-        // memcpy(preProcessData, shiftedWindowOrigin_,sizeof(int)*WINDOW_SIZE);
+        std::copy(dataFromFile, dataFromFile + WINDOW_SIZE, preProcessData.begin());
 
         // FFT STUFF HERE
         auto dataFromFFT = prepareAndExecuteFFT(preProcessData);
-        arfile.write(*dataFromFFT);
-  //  }
+        arfile.write(dataFromFFT);
+    }
 
     cout << "Process complete.\n";
 

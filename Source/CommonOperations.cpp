@@ -26,24 +26,24 @@ double convertIntToFrequency(int index)
 // static noise floors
 // ...
 // Performance: O(n)
-int calculateDynamicNoiseFloor(vector<double> data, int lowerBound, int upperBound)
-{
-    int dynamicNoiseFloor_ = -1, 
-        preNFMaximum_ = 0;
-
-    // Iterate through the frequency band and determine the maximum in the data set
-    for(int i = lowerBound; i < upperBound; i++)
-    {
-        preNFMaximum_ = (data[i] > preNFMaximum_ ? data[i] : preNFMaximum_ );
-    }
-
-    // Set the dynamic noise floor value to be equal to a certain percentage of the maximum if it is higher
-    // than the default noise floor of 50 A
-    dynamicNoiseFloor_ = preNFMaximum_ * (double(NOISE_FLOOR_PCT) / 100);
-
-    // Compare the dynamic and static Noise Floors, then return the greater of the two
-    return (dynamicNoiseFloor_ > NOISE_FLOOR ? dynamicNoiseFloor_ : NOISE_FLOOR);
-}
+//int calculateDynamicNoiseFloor(dataSet& data, int lowerBound, int upperBound)
+//{
+//    int dynamicNoiseFloor_ = -1, 
+//        preNFMaximum_ = 0;
+//
+//    // Iterate through the frequency band and determine the maximum in the data set
+//    for(int i = lowerBound; i < upperBound; i++)
+//    {
+//        preNFMaximum_ = (data > preNFMaximum_ ? data[i] : preNFMaximum_ );
+//    }
+//
+//    // Set the dynamic noise floor value to be equal to a certain percentage of the maximum if it is higher
+//    // than the default noise floor of 50 A
+//    dynamicNoiseFloor_ = preNFMaximum_ * (double(NOISE_FLOOR_PCT) / 100);
+//
+//    // Compare the dynamic and static Noise Floors, then return the greater of the two
+//    return (dynamicNoiseFloor_ > NOISE_FLOOR ? dynamicNoiseFloor_ : NOISE_FLOOR);
+//}
 
 // NEED NOTES; Also probably broken
 double calculateIntensityScalar(double frequency)
@@ -63,17 +63,4 @@ void debug(std::string debugComment)
     }
 }
 
-double* convertVectorToPointerArray(vector<double> vectorIn, int lengthOfNewArray)
-{
-    double* newArray = new double[lengthOfNewArray];
-    int elements = 0;
-    std::vector<double>::iterator it = vectorIn.begin();
 
-    while (it != vectorIn.end() && elements++ < lengthOfNewArray)
-    {
-        newArray[elements] = *it;
-        ++it;
-    }
-
-    return newArray;
-}

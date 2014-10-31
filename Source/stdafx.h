@@ -14,11 +14,13 @@
 #include <string>
 #include "CommonOperations.h"
 #include <vector>
+#include <bitset>
+#include "boost\smart_ptr\shared_ptr.hpp"
+#include "boost\smart_ptr\make_shared.hpp"
 
 // CONSTANT FLAGS
 const bool DEBUG_ENABLED = true;
-const bool OUTPUT_IS_BIG_ENDIAN = false;
-const bool HILL_EFFECT_USES_MAXIMUM_FREQUENCY = true; // as opposed to MAXIMUM_AMPLITUDE
+const bool OUTPUT_IS_BIG_ENDIAN = true;
 
 // CONSTANTS
 const int WINDOW_SIZE = 8192;
@@ -48,3 +50,4 @@ const enum adjustmentType { ADJUSTMENT_TYPE_CHANGE_UPPER, ADJUSTMENT_TYPE_CHANGE
 using std::cout;
 using std::endl;
 using std::vector;
+typedef std::vector<boost::shared_ptr < double > > dataSet;

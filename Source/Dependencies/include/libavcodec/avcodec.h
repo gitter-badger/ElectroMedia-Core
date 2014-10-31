@@ -28,23 +28,23 @@
  */
 
 #include <errno.h>
-#include "libavutil/samplefmt.h"
-#include "libavutil/attributes.h"
-#include "libavutil/avutil.h"
-#include "libavutil/buffer.h"
-#include "libavutil/cpu.h"
-#include "libavutil/channel_layout.h"
-#include "libavutil/dict.h"
-#include "libavutil/frame.h"
-#include "libavutil/log.h"
-#include "libavutil/pixfmt.h"
-#include "libavutil/rational.h"
+#include "Dependencies/include/libavutil/samplefmt.h"
+#include "Dependencies/include/libavutil/attributes.h"
+#include "Dependencies/include/libavutil/avutil.h"
+#include "Dependencies/include/libavutil/buffer.h"
+#include "Dependencies/include/libavutil/cpu.h"
+#include "Dependencies/include/libavutil/channel_layout.h"
+#include "Dependencies/include/libavutil/dict.h"
+#include "Dependencies/include/libavutil/frame.h"
+#include "Dependencies/include/libavutil/log.h"
+#include "Dependencies/include/libavutil/pixfmt.h"
+#include "Dependencies/include/libavutil/rational.h"
 
 #include "version.h"
 
 #if FF_API_FAST_MALLOC
 // to provide fast_*alloc
-#include "libavutil/mem.h"
+#include "Dependencies/include/libavutil/mem.h"
 #endif
 
 /**

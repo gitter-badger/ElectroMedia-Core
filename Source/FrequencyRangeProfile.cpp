@@ -145,7 +145,7 @@ void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, dou
 //
 // TODO:
 // Uses an algorithm specified by an enumerated int to determine which bits should be on.
-std::string FrequencyRangeProfile::convertToBits(vector<double> dataToConvert, int noiseFloor)
+std::string FrequencyRangeProfile::convertToBits(dataSet& dataToConvert, int noiseFloor)
 {
     return processor_->convertToBits(dataToConvert,noiseFloor);;
 }

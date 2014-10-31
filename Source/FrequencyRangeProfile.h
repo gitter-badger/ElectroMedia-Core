@@ -16,7 +16,7 @@ public:
     void initializeFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType);
 
     // Convert To Bits function; returns the output of whichever processor is tied to this FRP
-    std::string convertToBits(vector<double> dataToConvert, int noiseFloor);
+    std::string convertToBits(dataSet& dataToConvert, int noiseFloor);
 
 protected:
     // Variables for derived classes

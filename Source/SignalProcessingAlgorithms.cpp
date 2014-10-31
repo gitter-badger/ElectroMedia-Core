@@ -33,27 +33,27 @@ void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 // 
 // Result is by default Big Endian, but this can be changed through config by
 // setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
-std::string SignalProcessingAlgorithm::convertToBits(vector<double> dataToConvert, int noiseFloor) 
+std::string SignalProcessingAlgorithm::convertToBits(dataSet& dataToConvert, int noiseFloor) 
 {
     auto preparedData = preProcessForConversion(dataToConvert);
-    auto flooredData = applyNoiseFloor(*preparedData, noiseFloor);
-    auto resultingBits = evaluateBits(*flooredData);
+    auto flooredData = applyNoiseFloor(preparedData, noiseFloor);
+    auto resultingBits = evaluateBits(flooredData);
 
     // By default, this result is Big Endian due to the nature of frequencies increasing 
     // left-to-right. The nature of the output can be altered by changing the 
     // OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
     if(OUTPUT_IS_BIG_ENDIAN)
     {
-        return bigEndianConvert(*resultingBits);
+        return bigEndianConvert(resultingBits);
     }
 
-    return littleEndianConvert(*resultingBits);
+    return littleEndianConvert(resultingBits);
 }
 
-vector<double>* SignalProcessingAlgorithm::preProcessForConversion(vector<double> dataToConvert)
+dataSet SignalProcessingAlgorithm::preProcessForConversion(dataSet& dataToConvert)
 {
     // Nothing should really happen in the parent method]
-    return &vector<double>(dataToConvert);
+    return dataSet(dataToConvert);
 }
 
 double checkAgainstNoiseFloor(double frequency, int noiseFloor)
@@ -63,29 +63,29 @@ double checkAgainstNoiseFloor(double frequency, int noiseFloor)
         return 0;
     }
 
-    cout << "Higher than noise floor!\n";
+   // cout << "Higher than noise floor!\n";
     return frequency;
 }
 
-vector<double>* SignalProcessingAlgorithm::applyNoiseFloor(vector<double> preProcesedData, int noiseFloor)
+dataSet SignalProcessingAlgorithm::applyNoiseFloor(dataSet& preProcesedData, int noiseFloor)
 {
-    vector<double> processingData (preProcesedData);
+    dataSet processingData (preProcesedData);
 
     for(int freqIndex = lowerBound_; freqIndex < upperBound_; freqIndex++)
     {
-        processingData[freqIndex] = checkAgainstNoiseFloor(preProcesedData[freqIndex],noiseFloor);
+        processingData[freqIndex] = boost::make_shared<double>(checkAgainstNoiseFloor(*preProcesedData[freqIndex],noiseFloor));
     }
 
-    return &processingData;
+    return processingData;
 }
 
-vector<bool>* SignalProcessingAlgorithm::evaluateBits(vector<double> processedData)
+std::bitset<8> SignalProcessingAlgorithm::evaluateBits(dataSet& processedData)
 {
-    auto bitLength = (upperBound_ - lowerBound_) / bits_;
+    auto bitLength = (upperBound_ - lowerBound_) / 8;
     auto currentBitIndex = (int) 0;
-    vector<bool> outBits (bits_);
+    std::bitset<8> outBits(0);
 
-    for (int bitIndex = 0; bitIndex < bits_; bitIndex++)
+    for (int bitIndex = 0; bitIndex < 8; bitIndex++)
     {
         outBits[bitIndex] = false;
 
@@ -93,7 +93,7 @@ vector<bool>* SignalProcessingAlgorithm::evaluateBits(vector<double> processedDa
         {
             currentBitIndex = lowerBound_ + (bitIndex * bitLength) + interIndex;
 
-            if (processedData[currentBitIndex] > 0)
+            if (*processedData[currentBitIndex] > 0)
             {
                 outBits[bitIndex] = true;
                 break;
@@ -101,7 +101,7 @@ vector<bool>* SignalProcessingAlgorithm::evaluateBits(vector<double> processedDa
         }
     }
 
-    return &outBits;
+    return outBits;
 }
 
 
@@ -115,11 +115,11 @@ std::string SignalProcessingAlgorithm::checkBit(bool bitToCheck)
     return "0";
 }
 
-std::string SignalProcessingAlgorithm::bigEndianConvert(vector<bool> processedBits)
+std::string SignalProcessingAlgorithm::bigEndianConvert(std::bitset<8>& processedBits)
 {
     auto outputString = (std::string)"";
 
-    for(int bit_ = 0; bit_ < bits_; bit_++)
+    for (int bit_ = 0; bit_ < processedBits.size(); bit_++)
     {
         outputString.append( checkBit(processedBits[bit_]) );
     }
@@ -127,11 +127,11 @@ std::string SignalProcessingAlgorithm::bigEndianConvert(vector<bool> processedBi
     return outputString;
 }
 
-std::string SignalProcessingAlgorithm::littleEndianConvert(vector<bool> processedBits)
+std::string SignalProcessingAlgorithm::littleEndianConvert(std::bitset<8>& processedBits)
 {
     auto outputString = (std::string)"";
 
-    for(int bit_ = bits_; bit_ >= 0; bit_--)
+    for (int bit_ = processedBits.size()-1; bit_ >= 0; bit_--)
     {
         outputString.append( checkBit( processedBits[bit_] ) );
     }
@@ -140,7 +140,7 @@ std::string SignalProcessingAlgorithm::littleEndianConvert(vector<bool> processe
 }
 
 // -- Hill Effect -- //
-vector<bool>* SPAHillEffect::evaluateBits(vector<double> processedData, const int bitLength)
+std::bitset<8> SPAHillEffect::evaluateBits(dataSet& processedData, const int bitLength)
 {	
     double maxAmplitude = -1, maxIndex = -1;
 
@@ -148,7 +148,7 @@ vector<bool>* SPAHillEffect::evaluateBits(vector<double> processedData, const in
     // between frequencies (according to the boundaries set by owning FRP)
     for(int bit_ = lowerBound_; bit_ < upperBound_; bit_++)
     {
-        double currentAmplitude = processedData[bit_];
+        double currentAmplitude = *processedData[bit_];
 
         if(currentAmplitude > maxAmplitude)
         {
@@ -158,7 +158,7 @@ vector<bool>* SPAHillEffect::evaluateBits(vector<double> processedData, const in
     }
 
 
-	return &vector<bool>(8);
+    return std::bitset<8>(8);
 }
 
 // Need an intensity function!
