@@ -48,12 +48,10 @@ int main(int argc, char *argv[], char *envp[])
     double* workingDoubleArray_ = (double*)fftw_malloc(sizeof(double) * WINDOW_SIZE);
     fftw_complex* complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
     fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
-    //cout << "The number of samples in this file is " << filesize/sizeof(int) << endl;
 
     cout << "Beginning song to *.arf process...\n";
-    while((++sweeps)*WINDOW_SHIFT_AMOUNT < (filesize/sizeof(int) - SONG_ENDING_PAD*WINDOW_SHIFT_AMOUNT))
+    while(((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < dataFromFile->size())
     {
-        std::cerr << dataFromFile->size() << ":  " << sweeps*WINDOW_SHIFT_AMOUNT << " to " << sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE << endl;
         first = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT;
         last = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE;
         vector<double> windowedSubvector(first, last);
