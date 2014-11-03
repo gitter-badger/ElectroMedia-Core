@@ -28,23 +28,23 @@
  */
 
 #include <errno.h>
-#include "Dependencies/include/libavutil/samplefmt.h"
-#include "Dependencies/include/libavutil/attributes.h"
-#include "Dependencies/include/libavutil/avutil.h"
-#include "Dependencies/include/libavutil/buffer.h"
-#include "Dependencies/include/libavutil/cpu.h"
-#include "Dependencies/include/libavutil/channel_layout.h"
-#include "Dependencies/include/libavutil/dict.h"
-#include "Dependencies/include/libavutil/frame.h"
-#include "Dependencies/include/libavutil/log.h"
-#include "Dependencies/include/libavutil/pixfmt.h"
-#include "Dependencies/include/libavutil/rational.h"
+#include "Dependencies/FFMPEG/libavutil/samplefmt.h"
+#include "Dependencies/FFMPEG/libavutil/attributes.h"
+#include "Dependencies/FFMPEG/libavutil/avutil.h"
+#include "Dependencies/FFMPEG/libavutil/buffer.h"
+#include "Dependencies/FFMPEG/libavutil/cpu.h"
+#include "Dependencies/FFMPEG/libavutil/channel_layout.h"
+#include "Dependencies/FFMPEG/libavutil/dict.h"
+#include "Dependencies/FFMPEG/libavutil/frame.h"
+#include "Dependencies/FFMPEG/libavutil/log.h"
+#include "Dependencies/FFMPEG/libavutil/pixfmt.h"
+#include "Dependencies/FFMPEG/libavutil/rational.h"
 
 #include "version.h"
 
 #if FF_API_FAST_MALLOC
 // to provide fast_*alloc
-#include "Dependencies/include/libavutil/mem.h"
+#include "Dependencies/FFMPEG/libavutil/mem.h"
 #endif
 
 /**

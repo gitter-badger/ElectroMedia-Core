@@ -26,7 +26,7 @@
  * Libavcodec version macros.
  */
 
-#include "Dependencies/include/libavutil/version.h"
+#include "Dependencies/FFMPEG/libavutil/version.h"
 
 #define LIBAVCODEC_VERSION_MAJOR 55
 #define LIBAVCODEC_VERSION_MINOR  58

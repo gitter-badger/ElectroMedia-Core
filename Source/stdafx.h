@@ -15,11 +15,11 @@
 #include "CommonOperations.h"
 #include <vector>
 #include <bitset>
-#include "boost\smart_ptr\shared_ptr.hpp"
-#include "boost\smart_ptr\make_shared.hpp"
+#include <memory>
+#include <algorithm>
 
 // CONSTANT FLAGS
-const bool DEBUG_ENABLED = true;
+const bool DEBUG_ENABLED = false;
 const bool OUTPUT_IS_BIG_ENDIAN = true;
 
 // CONSTANTS
@@ -43,11 +43,15 @@ const std::string DECODED_FILE_NAME = "test.txt";
 const int ARDUINO_UNO_IO_PINS = 16;
 const int ARDUINO_MEGA_IO_PINS = 54;
 
-// Enumerated Lists
+// ENUMS
 const enum adjustmentType { ADJUSTMENT_TYPE_CHANGE_UPPER, ADJUSTMENT_TYPE_CHANGE_LOWER, ADJUSTMENT_TYPE_CENTER };
 
 // NAMESPACES
 using std::cout;
 using std::endl;
 using std::vector;
-typedef std::vector<boost::shared_ptr < double > > dataSet;
+
+// TYPE DEFINITIONS
+typedef std::unique_ptr<vector<double>> uniqueDataSet;
+typedef std::shared_ptr<vector<double>> dataSet;
+typedef vector<double>::iterator dataSetIterator;

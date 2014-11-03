@@ -29,10 +29,11 @@ private:
     bool isTextWritable();
     void addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm* processor);
     void writeDoubleInTextMode(dataSet& dataToWrite);
+    int calculateDynamicNoiseFloor(dataSet& data);
 
     // Private variables
     std::ofstream arfStream;
-    int mode_, numberOfOutputs_;
+    int mode_, numberOfOutputs_, dynamicNoiseFloor;
     size_t numberOfFrequencyRanges_;
-    FrequencyRangeProfile* frequencyRanges_;
+    vector<FrequencyRangeProfile> frequencyRanges_;
 };

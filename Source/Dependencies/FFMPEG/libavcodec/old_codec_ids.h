@@ -19,7 +19,7 @@
 #ifndef AVCODEC_OLD_CODEC_IDS_H
 #define AVCODEC_OLD_CODEC_IDS_H
 
-#include "Dependencies/include/libavutil/common.h"
+#include "Dependencies/FFMPEG/libavutil/common.h"
 
 /*
  * This header exists to prevent new codec IDs from being accidentally added to

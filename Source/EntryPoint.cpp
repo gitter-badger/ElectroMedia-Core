@@ -5,14 +5,7 @@
 #include <cmath>
 
 /*
- * Note 01 == Vectors of smart pointers are not copyable! Don't try to copy them!
- *            This is the reason that xutility is breaking. Boost and VC++ don't
- *            seem to play well together, and thus it thinks it can copy... but
- *            the compiler doesn't like that.
- *
- * Note 02 == Need to rewrite everything that involves "dataSet" such that it
- *            works with the correct smart pointers, and handles them 
- *            appropriately... a daunting task, for sure.
+ * Note 03 == Need to add more comments and clean up the general progam flow a bit
  */
 
 // Signed 16-bit PCM Little-Endian
@@ -40,34 +33,41 @@ int main(int argc, char *argv[], char *envp[])
     decodeMusic(argv[1]);
 
     // Process the raw data file and put the data into fulldata
-    long filesize = calculateDataFileSize((char*)DECODED_FILE_NAME.c_str());
-    double* dataFromFile = obtainDataFromFile((char*)DECODED_FILE_NAME.c_str(), filesize);
+    dataSet dataFromFile = std::make_shared<vector<double>>();
+
+    long filesize = calculateDataFileSize((char*)DECODED_FILE_NAME.c_str(), dataFromFile);
     int sweeps = -1;
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
     // It is rewritten in every loop, whereas dataFromFile is constant.
-    dataSet preProcessData(WINDOW_SIZE);
+    dataSet preProcessData = dataSet();
 
+    vector<double>::const_iterator first;
+    vector<double>::const_iterator last;
+
+    double* workingDoubleArray_ = (double*)fftw_malloc(sizeof(double) * WINDOW_SIZE);
+    fftw_complex* complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
+    fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
     //cout << "The number of samples in this file is " << filesize/sizeof(int) << endl;
 
     cout << "Beginning song to *.arf process...\n";
     while((++sweeps)*WINDOW_SHIFT_AMOUNT < (filesize/sizeof(int) - SONG_ENDING_PAD*WINDOW_SHIFT_AMOUNT))
     {
-        int index = 0;
-
-        // Switch pointer's location in memory to the location of the new window, then copy from
-        // that point in memory through the length of the WINDOW_SIZE in integers
-        auto shiftedWindowOrigin_ = sweeps * WINDOW_SHIFT_AMOUNT;
-        std::copy(dataFromFile, dataFromFile + WINDOW_SIZE, preProcessData.begin());
+        std::cerr << dataFromFile->size() << ":  " << sweeps*WINDOW_SHIFT_AMOUNT << " to " << sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE << endl;
+        first = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT;
+        last = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE;
+        vector<double> windowedSubvector(first, last);
+        preProcessData = std::make_shared<vector<double>>(windowedSubvector);
 
         // FFT STUFF HERE
-        auto dataFromFFT = prepareAndExecuteFFT(preProcessData);
+        auto dataFromFFT = prepareAndExecuteFFT(preProcessData,new_plan,workingDoubleArray_,complexResults);
         arfile.write(dataFromFFT);
     }
-
     cout << "Process complete.\n";
-
-    // Garbage Collection -- deallocate
+    fftw_destroy_plan(new_plan);
+    fftw_free(workingDoubleArray_);
+    fftw_free(complexResults);
+    fftw_cleanup();
     arfile.close();
 
     return 1;

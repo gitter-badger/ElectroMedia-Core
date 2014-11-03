@@ -11,7 +11,7 @@ public:
     void setBounds(const int lower, const int upper);
 
     // Heart and soul of the Signal Processing Algorithm. 
-    virtual std::string convertToBits(dataSet& dataToConvert, int noiseFloor);
+    virtual std::string convertToBits(uniqueDataSet& dataToConvert, int noiseFloor);
 
 protected:
 
@@ -24,9 +24,9 @@ protected:
     //		is not in TEXT mode.
     // 4. ___EndianConvert -- Called according to endianness as indicated in the config
     //		file, this converts a bool[] into a string
-    virtual dataSet preProcessForConversion (dataSet& dataToConvert);
-    virtual dataSet applyNoiseFloor(dataSet& preProcesedData, int noiseFloor);
-    virtual std::bitset<8> evaluateBits(dataSet& processedData);
+    virtual void preProcessForConversion(uniqueDataSet& dataToConvert);
+    virtual void applyNoiseFloor(uniqueDataSet& preProcesedData, int noiseFloor);
+    virtual std::bitset<8> evaluateBits(uniqueDataSet& processedData);
     virtual std::string bigEndianConvert(std::bitset<8>& processedBits);
     virtual std::string littleEndianConvert(std::bitset<8>& processedBits);
 
@@ -85,5 +85,5 @@ private:
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
 protected:
-    std::bitset<8> evaluateBits(dataSet& processedData, const int bitLength);
+    std::bitset<8> evaluateBits(uniqueDataSet& processedData, const int bitLength);
 };

@@ -28,11 +28,11 @@
 
 #include <stdint.h>
 
-#include "Dependencies/include/libavutil/common.h"
-#include "Dependencies/include/libavutil/dict.h"
-#include "Dependencies/include/libavutil/log.h"
+#include "Dependencies/FFMPEG/libavutil/common.h"
+#include "Dependencies/FFMPEG/libavutil/dict.h"
+#include "Dependencies/FFMPEG/libavutil/log.h"
 
-#include "Dependencies/include/libavformat/version.h"
+#include "Dependencies/FFMPEG/libavformat/version.h"
 
 
 #define AVIO_SEEKABLE_NORMAL 0x0001 /**< Seeking works like for a local file */

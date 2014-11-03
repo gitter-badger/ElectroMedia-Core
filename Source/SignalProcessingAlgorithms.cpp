@@ -33,11 +33,11 @@ void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 // 
 // Result is by default Big Endian, but this can be changed through config by
 // setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
-std::string SignalProcessingAlgorithm::convertToBits(dataSet& dataToConvert, int noiseFloor) 
+std::string SignalProcessingAlgorithm::convertToBits(uniqueDataSet& dataToConvert, int noiseFloor)
 {
-    auto preparedData = preProcessForConversion(dataToConvert);
-    auto flooredData = applyNoiseFloor(preparedData, noiseFloor);
-    auto resultingBits = evaluateBits(flooredData);
+    preProcessForConversion(dataToConvert);
+    applyNoiseFloor(dataToConvert, noiseFloor);
+    auto resultingBits = evaluateBits(dataToConvert);
 
     // By default, this result is Big Endian due to the nature of frequencies increasing 
     // left-to-right. The nature of the output can be altered by changing the 
@@ -46,14 +46,12 @@ std::string SignalProcessingAlgorithm::convertToBits(dataSet& dataToConvert, int
     {
         return bigEndianConvert(resultingBits);
     }
-
     return littleEndianConvert(resultingBits);
 }
 
-dataSet SignalProcessingAlgorithm::preProcessForConversion(dataSet& dataToConvert)
+void SignalProcessingAlgorithm::preProcessForConversion(uniqueDataSet& dataToConvert)
 {
-    // Nothing should really happen in the parent method]
-    return dataSet(dataToConvert);
+    // Nothing should really happen 
 }
 
 double checkAgainstNoiseFloor(double frequency, int noiseFloor)
@@ -63,23 +61,21 @@ double checkAgainstNoiseFloor(double frequency, int noiseFloor)
         return 0;
     }
 
-   // cout << "Higher than noise floor!\n";
     return frequency;
 }
 
-dataSet SignalProcessingAlgorithm::applyNoiseFloor(dataSet& preProcesedData, int noiseFloor)
+void SignalProcessingAlgorithm::applyNoiseFloor(uniqueDataSet& preProcesedData, int noiseFloor)
 {
-    dataSet processingData (preProcesedData);
-
-    for(int freqIndex = lowerBound_; freqIndex < upperBound_; freqIndex++)
+    // Replace with iterator
+    dataSetIterator it = preProcesedData->begin();
+    while (it != preProcesedData->end())
     {
-        processingData[freqIndex] = boost::make_shared<double>(checkAgainstNoiseFloor(*preProcesedData[freqIndex],noiseFloor));
+        *it = checkAgainstNoiseFloor(*it, noiseFloor);
+        ++it;
     }
-
-    return processingData;
 }
 
-std::bitset<8> SignalProcessingAlgorithm::evaluateBits(dataSet& processedData)
+std::bitset<8> SignalProcessingAlgorithm::evaluateBits(uniqueDataSet& processedData)
 {
     auto bitLength = (upperBound_ - lowerBound_) / 8;
     auto currentBitIndex = (int) 0;
@@ -93,7 +89,7 @@ std::bitset<8> SignalProcessingAlgorithm::evaluateBits(dataSet& processedData)
         {
             currentBitIndex = lowerBound_ + (bitIndex * bitLength) + interIndex;
 
-            if (*processedData[currentBitIndex] > 0)
+            if (processedData->at(currentBitIndex) > 0)
             {
                 outBits[bitIndex] = true;
                 break;
@@ -140,7 +136,7 @@ std::string SignalProcessingAlgorithm::littleEndianConvert(std::bitset<8>& proce
 }
 
 // -- Hill Effect -- //
-std::bitset<8> SPAHillEffect::evaluateBits(dataSet& processedData, const int bitLength)
+std::bitset<8> SPAHillEffect::evaluateBits(uniqueDataSet& processedData, const int bitLength)
 {	
     double maxAmplitude = -1, maxIndex = -1;
 
@@ -148,7 +144,7 @@ std::bitset<8> SPAHillEffect::evaluateBits(dataSet& processedData, const int bit
     // between frequencies (according to the boundaries set by owning FRP)
     for(int bit_ = lowerBound_; bit_ < upperBound_; bit_++)
     {
-        double currentAmplitude = *processedData[bit_];
+        double currentAmplitude = processedData->at(bit_);
 
         if(currentAmplitude > maxAmplitude)
         {
