@@ -1,15 +1,15 @@
-// DubstepCannon.cpp : Defines the entry point for the console application.
-
 #include "stdafx.h"
 #include "MP3toData.h"
 #include "FFTPreprocessing.h"
 #include "ArduinoReadableFileWriter.h"
 #include <cmath>
 
+/*
+ * Note 03 == Need to add more comments and clean up the general progam flow a bit
+ */
+
 // Signed 16-bit PCM Little-Endian
 
-// MAIN -- This is the primary loop for the EMusic Cannon. This will invoke several
-// other functions, but the bulk of the data interpretation starts here.
 int main(int argc, char *argv[], char *envp[])
 {
     // We absolutely require at least two arguments, as the second is the filename.
@@ -33,33 +33,39 @@ int main(int argc, char *argv[], char *envp[])
     decodeMusic(argv[1]);
 
     // Process the raw data file and put the data into fulldata
-    long filesize = calculateDataFileSize((char*)DECODED_FILE_NAME.c_str());
-    int* dataFromFile = obtainDataFromFile((char*)DECODED_FILE_NAME.c_str(), filesize);
+    dataSet dataFromFile = std::make_shared<vector<double>>();
+
+    long filesize = calculateDataFileSize((char*)DECODED_FILE_NAME.c_str(), dataFromFile);
     int sweeps = -1;
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
     // It is rewritten in every loop, whereas dataFromFile is constant.
-    int* preProcessData = new int[WINDOW_SIZE];
+    dataSet preProcessData = dataSet();
 
-    //cout << "The number of samples in this file is " << filesize/sizeof(int) << endl;
+    vector<double>::const_iterator first;
+    vector<double>::const_iterator last;
+
+    double* workingDoubleArray_ = (double*)fftw_malloc(sizeof(double) * WINDOW_SIZE);
+    fftw_complex* complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
+    fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
 
     cout << "Beginning song to *.arf process...\n";
-    while((++sweeps)*WINDOW_SHIFT_AMOUNT < (filesize/sizeof(int) - SONG_ENDING_PAD*WINDOW_SHIFT_AMOUNT))
+    while(((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < dataFromFile->size())
     {
-        // Switch pointer's location in memory to the location of the new window, then copy from
-        // that point in memory through the length of the WINDOW_SIZE in integers
-        void* shiftedWindowOrigin_ = dataFromFile + (sizeof(int)*sweeps * WINDOW_SHIFT_AMOUNT);
-        memcpy(preProcessData, shiftedWindowOrigin_,sizeof(int)*WINDOW_SIZE);
+        first = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT;
+        last = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE;
+        vector<double> windowedSubvector(first, last);
+        preProcessData = std::make_shared<vector<double>>(windowedSubvector);
 
         // FFT STUFF HERE
-        double* dataFromFFT = prepareAndExecuteFFT(preProcessData);
+        auto dataFromFFT = prepareAndExecuteFFT(preProcessData,new_plan,workingDoubleArray_,complexResults);
         arfile.write(dataFromFFT);
     }
-
     cout << "Process complete.\n";
-
-    // Garbage Collection -- deallocate
-    delete[] preProcessData, dataFromFile;
+    fftw_destroy_plan(new_plan);
+    fftw_free(workingDoubleArray_);
+    fftw_free(complexResults);
+    fftw_cleanup();
     arfile.close();
 
     return 1;

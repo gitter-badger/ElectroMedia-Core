@@ -7,7 +7,7 @@ double convertIntToFrequency(int index);
 // Used to calculate a dynamic noise floor, taking fluctuations in signal noise
 // and amplitude changes into consideration. Returns an integer value which 
 // corresponds to noise floor amplitude
-int calculateDynamicNoiseFloor(double* data, int lowerBound, int upperBound);
+//int calculateDynamicNoiseFloor(vector<T> data, int lowerBound, int upperBound);
 
 // NEED NOTES
 double calculateIntensityScalar(double frequency);

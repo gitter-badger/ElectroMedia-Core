@@ -13,11 +13,14 @@
 #include <cmath>
 #include <string>
 #include "CommonOperations.h"
+#include <vector>
+#include <bitset>
+#include <memory>
+#include <algorithm>
 
 // CONSTANT FLAGS
-const bool DEBUG_ENABLED = true;
-const bool OUTPUT_IS_BIG_ENDIAN = false;
-const bool HILL_EFFECT_USES_MAXIMUM_FREQUENCY = true; // as opposed to MAXIMUM_AMPLITUDE
+const bool DEBUG_ENABLED = false;
+const bool OUTPUT_IS_BIG_ENDIAN = true;
 
 // CONSTANTS
 const int WINDOW_SIZE = 8192;
@@ -40,9 +43,15 @@ const std::string DECODED_FILE_NAME = "test.txt";
 const int ARDUINO_UNO_IO_PINS = 16;
 const int ARDUINO_MEGA_IO_PINS = 54;
 
-// Enumerated Lists
+// ENUMS
 const enum adjustmentType { ADJUSTMENT_TYPE_CHANGE_UPPER, ADJUSTMENT_TYPE_CHANGE_LOWER, ADJUSTMENT_TYPE_CENTER };
 
 // NAMESPACES
 using std::cout;
 using std::endl;
+using std::vector;
+
+// TYPE DEFINITIONS
+typedef std::unique_ptr<vector<double>> uniqueDataSet;
+typedef std::shared_ptr<vector<double>> dataSet;
+typedef vector<double>::iterator dataSetIterator;

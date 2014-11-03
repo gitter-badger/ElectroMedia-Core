@@ -1,12 +1,12 @@
-#include "MP3toData.h"
 #include "stdafx.h"
+#include "MP3toData.h"
 #include <sstream>
 
 extern "C" 
 {
-#include "Dependencies\include\libavcodec\avcodec.h"
-#include "Dependencies\include\libavformat\avformat.h"
-#include "Dependencies\include\libswscale\swscale.h"
+#include "Dependencies\FFMPEG\libavcodec\avcodec.h"
+#include "Dependencies\FFMPEG\libavformat\avformat.h"
+#include "Dependencies\FFMPEG\libswscale\swscale.h"
 }
 
 // THIS FILE IS DEDICATED TO WORKING WITH FFTW3
@@ -19,7 +19,7 @@ extern "C"
 
 // This is the primary decoding mechanism. DubstepCannon.cpp calls this function to invoke
 // several functions from FFMPEG.
-int decodeMusic(char *filename)
+int decodeMusic(char filename[])
 {
     int audioStream = -1;
 

@@ -4,10 +4,10 @@
 // ArduinoReadableFileWriter Constructor
 // ---
 // Initialize our Arduino-Readable-file stream
-ArduinoReadableFileWriter::ArduinoReadableFileWriter(char* nameOfARF) 
+ArduinoReadableFileWriter::ArduinoReadableFileWriter(char nameOfARF[]) 
     : arfStream(nameOfARF), mode_(MODE_ARDUINO), numberOfOutputs_(-1), numberOfFrequencyRanges_(0)
 {
-    frequencyRanges_ = new FrequencyRangeProfile[MAXIMUM_NUMBER_OF_FREQUENCY_RANGES];
+    frequencyRanges_.reserve(MAXIMUM_NUMBER_OF_FREQUENCY_RANGES);
 
     // This is an example of the various ranges you can set. First two parameters
     // are in Hz and correspond to lower and upper frequency bounds. The third
@@ -16,7 +16,7 @@ ArduinoReadableFileWriter::ArduinoReadableFileWriter(char* nameOfARF)
     addFrequencyRange(50,  200,  ADJUSTMENT_TYPE_CHANGE_UPPER, new SignalProcessingAlgorithm());
     addFrequencyRange(200, 400,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
     addFrequencyRange(300, 600,  ADJUSTMENT_TYPE_CENTER, new SignalProcessingAlgorithm());
-    addFrequencyRange(200, 1000, ADJUSTMENT_TYPE_CHANGE_LOWER, new SPAHillEffect());
+    addFrequencyRange(200, 1000, ADJUSTMENT_TYPE_CHANGE_LOWER, new SignalProcessingAlgorithm());
 }
 
 // ArduinoReadableFileWriter Destructor
@@ -28,7 +28,7 @@ ArduinoReadableFileWriter::~ArduinoReadableFileWriter()
     if(arfStream.is_open())
         close();
 
-    delete[] frequencyRanges_;
+    frequencyRanges_.clear();
 }
 
 // bool = addFrequencyRange(double,double,int)
@@ -49,8 +49,10 @@ bool ArduinoReadableFileWriter::addFrequencyRange(double lowerFrequency, double 
 
 void ArduinoReadableFileWriter::addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm* processor)
 {
-    frequencyRanges_[numberOfFrequencyRanges_].initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustment);
-    frequencyRanges_[numberOfFrequencyRanges_++].setProcessor(*processor);
+    auto newFreq = new FrequencyRangeProfile();
+    newFreq->initializeFrequencyBounds(lowerFrequency, upperFrequency, adjustment);
+    newFreq->setProcessor(*processor);
+    frequencyRanges_.push_back(*newFreq);
 }
 
 // setMode(int)	
@@ -123,7 +125,7 @@ void ArduinoReadableFileWriter::write(int intToWrite)
 // ---
 // Deciphers the data and transforms it into byte format; writes bytes to the output file
 // [WIP]
-void ArduinoReadableFileWriter::write(double* dataToWrite)
+void ArduinoReadableFileWriter::write(dataSet& dataToWrite)
 {
     if(!arfStream.is_open())
     {
@@ -151,13 +153,24 @@ void ArduinoReadableFileWriter::write(double* dataToWrite)
     }
 }
 
-void ArduinoReadableFileWriter::writeDoubleInTextMode(double* dataToWrite)
-{
-    auto dynamicNoiseFloor = calculateDynamicNoiseFloor(dataToWrite,0,200);
 
-    for(int i=0; i<numberOfFrequencyRanges_; i++)
+int ArduinoReadableFileWriter::calculateDynamicNoiseFloor(dataSet& data)
+{
+    auto preNFMaximum_ = *std::max_element(data->begin(), data->end());
+
+    return int(preNFMaximum_ * (double(NOISE_FLOOR_PCT) / 100));
+}
+
+void ArduinoReadableFileWriter::writeDoubleInTextMode(dataSet& dataToWrite)
+{
+    int dynamicNoiseFloor = NOISE_FLOOR;
+
+    for (vector<FrequencyRangeProfile>::iterator it = frequencyRanges_.begin(); it != frequencyRanges_.end(); it++)
     {
-        auto outputString = (frequencyRanges_[i].convertToBits(dataToWrite, dynamicNoiseFloor));
+        vector<double> dataSubvector(dataToWrite->begin(), dataToWrite->end());
+        uniqueDataSet conversionDuplicate = std::make_unique<vector<double>>(dataSubvector);
+        auto outputString = (it->convertToBits(conversionDuplicate, dynamicNoiseFloor));
+
         ArduinoReadableFileWriter::arfStream << outputString << ".";
     }
     ArduinoReadableFileWriter::arfStream << "\n";

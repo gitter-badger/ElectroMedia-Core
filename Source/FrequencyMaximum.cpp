@@ -2,7 +2,7 @@
 #include "FrequencyMaximum.h"
 
 FrequencyMaximum::FrequencyMaximum()
-    : maximum_ (0), amplitude_ (0), bounds_ (new double[2])
+    : maximum_(0), amplitude_(0), bounds_()
 {}
 
 double FrequencyMaximum::getMaximum()

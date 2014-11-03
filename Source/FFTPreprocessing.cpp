@@ -1,6 +1,18 @@
 #include "stdafx.h"
 #include "FFTPreprocessing.h"
-#include <math.h>
+
+void copyVectorToPointerArray(dataSet& vectorIn, double* arrayOut)
+{
+    int elements = 0;
+
+    dataSetIterator it = vectorIn->begin();
+
+    while (it != vectorIn->end() && elements++ < vectorIn->size())
+    {
+        arrayOut[elements] = *it;
+        ++it;
+    }
+}
 
 // long = obtainDataFromFile(char*, int*)
 // ---
@@ -13,8 +25,8 @@
 // but right now this is the only way to do it
 //
 // Performance: O(n)
-long calculateDataFileSize(char* fileName)
-{	
+long calculateDataFileSize(char* fileName, dataSet& data)
+{
     // Read the file indicated by Filename argument
     std::ifstream dataFileIn_(fileName, std::ios::binary);
 
@@ -28,6 +40,7 @@ long calculateDataFileSize(char* fileName)
         // If it exists, push it into the dataOut array
         if (dataFileIn_)
         {
+            data->push_back( double(c) );
             counted_++;
         }
     }
@@ -37,71 +50,34 @@ long calculateDataFileSize(char* fileName)
     return counted_;
 }
 
-int* obtainDataFromFile(char* fileName, long fileSize)
-{	
-    // Read the file indicated by Filename argument
-    std::ifstream dataFileIn_(fileName, std::ios::binary);
-    int* dataOut = new int[fileSize];
-
-    long counted_ = 0;
-    while (dataFileIn_ && counted_ < fileSize)
-    {
-        // Get the next line from the FFTW file
-        char c;
-        dataFileIn_.get(c);
-
-        // If it exists, push it into the dataOut array
-        if (dataFileIn_)
-        {
-            dataOut[counted_++] = int(c);
-        }
-    }
-
-    // Close the file and then return the filesize
-    dataFileIn_.close();
-    return dataOut;
-}
-
-// copyAndPadData(double*, double*, int)
-// ---
-// Copies all of the data from dataIn to dataOut, while also zero-padding the points
-// where there is no actual data to copy
-double* copyAndPadData(const double* dataIn)
-{
-    double* dataOut = new double[WINDOW_SIZE];
-
-    for(int i = 0; i < WINDOW_SIZE; i++)
-    {
-        dataOut[i] = dataIn[i] ? dataIn[i] : 0;
-    }
-
-    return dataOut;
-}
-
 // fftw_complex* =  startFFT (double*, int)
 // ---
 // Interface with the FFTW FOSS library. Indirectly performs the Fast Fourier
 // Transform to the data set of length (int)
-fftw_complex* fastFourierTransform(const double* data)
+dataSet fastFourierTransform(dataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
 {
     // Allocate memory for the fftw_complex array and working double*
-    double* workingDoubleArray_ = new double[WINDOW_SIZE];// (double *)malloc(sizeof(double) * WINDOW_SIZE);
-    fftw_complex* out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
-
     // Generate a plan for FFTW to execute
-    fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, out, FFTW_MEASURE);
-
-    // workingDoubleArray_ is called via reference in fftw_execute
-    workingDoubleArray_ = copyAndPadData(data);
-
+    memcpy(workingDoubleArray_, &data->at(0), data->size() * sizeof(double));
     // Execute the plan
-    fftw_execute(new_plan);
+    fftw_execute(fft_plan);
 
-    // Clean up workingDoubleArray_
-    delete[] workingDoubleArray_;
+   // std::ofstream fftResultsFile("Results.csv");
+    vector<double> resultsVector;
+    resultsVector.reserve(180);
+    dataSet dataOut = std::make_shared<vector<double>>(resultsVector);
 
-    // Return the array of fftw_complex objects
-    return out;
+    auto frequency = 0.0;
+    for(int i=0; i < 180; i++)
+    {
+        frequency = double(sqrt(complexResults[i][0] * complexResults[i][0] + complexResults[i][1] * complexResults[i][1]));
+        dataOut->push_back( frequency );
+      //  fftResultsFile << (BOUNDARY_CONVERSION_SCALAR*i - BOUNDARY_CONVERSION_OFFSET) << "," << frequency << endl;
+    }
+
+
+  //  fftResultsFile.close();
+    return dataOut;
 }
 
 // normalize(double*, int)
@@ -110,20 +86,15 @@ fftw_complex* fastFourierTransform(const double* data)
 // value, and then normalizes the original data set based on that maximum.
 //
 // Performance: O(n)
-void normalize(double* data)
+void normalize(dataSet& data)
 {
-    double maxOfData_ = -1;
+    dataSetIterator it;
 
-    // Iterate through the input data looking for the maximum
-    for(int i = 0; i < WINDOW_SIZE; i++)
-    {
-        maxOfData_ = (maxOfData_ < data[i] ? data[i] : maxOfData_);
-    }
+    auto maxValue = *std::max_element(data->begin(), data->end());
 
-    // Once we have the max, use it to normalize the data set
-    for(int i = 0; i < WINDOW_SIZE; i++)
+    for (it = data->begin(); it != data->end(); ++it)
     {
-        data[i] /= maxOfData_;
+        *it = double(*it / maxValue);
     }
 }
 
@@ -142,47 +113,26 @@ double hanningMultiplier(int indexOfHanningFunction)
 // Immediately normalizes the data after the hanning window is applied.
 //
 // Performance: O(n)
-double* applyHanningWindow(const int* dataIn)
+void applyHanningWindow(dataSet& data)
 {
-    double* dataOut = new double[WINDOW_SIZE];
-
-    // Actually go through each point of the original function and multiply it by the 
-    // correct value of the Hanning window function at that point in time
-    for (int indexAt = 0; indexAt < WINDOW_SIZE; indexAt++)
+    auto index = int(0);
+    for (dataSetIterator it = data->begin(); it != data->end(); ++it)
     {
-        dataOut[indexAt] = hanningMultiplier(indexAt) * double(dataIn[indexAt]);
+        *it = double(*it * hanningMultiplier(index++));
     }
 
-    // Normalize the data before we finish
-    normalize(dataOut);
-
-    return dataOut;
+    normalize(data);
 }
 
 // double* = prepareAndExecuteFFT(const int*)
 // ---
 // Execute the FFT, convert the results from the complex frequency domain to the
 // frequency-vs-time spectral domain and then save the results into a debug file.
-double* prepareAndExecuteFFT(const int* dataIn)
+dataSet prepareAndExecuteFFT(dataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
 {
-    double* windowedData = applyHanningWindow(dataIn);
-    double* dataOut = new double[WINDOW_SIZE];
+    auto maxFrequency = convertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED);
 
     // Execute the FFT
-    fftw_complex* results = fastFourierTransform(windowedData);
-    std::ofstream fftResultsFile ("Results.csv");
-
-    // Iterate through the results up to the Maximum Frequency we care about, then
-    // convert the data from the complex frequency domain to spectral frequency
-    for(int i=0; i<convertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED); i++)
-    {		
-        // This uses the simplified complex distance formula
-        dataOut[i] = sqrt(results[i][0]*results[i][0] + results[i][1]*results[i][1]);
-
-        // Put the spectral data into the .csv matched up with its frequency
-        fftResultsFile << (BOUNDARY_CONVERSION_SCALAR*i - BOUNDARY_CONVERSION_OFFSET) << "," << int(dataOut[i]) << endl;
-    }
-
-    fftResultsFile.close();
-    return dataOut;
+    applyHanningWindow(data);
+    return fastFourierTransform(data,fft_plan,workingDoubleArray_,complexResults);
 }

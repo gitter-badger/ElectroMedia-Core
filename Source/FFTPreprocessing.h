@@ -3,16 +3,14 @@
 #include "FrequencyMaximum.h"
 
 // FFT PreProcessing
-
-double* copyAndPadData(const double* dataIn);
-void normalize(double* data);
+void copyVectorToPointerArray(dataSet& vectorIn, double* arrayOut);
 double hanningMultiplier(int indexOfHanningFunction);
-double* applyHanningWindow(const int* dataIn);
-double* prepareAndExecuteFFT(const int* dataIn);
+void normalize(dataSet& data);
+void applyHanningWindow(dataSet& dataIn);
+dataSet prepareAndExecuteFFT(dataSet& dataIn, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults);
 
 // Fast Fourier Transform
-fftw_complex* fastFourierTransform(const double* data);
+dataSet fastFourierTransform(dataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults);
 
 // More Tests 2
-long calculateDataFileSize(char* fileName);
-int* obtainDataFromFile(char* fileName, long fileSize);
+long calculateDataFileSize(char fileName[], dataSet& waveformDataPoints);
