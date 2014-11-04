@@ -42,7 +42,7 @@ void debug(std::string debugComment)
 {
     if(DEBUG_ENABLED)
     {
-        std::cerr << debugComment << endl;
+        std::cerr << debugComment << "\n";
     }
 }
 

@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonOperations.h" />
+    <ClInclude Include="ConfigurationHandler.h" />
     <ClInclude Include="Dependencies\boost\assert.hpp" />
     <ClInclude Include="Dependencies\boost\checked_delete.hpp" />
     <ClInclude Include="Dependencies\boost\config.hpp" />
@@ -460,6 +461,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonOperations.cpp" />
+    <ClCompile Include="ConfigurationHandler.cpp" />
     <ClCompile Include="FrequencyRangeProfile.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />
     <ClCompile Include="FrequencyMaximum.cpp" />

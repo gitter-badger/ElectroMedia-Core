@@ -1137,6 +1137,9 @@
     <ClInclude Include="Dependencies\boost\predef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigurationHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1164,6 +1167,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FFTPreprocessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigurationHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
