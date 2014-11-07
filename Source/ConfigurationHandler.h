@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ArduinoReadableFileWriter.h"
+#include "json.h"
 
 /* 
  * NEW FILE -- In the process of being designed!
@@ -13,9 +14,10 @@ public:
     ConfigurationHandler(ArduinoReadableFileWriter& arf);
     ~ConfigurationHandler();
     void loadInConfigurationSettings();
+    void addDefinition(std::string key, std::string value); // Adds an entry to the .esf if it doesn't already exist
 
 protected:
-    void addFrequencyRangeFromConfig(std::string spaString);
+    void initializeSignalProcessingAlgorithms(Json::Value root);
 
 private:
     void generateDefault();

@@ -5,19 +5,40 @@ void convertMP3ToARF(char argv[])
 {
     // filename stuff
     std::string fullArgument = argv;
-    auto extensionBegin = fullArgument.find(".") + fullArgument.begin();
-    auto nameWithoutExtension = std::string(fullArgument.begin(), extensionBegin);
+    auto extensionLocation = fullArgument.find(".");
+
+    // Protection for noninclusion of extension
+    if (extensionLocation > fullArgument.size())
+    {
+        extensionLocation = fullArgument.size();
+    }
+
+    // Specific filename strings
+    auto nameWithoutExtension = std::string(fullArgument.begin(), extensionLocation + fullArgument.begin());
     std::string emcFileName = nameWithoutExtension + EMC_FILE_EXTENSION;
     std::string arFileName = nameWithoutExtension + AR_FILE_EXTENSION;
 
-    // Open the ARF Writer object
-    ArduinoReadableFileWriter arfile = ArduinoReadableFileWriter((char*)arFileName.c_str());
+    // if arf exists
+    // {
+    //      cout << "ARF already exists, do you wish to overwrite it?\n Option (Y/N):  ";
+    //      cin >> option;
+    //      if(option == "n")
+    //          return;
+    //  }
+
+    // Open the ARF Writer object and add configuration settings
+    auto arfile = ArduinoReadableFileWriter((char*)arFileName.c_str());
     auto configIO = new ConfigurationHandler(arfile);
     configIO->loadInConfigurationSettings();
     arfile.setMode(arfile.MODE_TEXT);
 
     // Process the MP3 File
-    decodeMusic(nameWithoutExtension);
+    auto returnCode = decodeMusic(nameWithoutExtension);
+    if (returnCode != 1)
+    {
+        cout << "Exiting program with code " << returnCode;
+        return;
+    }
 
     // Process the raw data file and put the data into fulldata
     AudioFileData dataFromFile = std::make_shared<vector<char>>();

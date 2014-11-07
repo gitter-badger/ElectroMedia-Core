@@ -9,6 +9,7 @@
  */
 
 // Signed 16-bit PCM Little-Endian
+// Command line 
 
 int main(int argc, char *argv[], char *envp[])
 {
@@ -19,8 +20,29 @@ int main(int argc, char *argv[], char *envp[])
         cout << "ERROR: You must specify a .mp3 file for decoding!\n";
         return -1; 
     }
+    if (argc == 4)
+    {
+        if ((std::string)argv[2] == "-mode")
+        {
+            if ((std::string)argv[3] == "visualize")
+            {
+                readARF(argv[1]);
+                return 1;
+            }
+        }
+    }
 
-    convertMP3ToARF(argv[1]);
+    switch (EMC_MODE)
+    {
+    case CONVERSION_MODE:
+        convertMP3ToARF(argv[1]);
+        break;
+    case VISUALIZE_MODE:
+        readARF(argv[1]);
+        break;
+    default:
+        cout << "Mode not recognized. Exiting...\n";
+    }
 
     return 1;
 }

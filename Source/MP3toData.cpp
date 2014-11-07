@@ -76,16 +76,16 @@ int decodeMusic(std::string songName)
     if(!outfile)
     {
         av_free(aCodecCtxt);
-        std::cout << "No outfile";
+        debug("ERROR: No outfile! Exiting...");
         exit(1);
     }
 
-    while(av_read_frame(pFormatCtxt,&avPkt) >= 0 )
+    while(av_read_frame(pFormatCtxt, &avPkt) >= 0 )
     {
         if (avPkt.stream_index == audioStream)
         {
             int check = 0; 
-            int result = avcodec_decode_audio4 (aCodecCtxt,decode_frame,&check, &avPkt);
+            int result = avcodec_decode_audio4 (aCodecCtxt, decode_frame, &check, &avPkt);
             fwrite(decode_frame->data[0],1, decode_frame->linesize[0], outfile);
         }
         av_free_packet(&avPkt);
@@ -97,4 +97,5 @@ int decodeMusic(std::string songName)
 
     avcodec_close(aCodecCtxt);
     av_free(aCodecCtxt);
+    return 1;
 }
