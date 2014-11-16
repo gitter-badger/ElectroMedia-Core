@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "CommonOperations.h"
+#include <thread>
+#include <chrono>
 
 // int = convertFrequencyToInt(double)
 // double = convertIntToFrequency(int)
@@ -42,8 +44,35 @@ void debug(std::string debugComment)
 {
     if(DEBUG_ENABLED)
     {
-        std::cerr << debugComment << endl;
+        std::cerr << debugComment << "\n";
     }
 }
 
+void readARF(char filename[])
+{
+    std::string fullArgument = filename;
+    auto extensionLocation = fullArgument.find(".");
 
+    // Protection for noninclusion of extension
+    if (extensionLocation > fullArgument.size())
+    {
+        extensionLocation = fullArgument.size();
+    }
+
+    auto nameWithoutExtension = std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
+    std::string arFileName = nameWithoutExtension + AR_FILE_EXTENSION;
+
+    std::ifstream visualizationFile(arFileName);
+    if (visualizationFile.is_open())
+    {
+        std::string line;
+        auto start = std::chrono::high_resolution_clock::now();
+        while (std::getline(visualizationFile, line))
+        {
+            cout << line << "\n";
+            std::this_thread::sleep_until(start + std::chrono::microseconds(45000));
+            start = std::chrono::high_resolution_clock::now();
+            //while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() < 46447);
+        }
+    }
+}

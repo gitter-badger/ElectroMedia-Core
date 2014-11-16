@@ -19,9 +19,12 @@ extern "C"
 
 // This is the primary decoding mechanism. DubstepCannon.cpp calls this function to invoke
 // several functions from FFMPEG.
-int decodeMusic(char filename[])
+int decodeMusic(std::string songName)
 {
     int audioStream = -1;
+    std::string name = songName;
+    std::string mpegFileName = name + ".mp3";
+    std::string emcFileName = name + EMC_FILE_EXTENSION;
 
     AVCodec         *aCodec;
     AVPacket        avPkt;
@@ -35,7 +38,7 @@ int decodeMusic(char filename[])
     av_init_packet (&avPkt);
 
     // open the file if it exists
-    if (avformat_open_input (&pFormatCtxt, filename,NULL,NULL)!= 0 )
+    if (avformat_open_input(&pFormatCtxt, mpegFileName.c_str(), NULL, NULL) != 0)
     { 
         _tprintf(_T("No file found!\n"));
         return -2;
@@ -69,20 +72,20 @@ int decodeMusic(char filename[])
     uint8_t inbuf[AUDIO_INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
     FILE *f, *outfile;
 
-    outfile = fopen("test.txt", "wb");
+    outfile = fopen(emcFileName.c_str(), "wb");
     if(!outfile)
     {
         av_free(aCodecCtxt);
-        std::cout << "No outfile";
+        debug("ERROR: No outfile! Exiting...");
         exit(1);
     }
 
-    while(av_read_frame(pFormatCtxt,&avPkt) >= 0 )
+    while(av_read_frame(pFormatCtxt, &avPkt) >= 0 )
     {
         if (avPkt.stream_index == audioStream)
         {
             int check = 0; 
-            int result = avcodec_decode_audio4 (aCodecCtxt,decode_frame,&check, &avPkt);
+            int result = avcodec_decode_audio4 (aCodecCtxt, decode_frame, &check, &avPkt);
             fwrite(decode_frame->data[0],1, decode_frame->linesize[0], outfile);
         }
         av_free_packet(&avPkt);
@@ -94,4 +97,5 @@ int decodeMusic(char filename[])
 
     avcodec_close(aCodecCtxt);
     av_free(aCodecCtxt);
+    return 1;
 }

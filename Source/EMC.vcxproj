@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Projects\boost;C:\Projects\EMC\Source\Dependencies%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Projects\boost;C:\Projects\EMC\Source\Dependencies\json;C:\Projects\EMC\Source\Dependencies%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonOperations.h" />
+    <ClInclude Include="ConfigurationHandler.h" />
     <ClInclude Include="Dependencies\boost\assert.hpp" />
     <ClInclude Include="Dependencies\boost\checked_delete.hpp" />
     <ClInclude Include="Dependencies\boost\config.hpp" />
@@ -363,6 +364,8 @@
     <ClInclude Include="Dependencies\boost\utility\swap.hpp" />
     <ClInclude Include="Dependencies\boost\utility\typed_in_place_factory.hpp" />
     <ClInclude Include="Dependencies\boost\utility\value_init.hpp" />
+    <ClInclude Include="Dependencies\json\json-forwards.h" />
+    <ClInclude Include="Dependencies\json\json.h" />
     <ClInclude Include="dev\include\libavcodec\avcodec.h" />
     <ClInclude Include="dev\include\libavcodec\avfft.h" />
     <ClInclude Include="dev\include\libavcodec\dxva2.h" />
@@ -460,6 +463,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonOperations.cpp" />
+    <ClCompile Include="ConfigurationHandler.cpp" />
+    <ClCompile Include="Dependencies\jsoncpp.cpp" />
     <ClCompile Include="FrequencyRangeProfile.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />
     <ClCompile Include="FrequencyMaximum.cpp" />

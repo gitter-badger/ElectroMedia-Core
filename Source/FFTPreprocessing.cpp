@@ -1,11 +1,89 @@
 #include "stdafx.h"
 #include "FFTPreprocessing.h"
 
-void copyVectorToPointerArray(dataSet& vectorIn, double* arrayOut)
+void convertMP3ToARF(char argv[])
+{
+    // filename stuff
+    std::string fullArgument = argv;
+    auto extensionLocation = fullArgument.find(".");
+
+    // Protection for noninclusion of extension
+    if (extensionLocation > fullArgument.size())
+    {
+        extensionLocation = fullArgument.size();
+    }
+
+    // Specific filename strings
+    auto nameWithoutExtension = std::string(fullArgument.begin(), extensionLocation + fullArgument.begin());
+    std::string emcFileName = nameWithoutExtension + EMC_FILE_EXTENSION;
+    std::string arFileName = nameWithoutExtension + AR_FILE_EXTENSION;
+
+    // if arf exists
+    // {
+    //      cout << "ARF already exists, do you wish to overwrite it?\n Option (Y/N):  ";
+    //      cin >> option;
+    //      if(option == "n")
+    //          return;
+    //  }
+
+    // Open the ARF Writer object and add configuration settings
+    auto arfile = ArduinoReadableFileWriter((char*)arFileName.c_str());
+    auto configIO = new ConfigurationHandler(arfile);
+    configIO->loadInConfigurationSettings();
+    arfile.setMode(arfile.MODE_TEXT);
+
+    // Process the MP3 File
+    auto returnCode = decodeMusic(nameWithoutExtension);
+    if (returnCode != 1)
+    {
+        cout << "Exiting program with code " << returnCode;
+        return;
+    }
+
+    // Process the raw data file and put the data into fulldata
+    AudioFileData dataFromFile = std::make_shared<vector<char>>();
+    long filesize = captureFileData(emcFileName, dataFromFile);
+    int sweeps = -1;
+
+    // preProcessData is an empty integer array that is used to receive data via memcpy.
+    // It is rewritten in every loop, whereas dataFromFile is constant.
+    DataSet preProcessData = DataSet();
+    vector<char>::const_iterator first;
+    vector<char>::const_iterator last;
+
+    // FFT variables
+    double* workingDoubleArray_ = (double*)fftw_malloc(sizeof(double) * WINDOW_SIZE);
+    fftw_complex* complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
+    fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
+
+    debug("Converting " + nameWithoutExtension + " to Arduino Readable File");
+    while (((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < dataFromFile->size())
+    {
+        // Copy out the data from the AudioFileData source into a DataSet
+        first = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT;
+        last = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE;
+        vector<double> windowedSubvector(first, last);
+        preProcessData = std::make_shared<vector<double>>(windowedSubvector);
+
+        // Call FFT
+        auto dataFromFFT = prepareAndExecuteFFT(preProcessData, new_plan, workingDoubleArray_, complexResults);
+        arfile.write(dataFromFFT);
+    }
+    debug("Process complete.");
+    
+    // Cleanup
+    fftw_destroy_plan(new_plan);
+    fftw_free(workingDoubleArray_);
+    fftw_free(complexResults);
+    fftw_cleanup();
+    arfile.close();
+}
+
+void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
 {
     int elements = 0;
 
-    dataSetIterator it = vectorIn->begin();
+    DataSetIterator it = vectorIn->begin();
 
     while (it != vectorIn->end() && elements++ < vectorIn->size())
     {
@@ -25,10 +103,10 @@ void copyVectorToPointerArray(dataSet& vectorIn, double* arrayOut)
 // but right now this is the only way to do it
 //
 // Performance: O(n)
-long calculateDataFileSize(char* fileName, dataSet& data)
+long captureFileData(std::string songName, AudioFileData& waveformDataPoints)
 {
     // Read the file indicated by Filename argument
-    std::ifstream dataFileIn_(fileName, std::ios::binary);
+    std::ifstream dataFileIn_(songName.c_str(), std::ios::binary);
 
     long counted_ = 0;
     while (dataFileIn_)
@@ -40,7 +118,7 @@ long calculateDataFileSize(char* fileName, dataSet& data)
         // If it exists, push it into the dataOut array
         if (dataFileIn_)
         {
-            data->push_back( double(c) );
+            waveformDataPoints->push_back(double(c));
             counted_++;
         }
     }
@@ -54,7 +132,7 @@ long calculateDataFileSize(char* fileName, dataSet& data)
 // ---
 // Interface with the FFTW FOSS library. Indirectly performs the Fast Fourier
 // Transform to the data set of length (int)
-dataSet fastFourierTransform(dataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
+DataSet fastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
 {
     // Allocate memory for the fftw_complex array and working double*
     // Generate a plan for FFTW to execute
@@ -65,7 +143,7 @@ dataSet fastFourierTransform(dataSet& data, fftw_plan& fft_plan, double* working
    // std::ofstream fftResultsFile("Results.csv");
     vector<double> resultsVector;
     resultsVector.reserve(180);
-    dataSet dataOut = std::make_shared<vector<double>>(resultsVector);
+    DataSet dataOut = std::make_shared<vector<double>>(resultsVector);
 
     auto frequency = 0.0;
     for(int i=0; i < 180; i++)
@@ -86,16 +164,18 @@ dataSet fastFourierTransform(dataSet& data, fftw_plan& fft_plan, double* working
 // value, and then normalizes the original data set based on that maximum.
 //
 // Performance: O(n)
-void normalize(dataSet& data)
+void normalize(DataSet& data)
 {
-    dataSetIterator it;
+    //DataSetIterator it;
 
     auto maxValue = *std::max_element(data->begin(), data->end());
 
-    for (it = data->begin(); it != data->end(); ++it)
-    {
-        *it = double(*it / maxValue);
-    }
+    std::for_each(data->begin(), data->end(), [maxValue](double& x){ x /= maxValue; });
+
+    //for (it = data->begin(); it != data->end(); ++it)
+    //{
+    //    *it = double(*it / maxValue);
+    //}
 }
 
 // double = hanningMultiplier(int, int)
@@ -113,10 +193,10 @@ double hanningMultiplier(int indexOfHanningFunction)
 // Immediately normalizes the data after the hanning window is applied.
 //
 // Performance: O(n)
-void applyHanningWindow(dataSet& data)
+void applyHanningWindow(DataSet& data)
 {
     auto index = int(0);
-    for (dataSetIterator it = data->begin(); it != data->end(); ++it)
+    for (DataSetIterator it = data->begin(); it != data->end(); ++it)
     {
         *it = double(*it * hanningMultiplier(index++));
     }
@@ -128,7 +208,7 @@ void applyHanningWindow(dataSet& data)
 // ---
 // Execute the FFT, convert the results from the complex frequency domain to the
 // frequency-vs-time spectral domain and then save the results into a debug file.
-dataSet prepareAndExecuteFFT(dataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
+DataSet prepareAndExecuteFFT(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
 {
     auto maxFrequency = convertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED);
 

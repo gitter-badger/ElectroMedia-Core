@@ -39,7 +39,7 @@ void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm& processor)
 // of BOUNDARY_CONVERSION_SCALAR (typically 10.91 Hz).
 void FrequencyRangeProfile::format(double* lowerFrequency, double* upperFrequency, int adjustmentType)
 {
-    double spectralResolution_ = double(*upperFrequency - *lowerFrequency) / 8;
+    double spectralResolution_ = double(*upperFrequency - *lowerFrequency) / bits_;
     double newResolution_ = double(ceil(spectralResolution_ / BOUNDARY_CONVERSION_SCALAR) * BOUNDARY_CONVERSION_SCALAR);
 	auto centeredFrequencies = new double[2];
 
@@ -71,29 +71,29 @@ double* FrequencyRangeProfile::formatCenter(double lowerFrequency, double upperF
     double newFrequencies[] = {lowerFrequency, upperFrequency};
     int center_ = int(newFrequencies[0] + newFrequencies[1]) / 2;
 
-    newFrequencies[0] = center_ - int(resolution * 4);
+    newFrequencies[0] = center_ - int(resolution * bits_/2);
     if(newFrequencies[0] < BOUNDARY_CONVERSION_OFFSET)
     {
         newFrequencies[0] = BOUNDARY_CONVERSION_OFFSET;
-        newFrequencies[1] = int(resolution* 8) + BOUNDARY_CONVERSION_OFFSET;
+        newFrequencies[1] = int(resolution* bits_) + BOUNDARY_CONVERSION_OFFSET;
     }
-    else newFrequencies[1] = center_ + int(resolution * 4);
+    else newFrequencies[1] = center_ + int(resolution * bits_/2);
 
     return newFrequencies;
 }
 
 double FrequencyRangeProfile::formatChangeUpper(double lowerFrequency, double resolution)
 {
-    return lowerFrequency + int(resolution * 8);
+    return lowerFrequency + int(resolution * bits_);
 }
 
 double FrequencyRangeProfile::formatChangeLower(double upperFrequency, double resolution)
 {
-    double newLowerFrequency = upperFrequency - int(resolution * 8);
+    double newLowerFrequency = upperFrequency - int(resolution * bits_);
     if(newLowerFrequency < BOUNDARY_CONVERSION_OFFSET)
     {
         newLowerFrequency = BOUNDARY_CONVERSION_OFFSET;
-        upperFrequency = int(resolution * 8) + BOUNDARY_CONVERSION_OFFSET;
+        upperFrequency = int(resolution * bits_) + BOUNDARY_CONVERSION_OFFSET;
     }
     return newLowerFrequency;
 }
@@ -145,8 +145,7 @@ void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, dou
 //
 // TODO:
 // Uses an algorithm specified by an enumerated int to determine which bits should be on.
-std::string FrequencyRangeProfile::convertToBits(uniqueDataSet& dataToConvert, int noiseFloor)
+std::string FrequencyRangeProfile::convertToBits(UniqueDataSet& dataToConvert, int noiseFloor)
 {
-    debug("06e-0");
     return processor_->convertToBits(dataToConvert,noiseFloor);;
 }

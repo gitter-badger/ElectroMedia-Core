@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "fftw3.h"
 #include "FrequencyMaximum.h"
+#include "MP3toData.h"
+#include "ConfigurationHandler.h"
+
+void convertMP3ToARF(char argv[]);
 
 // FFT PreProcessing
-void copyVectorToPointerArray(dataSet& vectorIn, double* arrayOut);
+void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut);
 double hanningMultiplier(int indexOfHanningFunction);
-void normalize(dataSet& data);
-void applyHanningWindow(dataSet& dataIn);
-dataSet prepareAndExecuteFFT(dataSet& dataIn, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults);
+void normalize(DataSet& data);
+void applyHanningWindow(DataSet& dataIn);
+DataSet prepareAndExecuteFFT(DataSet& dataIn, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults);
 
 // Fast Fourier Transform
-dataSet fastFourierTransform(dataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults);
+DataSet fastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults);
 
 // More Tests 2
-long calculateDataFileSize(char fileName[], dataSet& waveformDataPoints);
+long captureFileData(std::string songName, AudioFileData& waveformDataPoints);

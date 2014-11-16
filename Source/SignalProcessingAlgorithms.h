@@ -5,13 +5,14 @@ class SignalProcessingAlgorithm
 public:
     // Constructors and Destructors
     SignalProcessingAlgorithm();
+    SignalProcessingAlgorithm(int numberOfBits);
     ~SignalProcessingAlgorithm();
 
     // Define lower and upper bounds (as indices) for this processor
     void setBounds(const int lower, const int upper);
 
     // Heart and soul of the Signal Processing Algorithm. 
-    virtual std::string convertToBits(uniqueDataSet& dataToConvert, int noiseFloor);
+    virtual std::string convertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
 
 protected:
 
@@ -24,11 +25,11 @@ protected:
     //		is not in TEXT mode.
     // 4. ___EndianConvert -- Called according to endianness as indicated in the config
     //		file, this converts a bool[] into a string
-    virtual void preProcessForConversion(uniqueDataSet& dataToConvert);
-    virtual void applyNoiseFloor(uniqueDataSet& preProcesedData, int noiseFloor);
-    virtual std::bitset<8> evaluateBits(uniqueDataSet& processedData);
-    virtual std::string bigEndianConvert(std::bitset<8>& processedBits);
-    virtual std::string littleEndianConvert(std::bitset<8>& processedBits);
+    virtual void preProcessForConversion(UniqueDataSet& dataToConvert);
+    virtual void applyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor);
+    virtual dynamic_bitset<> evaluateBits(UniqueDataSet& processedData);
+    virtual std::string bigEndianConvert(dynamic_bitset<>& processedBits);
+    virtual std::string littleEndianConvert(dynamic_bitset<>& processedBits);
 
     // These are used within the convertToBits methods
     int lowerBound_, upperBound_, bits_;
@@ -85,5 +86,5 @@ private:
 class SPAHillEffect : public SignalProcessingAlgorithm
 {
 protected:
-    std::bitset<8> evaluateBits(uniqueDataSet& processedData, const int bitLength);
+    dynamic_bitset<> evaluateBits(UniqueDataSet& processedData, const int bitLength);
 };
