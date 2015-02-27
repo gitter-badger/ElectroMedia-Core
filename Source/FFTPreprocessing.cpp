@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "FFTPreprocessing.h"
 
-void convertMP3ToARF(char argv[])
+void convertMP3ToARF(ConfigurationHandler& configHandler)
 {
     // filename stuff
-    std::string fullArgument = argv;
+	std::string fullArgument = configHandler.getFilename();
     auto extensionLocation = fullArgument.find(".");
 
     // Protection for noninclusion of extension
@@ -18,20 +18,11 @@ void convertMP3ToARF(char argv[])
     std::string emcFileName = nameWithoutExtension + EMC_FILE_EXTENSION;
     std::string arFileName = nameWithoutExtension + AR_FILE_EXTENSION;
 
-    // if arf exists
-    // {
-    //      cout << "ARF already exists, do you wish to overwrite it?\n Option (Y/N):  ";
-    //      cin >> option;
-    //      if(option == "n")
-    //          return;
-    //  }
-
-    // Open the ARF Writer object and add configuration settings
-    auto arfile = ArduinoReadableFileWriter((char*)arFileName.c_str());
-    auto configIO = new ConfigurationHandler(arfile);
-    configIO->loadInConfigurationSettings();
-    arfile.setMode(arfile.MODE_TEXT);
-
+    auto arfile = ArduinoReadableFileWriter((char*)("F:\\Projects\\EMC\\Debug\\" + arFileName).c_str());
+	
+	configHandler.initializeSignalProcessingAlgorithms(arfile);
+	arfile.setMode(arfile.MODE_TEXT);
+	
     // Process the MP3 File
     auto returnCode = decodeMusic(nameWithoutExtension);
     if (returnCode != 1)

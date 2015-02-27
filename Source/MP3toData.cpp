@@ -23,7 +23,7 @@ int decodeMusic(std::string songName)
 {
     int audioStream = -1;
     std::string name = songName;
-    std::string mpegFileName = name + ".mp3";
+    std::string mpegFileName = "F:\\Projects\\EMC\\Debug\\" + name + ".mp3";
     std::string emcFileName = name + EMC_FILE_EXTENSION;
 
     AVCodec         *aCodec;

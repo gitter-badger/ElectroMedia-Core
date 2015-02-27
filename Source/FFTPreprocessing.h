@@ -4,7 +4,7 @@
 #include "MP3toData.h"
 #include "ConfigurationHandler.h"
 
-void convertMP3ToARF(char argv[]);
+void convertMP3ToARF(ConfigurationHandler& configHandler);
 
 // FFT PreProcessing
 void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut);
