@@ -11,15 +11,15 @@ class ConfigurationHandler
 {
 public:
     // Constructors / Destructors
-    ConfigurationHandler(ArduinoReadableFileWriter& arf);
+	ConfigurationHandler();
     ~ConfigurationHandler();
-    void loadInConfigurationSettings();
+	void loadConfigurationFile(std::string configurationFileName);
     void addDefinition(std::string key, std::string value); // Adds an entry to the .esf if it doesn't already exist
-
-protected:
-    void initializeSignalProcessingAlgorithms(Json::Value root);
+	void setArduinoReadableFileWriter(ArduinoReadableFileWriter& arf);
+	std::string getFilename();
+	void initializeSignalProcessingAlgorithms(ArduinoReadableFileWriter& arf);
+	void generateDefault();
 
 private:
-    void generateDefault();
-    ArduinoReadableFileWriter& arf_;
+	std::string configurationFilename;
 };

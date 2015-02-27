@@ -1,29 +1,38 @@
 #include "stdafx.h"
 #include "ConfigurationHandler.h"
 
-ConfigurationHandler::ConfigurationHandler(ArduinoReadableFileWriter& arf)
-    :arf_(arf)
+ConfigurationHandler::ConfigurationHandler()
 {}
 
-void ConfigurationHandler::loadInConfigurationSettings()
+void ConfigurationHandler::loadConfigurationFile(std::string configurationFileName)
 {
-    std::ifstream in(CONFIGURATION_FILE_NAME);
-    Json::Value root;
-
-    in >> root;
-
-    initializeSignalProcessingAlgorithms(root);
+	this->configurationFilename = configurationFileName;
 }
 
-void ConfigurationHandler::initializeSignalProcessingAlgorithms(Json::Value root)
+std::string ConfigurationHandler::getFilename()
 {
+	std::ifstream in(configurationFilename);
+	Json::Value root;
+	Json::Reader reader;
+	reader.parse(in, root);
+
+	return root["filename"].asString();
+}
+
+void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableFileWriter& arf)
+{
+	std::ifstream in(configurationFilename);
+	Json::Value root;
+	Json::Reader reader;
+	reader.parse(in, root);
+
     Json::Value::iterator it = root["algorithms"].begin();
 
-    while (it != root["algorithms"].end())
+	while (it != root["algorithms"].end())
     {
         SignalProcessingAlgorithm* spa;
         auto fixedBoundaryType = 0;
-        auto fixedBoundary = (*it)["fixedBoundary"].asString();
+        auto fixedBoundary = (*it)["fixed_boundary"].asString();
         auto type = (*it)["type"].asString();
         auto bits = (*it)["bits"].asInt();
 
@@ -31,7 +40,7 @@ void ConfigurationHandler::initializeSignalProcessingAlgorithms(Json::Value root
         {
             spa = new SignalProcessingAlgorithm(bits);
         }
-        else// if (type == "hill")
+        else
         {
             spa = new SPAHillEffect();
         }
@@ -46,7 +55,7 @@ void ConfigurationHandler::initializeSignalProcessingAlgorithms(Json::Value root
         }
         else fixedBoundaryType = ADJUSTMENT_TYPE_CENTER;
 
-        arf_.addFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
+        arf.addFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
         ++it;
     }
 }
