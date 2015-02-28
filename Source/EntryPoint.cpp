@@ -13,9 +13,14 @@
 
 int main(int argc, char *argv[], char *envp[])
 {
-	auto configHandler = new ConfigurationHandler();
-	configHandler->loadConfigurationFile("F:\\Projects\\EMC\\Debug\\config.json");
-	convertMP3ToARF(*configHandler);
+	auto configHandler = new ConfigurationHandler("F:\\Projects\\EMC\\Debug\\config.json");
+		
+	if (configHandler->getMode() == 0)
+	{
+		debug("Preparing to convert...");
+		convertMP3ToARF(*configHandler);
+	}
+	else readARF(*configHandler);
 
 	return 1;
 }

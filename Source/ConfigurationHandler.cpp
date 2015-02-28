@@ -1,34 +1,43 @@
 #include "stdafx.h"
 #include "ConfigurationHandler.h"
 
-ConfigurationHandler::ConfigurationHandler()
-{}
+ConfigurationHandler::ConfigurationHandler(std::string filename)
+	: arfwriterMode(MODE_WRITE)
+{
+	decodedJSON = new Json::Value();
+	loadConfigurationFile(filename);
+}
 
 void ConfigurationHandler::loadConfigurationFile(std::string configurationFileName)
+{	
+	std::ifstream in(configurationFileName);
+	Json::Reader reader;
+	reader.parse(in, decodedJSON);
+
+	if (decodedJSON["mode"].asString().compare("write") == 0) // Remove Hardcoded values
+	{
+	arfwriterMode = MODE_WRITE;
+		return;
+	}
+
+	arfwriterMode = MODE_READ;
+}
+
+int ConfigurationHandler::getMode()
 {
-	this->configurationFilename = configurationFileName;
+	return (int)arfwriterMode;
 }
 
 std::string ConfigurationHandler::getFilename()
 {
-	std::ifstream in(configurationFilename);
-	Json::Value root;
-	Json::Reader reader;
-	reader.parse(in, root);
-
-	return root["filename"].asString();
+	return decodedJSON["filename"].asString();
 }
 
 void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableFileWriter& arf)
 {
-	std::ifstream in(configurationFilename);
-	Json::Value root;
-	Json::Reader reader;
-	reader.parse(in, root);
+    Json::Value::iterator it = decodedJSON["algorithms"].begin();
 
-    Json::Value::iterator it = root["algorithms"].begin();
-
-	while (it != root["algorithms"].end())
+	while (it != decodedJSON["algorithms"].end())
     {
         SignalProcessingAlgorithm* spa;
         auto fixedBoundaryType = 0;
@@ -58,14 +67,4 @@ void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableF
         arf.addFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
         ++it;
     }
-}
-
-void ConfigurationHandler::generateDefault()
-{
-    debug("Generating a new configuration file");
-
-    std::ofstream newConfigFile;
-    newConfigFile.open(CONFIGURATION_FILE_NAME, std::ios::out);
-    newConfigFile << "spa-8::50:200+0\nspa-8::200:400+2\nspa-8::300:600+2\nspa-8::200:1000+1";
-    newConfigFile.close();
 }

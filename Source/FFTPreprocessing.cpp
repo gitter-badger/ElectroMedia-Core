@@ -15,10 +15,8 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
 
     // Specific filename strings
     auto nameWithoutExtension = std::string(fullArgument.begin(), extensionLocation + fullArgument.begin());
-    std::string emcFileName = nameWithoutExtension + EMC_FILE_EXTENSION;
-    std::string arFileName = nameWithoutExtension + AR_FILE_EXTENSION;
-
-    auto arfile = ArduinoReadableFileWriter((char*)("F:\\Projects\\EMC\\Debug\\" + arFileName).c_str());
+	std::string arfilename = ("F:\\Projects\\EMC\\Debug\\" + nameWithoutExtension + AR_FILE_EXTENSION);
+	auto arfile = ArduinoReadableFileWriter((char*)arfilename.c_str());
 	
 	configHandler.initializeSignalProcessingAlgorithms(arfile);
 	arfile.setMode(arfile.MODE_TEXT);
@@ -33,7 +31,7 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
 
     // Process the raw data file and put the data into fulldata
     AudioFileData dataFromFile = std::make_shared<vector<char>>();
-    long filesize = captureFileData(emcFileName, dataFromFile);
+    long filesize = captureFileData(nameWithoutExtension, dataFromFile);
     int sweeps = -1;
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
@@ -47,7 +45,7 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
     fftw_complex* complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
     fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
 
-    debug("Converting " + nameWithoutExtension + " to Arduino Readable File");
+    debug("Converting \"" + nameWithoutExtension + "\" to Arduino Readable File");
     while (((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < dataFromFile->size())
     {
         // Copy out the data from the AudioFileData source into a DataSet
@@ -68,6 +66,35 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
     fftw_free(complexResults);
     fftw_cleanup();
     arfile.close();
+}
+
+void readARF(ConfigurationHandler& configHandler)
+{
+    std::string fullArgument = configHandler.getFilename();
+    auto extensionLocation = fullArgument.find(".");
+
+    // Protection for noninclusion of extension
+    if (extensionLocation > fullArgument.size())
+    {
+        extensionLocation = fullArgument.size();
+    }
+
+    auto nameWithoutExtension = std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
+    std::string arFileName = "F:\\Projects\\EMC\\Debug\\" + nameWithoutExtension + AR_FILE_EXTENSION;
+
+    std::ifstream visualizationFile(arFileName);
+    if (visualizationFile.is_open())
+    {
+        std::string line;
+        auto start = std::chrono::high_resolution_clock::now();
+        while (std::getline(visualizationFile, line))
+        {
+            cout << line << "\n";
+            std::this_thread::sleep_until(start + std::chrono::microseconds(45000));
+            start = std::chrono::high_resolution_clock::now();
+            //while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() < 46447);
+        }
+    }
 }
 
 void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
@@ -97,7 +124,7 @@ void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
 long captureFileData(std::string songName, AudioFileData& waveformDataPoints)
 {
     // Read the file indicated by Filename argument
-    std::ifstream dataFileIn_(songName.c_str(), std::ios::binary);
+	std::ifstream dataFileIn_((songName + EMC_FILE_EXTENSION).c_str(), std::ios::binary);
 
     long counted_ = 0;
     while (dataFileIn_)

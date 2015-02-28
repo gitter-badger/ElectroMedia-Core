@@ -3,8 +3,11 @@
 #include "FrequencyMaximum.h"
 #include "MP3toData.h"
 #include "ConfigurationHandler.h"
+#include <thread>
+#include <chrono>
 
 void convertMP3ToARF(ConfigurationHandler& configHandler);
+void readARF(ConfigurationHandler& configHandler);
 
 // FFT PreProcessing
 void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut);

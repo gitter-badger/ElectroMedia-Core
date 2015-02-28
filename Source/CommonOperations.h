@@ -14,5 +14,3 @@ double calculateIntensityScalar(double frequency);
 
 // Pipes out a line of text to cerr if and only if DEBUG_ENABLED == true
 void debug(std::string debugComment); 
-
-void readARF(char filename[]);
