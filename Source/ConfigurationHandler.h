@@ -11,9 +11,10 @@ class ConfigurationHandler
 {
 public:
     // Constructors / Destructors
-	ConfigurationHandler(std::string configurationFileName);
+	ConfigurationHandler(std::string configDirectory, std::string filename);
     ~ConfigurationHandler();
 	std::string getFilename();
+	std::string getDirectory();
 	void initializeSignalProcessingAlgorithms(ArduinoReadableFileWriter& arf);
 	int getMode();
 
@@ -24,4 +25,5 @@ private:
 
 	mode arfwriterMode;
 	Json::Value decodedJSON;
+	std::string workingDirectory;
 };

@@ -11,9 +11,14 @@
 // Signed 16-bit PCM Little-Endian
 // Command line 
 
+std::string getPath(char* basePath);
+
 int main(int argc, char *argv[], char *envp[])
 {
-	auto configHandler = new ConfigurationHandler("F:\\Projects\\EMC\\Debug\\config.json");
+	char basePath[255] = "";
+	_fullpath(basePath, argv[0], sizeof(basePath));
+
+	auto configHandler = new ConfigurationHandler(getPath(basePath), "config.json");
 		
 	if (configHandler->getMode() == 0)
 	{
@@ -23,4 +28,12 @@ int main(int argc, char *argv[], char *envp[])
 	else readARF(*configHandler);
 
 	return 1;
+}
+
+std::string getPath(char* basePath)
+{
+	std::string path = (std::string)basePath;
+
+	auto exeLocation = ((std::string)path).find("EMC.exe");
+	return std::string(path.begin(), exeLocation + path.begin());
 }

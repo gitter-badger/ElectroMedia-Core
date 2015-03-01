@@ -15,14 +15,14 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
 
     // Specific filename strings
     auto nameWithoutExtension = std::string(fullArgument.begin(), extensionLocation + fullArgument.begin());
-	std::string arfilename = ("F:\\Projects\\EMC\\Debug\\" + nameWithoutExtension + AR_FILE_EXTENSION);
+	std::string arfilename = (configHandler.getDirectory() + nameWithoutExtension + AR_FILE_EXTENSION);
 	auto arfile = ArduinoReadableFileWriter((char*)arfilename.c_str());
 	
 	configHandler.initializeSignalProcessingAlgorithms(arfile);
 	arfile.setMode(arfile.MODE_TEXT);
 	
     // Process the MP3 File
-    auto returnCode = decodeMusic(nameWithoutExtension);
+    auto returnCode = decodeMusic(configHandler.getDirectory(), nameWithoutExtension);
     if (returnCode != 1)
     {
         cout << "Exiting program with code " << returnCode;
@@ -80,7 +80,7 @@ void readARF(ConfigurationHandler& configHandler)
     }
 
     auto nameWithoutExtension = std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
-    std::string arFileName = "F:\\Projects\\EMC\\Debug\\" + nameWithoutExtension + AR_FILE_EXTENSION;
+    std::string arFileName = configHandler.getDirectory() + nameWithoutExtension + AR_FILE_EXTENSION;
 
     std::ifstream visualizationFile(arFileName);
     if (visualizationFile.is_open())

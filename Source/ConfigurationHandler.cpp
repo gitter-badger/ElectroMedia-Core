@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "ConfigurationHandler.h"
 
-ConfigurationHandler::ConfigurationHandler(std::string filename)
-	: arfwriterMode(MODE_WRITE)
+ConfigurationHandler::ConfigurationHandler(std::string configDirectory, std::string filename)
+: arfwriterMode(MODE_WRITE), workingDirectory(configDirectory)
 {
 	decodedJSON = new Json::Value();
-	loadConfigurationFile(filename);
+	loadConfigurationFile(configDirectory + filename);
 }
 
 void ConfigurationHandler::loadConfigurationFile(std::string configurationFileName)
@@ -31,6 +31,11 @@ int ConfigurationHandler::getMode()
 std::string ConfigurationHandler::getFilename()
 {
 	return decodedJSON["filename"].asString();
+}
+
+std::string ConfigurationHandler::getDirectory()
+{
+	return workingDirectory;
 }
 
 void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableFileWriter& arf)

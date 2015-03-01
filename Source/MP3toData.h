@@ -3,4 +3,4 @@
 
 // The Decoder uses FFMPEG, an Open-Source Library available via GPL.
 
-int decodeMusic(std::string filename);
+int decodeMusic(std::string directoryName, std::string songName);
