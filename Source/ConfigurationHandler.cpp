@@ -54,6 +54,10 @@ void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableF
         {
             spa = new SignalProcessingAlgorithm(bits);
         }
+		else if (type == "pca")
+		{
+			spa = new SPAToPCAExperiment();
+		}
         else
         {
             spa = new SPAHillEffect();

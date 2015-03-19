@@ -161,7 +161,7 @@ void ArduinoReadableFileWriter::writeDoubleInTextMode(DataSet& dataToWrite)
         UniqueDataSet conversionDuplicate = std::make_unique<vector<double>>(dataSubvector);
         auto outputString = (it->convertToBits(conversionDuplicate, dynamicNoiseFloor));
 
-        ArduinoReadableFileWriter::arfStream << outputString << ".";
+        ArduinoReadableFileWriter::arfStream << outputString;
     }
     ArduinoReadableFileWriter::arfStream << "\n";
 }

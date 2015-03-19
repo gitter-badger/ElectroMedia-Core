@@ -1,3 +1,4 @@
+#include <sstream>
 #include "stdafx.h"
 
 class SignalProcessingAlgorithm
@@ -36,6 +37,16 @@ protected:
 
 private:
     std::string checkBit(bool bitToCheck);
+};
+
+class SPAToPCAExperiment : public SignalProcessingAlgorithm
+{
+public:
+	std::string convertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
+	enum NoteName { A, Asharp, B, C, Csharp, D, Dsharp, E, F, Fsharp, G, Gsharp, NONE };
+
+private:
+	NoteName toNote(double frequency);
 };
 
 //=====================
