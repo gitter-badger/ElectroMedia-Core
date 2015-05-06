@@ -1,29 +1,29 @@
 #include "stdafx.h"
-#include "SignalProcessingAlgorithms.h"
+#include "Analyzer.h"
 
-// SignalProcessingAlgorithm Constructor
+// Analyzer Constructor
 // ---
 // ...
-SignalProcessingAlgorithm::SignalProcessingAlgorithm()
+Analyzer::Analyzer()
     : lowerBound_(0), upperBound_(0), bits_(4)
 { /* - No op - */ }
 
-SignalProcessingAlgorithm::SignalProcessingAlgorithm(int numberOfBits)
+Analyzer::Analyzer(int numberOfBits)
     : lowerBound_(0), upperBound_(0)
 {
     bits_ = numberOfBits;
 }
 
-// SignalProcessingAlgorithm Destructor
+// Analyzer Destructor
 // ---
 // If we have stuff to dealloc, do it here
-SignalProcessingAlgorithm::~SignalProcessingAlgorithm()
+Analyzer::~Analyzer()
 { /* - No op - */ }
 
 // setbounds(int,int)
 // ---
 // Redeclares the lower and upper bounds as dictated by the FrequencyRangeProfile
-void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
+void Analyzer::setBounds(const int lower, const int upper)
 {
     lowerBound_ = lower;
     upperBound_ = upper;
@@ -39,7 +39,7 @@ void SignalProcessingAlgorithm::setBounds(const int lower, const int upper)
 // 
 // Result is by default Big Endian, but this can be changed through config by
 // setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
-std::string SignalProcessingAlgorithm::convertToBits(UniqueDataSet& dataToConvert, int noiseFloor)
+std::string Analyzer::convertToBits(UniqueDataSet& dataToConvert, int noiseFloor)
 {
     preProcessForConversion(dataToConvert);
     applyNoiseFloor(dataToConvert, noiseFloor);
@@ -55,7 +55,7 @@ std::string SignalProcessingAlgorithm::convertToBits(UniqueDataSet& dataToConver
     return littleEndianConvert(resultingBits);
 }
 
-void SignalProcessingAlgorithm::preProcessForConversion(UniqueDataSet& dataToConvert)
+void Analyzer::preProcessForConversion(UniqueDataSet& dataToConvert)
 {
     // Nothing should really happen 
 }
@@ -70,7 +70,7 @@ double checkAgainstNoiseFloor(double frequency, int noiseFloor)
     return frequency;
 }
 
-void SignalProcessingAlgorithm::applyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor)
+void Analyzer::applyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor)
 {
     // Replace with iterator
     DataSetIterator it = preProcesedData->begin();
@@ -81,7 +81,7 @@ void SignalProcessingAlgorithm::applyNoiseFloor(UniqueDataSet& preProcesedData, 
     }
 }
 
-dynamic_bitset<> SignalProcessingAlgorithm::evaluateBits(UniqueDataSet& processedData)
+dynamic_bitset<> Analyzer::evaluateBits(UniqueDataSet& processedData)
 {
     auto bitLength = (upperBound_ - lowerBound_) / bits_;
     auto currentBitIndex = (int) 0;
@@ -105,7 +105,7 @@ dynamic_bitset<> SignalProcessingAlgorithm::evaluateBits(UniqueDataSet& processe
 }
 
 
-std::string SignalProcessingAlgorithm::checkBit(bool bitToCheck)
+std::string Analyzer::checkBit(bool bitToCheck)
 {
     if(bitToCheck)
     {
@@ -115,7 +115,7 @@ std::string SignalProcessingAlgorithm::checkBit(bool bitToCheck)
     return "0";
 }
 
-std::string SignalProcessingAlgorithm::bigEndianConvert(dynamic_bitset<>& processedBits)
+std::string Analyzer::bigEndianConvert(dynamic_bitset<>& processedBits)
 {
     auto outputString = (std::string)"";
 
@@ -127,7 +127,7 @@ std::string SignalProcessingAlgorithm::bigEndianConvert(dynamic_bitset<>& proces
     return outputString;
 }
 
-std::string SignalProcessingAlgorithm::littleEndianConvert(dynamic_bitset<>& processedBits)
+std::string Analyzer::littleEndianConvert(dynamic_bitset<>& processedBits)
 {
     auto outputString = (std::string)"";
 

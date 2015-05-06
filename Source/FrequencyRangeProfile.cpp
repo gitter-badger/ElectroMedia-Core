@@ -8,10 +8,10 @@ FrequencyRangeProfile::FrequencyRangeProfile()
     : lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range")
 { }
 
-// FrequencyRangeProfile Constructor with SignalProcessingAlgorithm param
+// FrequencyRangeProfile Constructor with Analyzer param
 // ---
 // ...
-FrequencyRangeProfile::FrequencyRangeProfile(SignalProcessingAlgorithm processor)
+FrequencyRangeProfile::FrequencyRangeProfile(Analyzer processor)
     : lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range"), processor_(&processor)
 { }
 
@@ -23,10 +23,10 @@ FrequencyRangeProfile::~FrequencyRangeProfile()
     delete processor_;
 }
 
-// setProcessor(SignalProcessingAlgorithm)
+// setProcessor(Analyzer)
 // ---
 // Set or redefine the algorithm that this FRP is using
-void FrequencyRangeProfile::setProcessor(SignalProcessingAlgorithm& processor)
+void FrequencyRangeProfile::setProcessor(Analyzer& processor)
 {
     this->processor_ = &processor;
     processor.setBounds(lowerBound_,upperBound_);

@@ -8,51 +8,60 @@ ConfigurationHandler::ConfigurationHandler(std::string configDirectory, std::str
 	loadConfigurationFile(configDirectory + filename);
 }
 
-void ConfigurationHandler::loadConfigurationFile(std::string configurationFileName)
+// Load in the JSON Configuration file at the specified path
+void ConfigurationHandler::loadConfigurationFile(std::string configurationFilePath)
 {	
-	std::ifstream in(configurationFileName);
+	std::ifstream in(configurationFilePath);
 	Json::Reader reader;
 	reader.parse(in, decodedJSON);
 
-	if (decodedJSON["mode"].asString().compare("write") == 0) // Remove Hardcoded values
-	{
-	arfwriterMode = MODE_WRITE;
-		return;
-	}
-
+	// Default to Read Mode
 	arfwriterMode = MODE_READ;
+
+	// TODO: Refactor
+	if (decodedJSON["mode"].asString().compare("write") == 0)
+	{
+		arfwriterMode = MODE_WRITE;
+	}
 }
 
+// Returns what Mode Enum we're currently running
+// TODO: Refactor
 int ConfigurationHandler::getMode()
 {
 	return (int)arfwriterMode;
 }
 
+// Returns the filename of the song in the configuration file
 std::string ConfigurationHandler::getFilename()
 {
 	return decodedJSON["filename"].asString();
 }
 
+// Returns the file path of the working directory
 std::string ConfigurationHandler::getDirectory()
 {
 	return workingDirectory;
 }
 
-void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableFileWriter& arf)
+// TODO:  Heavy Refactoring
+void ConfigurationHandler::initializeAnalyzer(ArduinoReadableFileWriter& arf)
 {
     Json::Value::iterator it = decodedJSON["algorithms"].begin();
 
+	// Each loop corresponds to a subnode in the "algorithms" node
 	while (it != decodedJSON["algorithms"].end())
     {
-        SignalProcessingAlgorithm* spa;
+        Analyzer* spa;
         auto fixedBoundaryType = 0;
         auto fixedBoundary = (*it)["fixed_boundary"].asString();
         auto type = (*it)["type"].asString();
         auto bits = (*it)["bits"].asInt();
 
+		// Change the following to something like Spring
         if (type == "direct")
         {
-            spa = new SignalProcessingAlgorithm(bits);
+            spa = new Analyzer(bits);
         }
 		else if (type == "pca")
 		{
@@ -63,6 +72,7 @@ void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableF
             spa = new SPAHillEffect();
         }
 
+		// This really just shouldn't exist 
         if (fixedBoundary == "upper")
         {
             fixedBoundaryType = ADJUSTMENT_TYPE_CHANGE_LOWER;
@@ -73,6 +83,7 @@ void ConfigurationHandler::initializeSignalProcessingAlgorithms(ArduinoReadableF
         }
         else fixedBoundaryType = ADJUSTMENT_TYPE_CENTER;
 
+		// Why do frequency ranges exist again?
         arf.addFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
         ++it;
     }

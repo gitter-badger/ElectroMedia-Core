@@ -1,13 +1,13 @@
 #include <sstream>
 #include "stdafx.h"
 
-class SignalProcessingAlgorithm
+class Analyzer
 {
 public:
     // Constructors and Destructors
-    SignalProcessingAlgorithm();
-    SignalProcessingAlgorithm(int numberOfBits);
-    ~SignalProcessingAlgorithm();
+	Analyzer();
+	Analyzer(int numberOfBits);
+	~Analyzer();
 
     // Define lower and upper bounds (as indices) for this processor
     void setBounds(const int lower, const int upper);
@@ -39,7 +39,7 @@ private:
     std::string checkBit(bool bitToCheck);
 };
 
-class SPAToPCAExperiment : public SignalProcessingAlgorithm
+class SPAToPCAExperiment : public Analyzer
 {
 public:
 	std::string convertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
@@ -56,7 +56,7 @@ private:
 // INTENSITY
 // ---
 // Watches Intensity of a specific frequency range; returns 1 bit
-class SPAIntensity : public SignalProcessingAlgorithm
+class SPAIntensity : public Analyzer
 {
 public:
     std::string convertToBits(const double dataToConvert[], int noiseFloor);
@@ -65,7 +65,7 @@ public:
 // WATCH FREQUENCY
 // ---
 // Watches only an exact frequency; returns the value in binary
-class SPAWatchFrequency : public SignalProcessingAlgorithm
+class SPAWatchFrequency : public Analyzer
 {
 public:
     std::string convertToBits(const double dataToConvert[], int noiseFloor);
@@ -80,7 +80,7 @@ private:
 // ---
 // Watches for percussion and does specific things for them. I want this to be configurable.
 // For instance, on HATS make all bits go to a value of 1, or etc.
-class SPAPercussion : public SignalProcessingAlgorithm
+class SPAPercussion : public Analyzer
 {
 public:
     std::string convertToBits(const double dataToConvert[], int noiseFloor);
@@ -94,7 +94,7 @@ private:
 // ---
 // Turns all bits lower than the maximum amplitude within a range to 1
 // Useful for climbing frequency effects as in "Contact" by Daft Punk
-class SPAHillEffect : public SignalProcessingAlgorithm
+class SPAHillEffect : public Analyzer
 {
 protected:
     dynamic_bitset<> evaluateBits(UniqueDataSet& processedData, const int bitLength);

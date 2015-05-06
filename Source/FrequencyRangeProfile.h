@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "SignalProcessingAlgorithms.h"
+#include "Analyzer.h"
 
 class FrequencyRangeProfile
 {
 public:
     // Constructors and Destructors
     FrequencyRangeProfile();
-    FrequencyRangeProfile(SignalProcessingAlgorithm processor);
+    FrequencyRangeProfile(Analyzer processor);
     ~FrequencyRangeProfile();
 
     // Setters
-    void setProcessor(SignalProcessingAlgorithm& processor);
+    void setProcessor(Analyzer& processor);
     void setIndexBounds(int lower, int upper, int adjustmentType);
     void setFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType);
     void initializeFrequencyBounds(double lowerFrequency, double upperFrequency, int adjustmentType);
@@ -30,6 +30,6 @@ private:
 	double* formatCenter(double lowerFrequency, double upperFrequency, double resolution);
 
     // Private Variables
-    SignalProcessingAlgorithm* processor_;
+    Analyzer* processor_;
     std::string name_;
 };

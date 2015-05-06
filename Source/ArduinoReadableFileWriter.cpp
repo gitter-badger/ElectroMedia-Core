@@ -26,7 +26,7 @@ ArduinoReadableFileWriter::~ArduinoReadableFileWriter()
 // ---
 // Adds a frequency range to our dynamic array of Frequency Ranges. Will return
 // true if addition was successful.
-bool ArduinoReadableFileWriter::addFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm& processor)
+bool ArduinoReadableFileWriter::addFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor)
 {
     // If we have an available frequencyRange_, initialize its bounds, add it, and then set its processor
     if(numberOfFrequencyRanges_ < MAXIMUM_NUMBER_OF_FREQUENCY_RANGES)
@@ -38,7 +38,7 @@ bool ArduinoReadableFileWriter::addFrequencyRange(double lowerFrequency, double 
     return false;
 }
 
-void ArduinoReadableFileWriter::addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, SignalProcessingAlgorithm& processor)
+void ArduinoReadableFileWriter::addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor)
 {
     auto newFreq = new FrequencyRangeProfile();
     newFreq->initializeFrequencyBounds(lowerFrequency, upperFrequency, adjustment);

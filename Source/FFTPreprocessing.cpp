@@ -18,7 +18,7 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
 	std::string arfilename = (configHandler.getDirectory() + nameWithoutExtension + AR_FILE_EXTENSION);
 	auto arfile = ArduinoReadableFileWriter((char*)arfilename.c_str());
 	
-	configHandler.initializeSignalProcessingAlgorithms(arfile);
+	configHandler.initializeAnalyzer(arfile);
 	arfile.setMode(arfile.MODE_TEXT);
 	
     // Process the MP3 File

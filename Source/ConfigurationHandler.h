@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "ArduinoReadableFileWriter.h"
-#include "json.h"
+#include "Dependencies\json\json.h"
 
 /* 
- * NEW FILE -- In the process of being designed!
+ *  Being Refactored!
  */
 
 
@@ -13,16 +13,23 @@ public:
     // Constructors / Destructors
 	ConfigurationHandler(std::string configDirectory, std::string filename);
     ~ConfigurationHandler();
+
+	// Getters
 	std::string getFilename();
 	std::string getDirectory();
-	void initializeSignalProcessingAlgorithms(ArduinoReadableFileWriter& arf);
 	int getMode();
 
+	// enums -- To Refactor Out
 	enum mode { MODE_WRITE, MODE_READ };
 
-private:
-	void loadConfigurationFile(std::string configurationFileName);
+	// Initialize the ArduinoReadableFileWriter object with the SPAs declared in the JSON
+	void initializeAnalyzer(ArduinoReadableFileWriter& arf);
 
+private:
+	// Load in the configuration JSON at specified file path
+	void loadConfigurationFile(std::string configurationFilePath);
+
+	// Private Variables
 	mode arfwriterMode;
 	Json::Value decodedJSON;
 	std::string workingDirectory;
