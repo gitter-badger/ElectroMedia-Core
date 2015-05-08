@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Constants.h"
 #include "MP3toData.h"
 #include <sstream>
 

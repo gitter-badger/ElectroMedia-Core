@@ -1,15 +1,16 @@
 #include "stdafx.h"
-#include "EMCModes.h"
+#include "Constants.h"
 #include "FFTPreprocessing.h"
+#include "EMCModes.h"
 
 // Signed 16-bit PCM Little-Endian
 // Command line 
 
 std::string getPath(char* basePath);
 
-int main(int argc, char *argv[], char *envp[])
+int main(int argc, char *argv[])
 {
-	// Get the Base Path of this Executable
+	// Get the Base Path of the EMC executable
 	char basePath[255] = "";
 	_fullpath(basePath, argv[0], sizeof(basePath));
 
@@ -21,12 +22,12 @@ int main(int argc, char *argv[], char *envp[])
 	switch (configHandler->getMode())
 	{
 	case EMC_Mode::Decode:
-		debug("Preparing to convert...");
+		debug("Preparing to decode the file.");
 		convertMP3ToARF(*configHandler);
 		break;
 
 	case EMC_Mode::Read:
-		debug("Preparing to read...");
+		debug("Preparing to read the file.");
 		readARF(*configHandler);
 		break;
 	}

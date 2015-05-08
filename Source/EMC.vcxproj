@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="CommonOperations.h" />
     <ClInclude Include="ConfigurationHandler.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Dependencies\boost\assert.hpp" />
     <ClInclude Include="Dependencies\boost\checked_delete.hpp" />
     <ClInclude Include="Dependencies\boost\config.hpp" />
@@ -450,6 +451,8 @@
     <ClInclude Include="dev\include\libswresample\version.h" />
     <ClInclude Include="dev\include\libswscale\swscale.h" />
     <ClInclude Include="dev\include\libswscale\version.h" />
+    <ClInclude Include="HillEffectAnalyzer.h" />
+    <ClInclude Include="IntensityAnalyzer.h" />
     <ClInclude Include="NoteNames.h" />
     <ClInclude Include="EMCModes.h" />
     <ClInclude Include="FeatureExtractionAnalyzer.h" />
@@ -472,6 +475,8 @@
     <ClCompile Include="FrequencyRangeProfile.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />
     <ClCompile Include="FrequencyMaximum.cpp" />
+    <ClCompile Include="HillEffectAnalyzer.cpp" />
+    <ClCompile Include="IntensityAnalyzer.cpp" />
     <ClCompile Include="MP3toData.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="FFTPreprocessing.cpp" />

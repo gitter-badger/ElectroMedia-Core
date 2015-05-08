@@ -68,7 +68,7 @@ void ConfigurationHandler::initializeAnalyzer(ArduinoReadableFileWriter& arf)
 		}
         else
         {
-            spa = new SPAHillEffect();
+            spa = new HillEffectAnalyzer();
         }
 
 		// This really just shouldn't exist 

@@ -2,6 +2,7 @@
 #include "ArduinoReadableFileWriter.h"
 #include "EMCModes.h"
 #include "FeatureExtractionAnalyzer.h"
+#include "HillEffectAnalyzer.h"
 #include "Dependencies\json\json.h"
 
 /* 

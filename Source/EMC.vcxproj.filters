@@ -31,10 +31,10 @@
     <Filter Include="Source Files\Included Source">
       <UniqueIdentifier>{656b21c2-0161-4255-8d37-6ff213dd4258}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Project Source\Enums">
-      <UniqueIdentifier>{4f14aa30-f591-491c-a3ba-72ec32d3b6bd}</UniqueIdentifier>
+    <Filter Include="Header Files\Project Source\Helpers">
+      <UniqueIdentifier>{8f38cfc8-ce65-46db-ba75-37299a077f96}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Project Source\Enums">
+    <Filter Include="Header Files\Project Source\Helpers\Enums">
       <UniqueIdentifier>{90bb906a-878a-4930-9591-de2a2045ee87}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1174,10 +1174,19 @@
       <Filter>Header Files\Project Source\Signal Analyzers</Filter>
     </ClInclude>
     <ClInclude Include="NoteNames.h">
-      <Filter>Header Files\Project Source\Enums</Filter>
+      <Filter>Header Files\Project Source\Helpers\Enums</Filter>
     </ClInclude>
     <ClInclude Include="EMCModes.h">
-      <Filter>Header Files\Project Source\Enums</Filter>
+      <Filter>Header Files\Project Source\Helpers\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="IntensityAnalyzer.h">
+      <Filter>Header Files\Project Source\Signal Analyzers</Filter>
+    </ClInclude>
+    <ClInclude Include="HillEffectAnalyzer.h">
+      <Filter>Header Files\Project Source\Signal Analyzers</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files\Project Source\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1215,6 +1224,12 @@
       <Filter>Source Files\Project Source\Signal Analyzers</Filter>
     </ClCompile>
     <ClCompile Include="FeatureExtractionAnalyzer.cpp">
+      <Filter>Source Files\Project Source\Signal Analyzers</Filter>
+    </ClCompile>
+    <ClCompile Include="IntensityAnalyzer.cpp">
+      <Filter>Source Files\Project Source\Signal Analyzers</Filter>
+    </ClCompile>
+    <ClCompile Include="HillEffectAnalyzer.cpp">
       <Filter>Source Files\Project Source\Signal Analyzers</Filter>
     </ClCompile>
   </ItemGroup>

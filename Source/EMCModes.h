@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #ifndef EMC_MODE
 #define EMC_MODE
 

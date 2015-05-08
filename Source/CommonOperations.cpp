@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Constants.h"
 #include "CommonOperations.h"
 
 // int = convertFrequencyToInt(double)

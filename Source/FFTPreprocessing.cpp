@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Constants.h"
 #include "FFTPreprocessing.h"
 
 void convertMP3ToARF(ConfigurationHandler& configHandler)

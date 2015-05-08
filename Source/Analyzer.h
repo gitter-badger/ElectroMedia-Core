@@ -1,7 +1,6 @@
 #include <sstream>
 #include "stdafx.h"
 
-// Move out to around header include?
 #ifndef AnalyzerDefinition
 #define AnalyzerDefinition
 
@@ -41,57 +40,6 @@ protected:
 
 private:
     std::string checkBit(bool bitToCheck);
-};
-
-//=====================
-// SUBCLASSES BELOW...
-//=====================
-
-// INTENSITY
-// ---
-// Watches Intensity of a specific frequency range; returns 1 bit
-class SPAIntensity : public Analyzer
-{
-public:
-    std::string convertToBits(const double dataToConvert[], int noiseFloor);
-};
-
-// WATCH FREQUENCY
-// ---
-// Watches only an exact frequency; returns the value in binary
-class SPAWatchFrequency : public Analyzer
-{
-public:
-    std::string convertToBits(const double dataToConvert[], int noiseFloor);
-    void setWatchFrequency(double watchFrequency);
-
-private:
-    // The index of the frequency that this SPA should watch
-    int watchBound_;
-};
-
-// PERCUSSION
-// ---
-// Watches for percussion and does specific things for them. I want this to be configurable.
-// For instance, on HATS make all bits go to a value of 1, or etc.
-class SPAPercussion : public Analyzer
-{
-public:
-    std::string convertToBits(const double dataToConvert[], int noiseFloor);
-
-private:
-    // If setHighOnHat is true, the entire range goes high when the hat sounds
-    bool setHighOnHat;
-};
-
-// HILL EFFECT
-// ---
-// Turns all bits lower than the maximum amplitude within a range to 1
-// Useful for climbing frequency effects as in "Contact" by Daft Punk
-class SPAHillEffect : public Analyzer
-{
-protected:
-    dynamic_bitset<> evaluateBits(UniqueDataSet& processedData, const int bitLength);
 };
 
 #endif
