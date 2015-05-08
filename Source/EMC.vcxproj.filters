@@ -39,9 +39,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="ArduinoReadableFileWriter.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
@@ -1235,5 +1232,8 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="libfftw3-3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.md" />
   </ItemGroup>
 </Project>
