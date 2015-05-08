@@ -1234,37 +1234,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="dev\lib\avcodec-55.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-    <None Include="dev\lib\avdevice-55.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-    <None Include="dev\lib\avfilter-4.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-    <None Include="dev\lib\avformat-55.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-    <None Include="dev\lib\avutil-52.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-    <None Include="dev\lib\postproc-52.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-    <None Include="dev\lib\swresample-0.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-    <None Include="dev\lib\swscale-2.def">
-      <Filter>Source Files\Included Source</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="DubstepCannon.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <Library Include="libfftw3-3.lib" />
   </ItemGroup>
 </Project>

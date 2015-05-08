@@ -487,19 +487,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="dev\lib\avcodec-55.def" />
-    <None Include="dev\lib\avdevice-55.def" />
-    <None Include="dev\lib\avfilter-4.def" />
-    <None Include="dev\lib\avformat-55.def" />
-    <None Include="dev\lib\avutil-52.def" />
-    <None Include="dev\lib\postproc-52.def" />
-    <None Include="dev\lib\swresample-0.def" />
-    <None Include="dev\lib\swscale-2.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="DubstepCannon.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <Library Include="libfftw3-3.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
