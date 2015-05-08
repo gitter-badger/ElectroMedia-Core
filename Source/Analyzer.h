@@ -1,6 +1,10 @@
 #include <sstream>
 #include "stdafx.h"
 
+// Move out to around header include?
+#ifndef AnalyzerDefinition
+#define AnalyzerDefinition
+
 class Analyzer
 {
 public:
@@ -37,16 +41,6 @@ protected:
 
 private:
     std::string checkBit(bool bitToCheck);
-};
-
-class SPAToPCAExperiment : public Analyzer
-{
-public:
-	std::string convertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
-	enum NoteName { A, Asharp, B, C, Csharp, D, Dsharp, E, F, Fsharp, G, Gsharp, NONE };
-
-private:
-	NoteName toNote(double frequency);
 };
 
 //=====================
@@ -99,3 +93,5 @@ class SPAHillEffect : public Analyzer
 protected:
     dynamic_bitset<> evaluateBits(UniqueDataSet& processedData, const int bitLength);
 };
+
+#endif

@@ -1,26 +1,24 @@
 #include "stdafx.h"
 #include "ArduinoReadableFileWriter.h"
+#include "EMCModes.h"
+#include "FeatureExtractionAnalyzer.h"
 #include "Dependencies\json\json.h"
 
 /* 
  *  Being Refactored!
  */
 
-
 class ConfigurationHandler
 {
 public:
     // Constructors / Destructors
-	ConfigurationHandler(std::string configDirectory, std::string filename);
+	ConfigurationHandler(std::string configFilePath);
     ~ConfigurationHandler();
 
 	// Getters
 	std::string getFilename();
 	std::string getDirectory();
-	int getMode();
-
-	// enums -- To Refactor Out
-	enum mode { MODE_WRITE, MODE_READ };
+	EMC_Mode getMode();
 
 	// Initialize the ArduinoReadableFileWriter object with the SPAs declared in the JSON
 	void initializeAnalyzer(ArduinoReadableFileWriter& arf);
@@ -30,7 +28,10 @@ private:
 	void loadConfigurationFile(std::string configurationFilePath);
 
 	// Private Variables
-	mode arfwriterMode;
+	EMC_Mode arfwriterMode;
 	Json::Value decodedJSON;
 	std::string workingDirectory;
+	
+	// PostRefactor
+	std::string _configurationFilePath;
 };

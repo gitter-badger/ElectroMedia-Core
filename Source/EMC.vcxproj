@@ -450,6 +450,9 @@
     <ClInclude Include="dev\include\libswresample\version.h" />
     <ClInclude Include="dev\include\libswscale\swscale.h" />
     <ClInclude Include="dev\include\libswscale\version.h" />
+    <ClInclude Include="NoteNames.h" />
+    <ClInclude Include="EMCModes.h" />
+    <ClInclude Include="FeatureExtractionAnalyzer.h" />
     <ClInclude Include="FrequencyRangeProfile.h" />
     <ClInclude Include="ArduinoReadableFileWriter.h" />
     <ClInclude Include="FrequencyMaximum.h" />
@@ -465,6 +468,7 @@
     <ClCompile Include="CommonOperations.cpp" />
     <ClCompile Include="ConfigurationHandler.cpp" />
     <ClCompile Include="Dependencies\jsoncpp.cpp" />
+    <ClCompile Include="FeatureExtractionAnalyzer.cpp" />
     <ClCompile Include="FrequencyRangeProfile.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />
     <ClCompile Include="FrequencyMaximum.cpp" />

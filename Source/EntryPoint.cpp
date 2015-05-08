@@ -1,12 +1,6 @@
 #include "stdafx.h"
+#include "EMCModes.h"
 #include "FFTPreprocessing.h"
-
-/*
- * Note 03 == Need to add more comments and clean up the general progam flow a bit
- *
- * Note 04 == Come up with a better, more intuitive flow to add FRPs. Especially
- *            with respect to setting bits
- */
 
 // Signed 16-bit PCM Little-Endian
 // Command line 
@@ -15,17 +9,27 @@ std::string getPath(char* basePath);
 
 int main(int argc, char *argv[], char *envp[])
 {
+	// Get the Base Path of this Executable
 	char basePath[255] = "";
 	_fullpath(basePath, argv[0], sizeof(basePath));
 
-	auto configHandler = new ConfigurationHandler(getPath(basePath), "config.json");
-		
-	if (configHandler->getMode() == 0)
+	// Get the location of the config.json, then create a Configuration Handler
+	auto configFilePath = getPath(basePath) + "config.json";
+	auto configHandler = new ConfigurationHandler(configFilePath);
+
+	// Determine the desired operation
+	switch (configHandler->getMode())
 	{
+	case EMC_Mode::Decode:
 		debug("Preparing to convert...");
 		convertMP3ToARF(*configHandler);
+		break;
+
+	case EMC_Mode::Read:
+		debug("Preparing to read...");
+		readARF(*configHandler);
+		break;
 	}
-	else readARF(*configHandler);
 
 	return 1;
 }

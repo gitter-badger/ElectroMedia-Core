@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "ConfigurationHandler.h"
 
-ConfigurationHandler::ConfigurationHandler(std::string configDirectory, std::string filename)
-: arfwriterMode(MODE_WRITE), workingDirectory(configDirectory)
+ConfigurationHandler::ConfigurationHandler(std::string configFilePath)
+	: arfwriterMode(EMC_Mode::Read), 
+	_configurationFilePath(configFilePath)
 {
 	decodedJSON = new Json::Value();
-	loadConfigurationFile(configDirectory + filename);
+	loadConfigurationFile(configFilePath);
 }
 
 // Load in the JSON Configuration file at the specified path
@@ -16,20 +17,18 @@ void ConfigurationHandler::loadConfigurationFile(std::string configurationFilePa
 	reader.parse(in, decodedJSON);
 
 	// Default to Read Mode
-	arfwriterMode = MODE_READ;
+	arfwriterMode = EMC_Mode::Read;
 
 	// TODO: Refactor
 	if (decodedJSON["mode"].asString().compare("write") == 0)
 	{
-		arfwriterMode = MODE_WRITE;
+		arfwriterMode = EMC_Mode::Decode;
 	}
 }
 
-// Returns what Mode Enum we're currently running
-// TODO: Refactor
-int ConfigurationHandler::getMode()
+EMC_Mode ConfigurationHandler::getMode()
 {
-	return (int)arfwriterMode;
+	return arfwriterMode;
 }
 
 // Returns the filename of the song in the configuration file
@@ -65,7 +64,7 @@ void ConfigurationHandler::initializeAnalyzer(ArduinoReadableFileWriter& arf)
         }
 		else if (type == "pca")
 		{
-			spa = new SPAToPCAExperiment();
+			spa = new FeatureExtractionAnalyzer();
 		}
         else
         {
