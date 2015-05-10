@@ -5,7 +5,6 @@ ConfigurationHandler::ConfigurationHandler(std::string configFilePath)
 	: arfwriterMode(EMC_Mode::Read), 
 	_configurationFilePath(configFilePath)
 {
-	auto nameWithoutExtension = std::string(configFilePath.begin(), extensionLocation + configFilePath.begin());
 	decodedJSON = new Json::Value();
 	loadConfigurationFile(configFilePath);
 }

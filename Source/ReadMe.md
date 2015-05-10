@@ -1,33 +1,33 @@
 #ElectroMedia Cipher (EMC) Core
 In depth discussion of classes go here
 
-## Analyzers
+### Analyzers
 Responsible for decoding the frequencies
 * FeatureExtractionAnalyzer
 * HillEffectAnalyzer
 * IntensityAnalyzer
 
 
-## ArduinoReadableFileWriter
+### ArduinoReadableFileWriter
 Shepherds the Analyzers...
 
-## CommonOperations
+### CommonOperations
 To be refactored
 
-## ConfigurationHandler
+### ConfigurationHandler
 Uses config.json and does stuff based on what's inside
 
-## Constants and Enums
+### Constants and Enums
 ...
 
-## EntryPoint
+### EntryPoint
 Main
 
-## FFTPreprocessing
+### FFTPreprocessing
 To be refactored
 
-## FrequencyRangeProfile and FrequencyMaximum
+### FrequencyRangeProfile and FrequencyMaximum
 Will be removed
 
-## MP3ToData
+### MP3ToData
 To be refactored
