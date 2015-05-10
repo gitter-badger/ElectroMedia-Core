@@ -8,8 +8,8 @@ Todo...
 
 ## Installation
 * Fork EMC-Core to a repository of your own
-* Download [Boost Version 1.58.0](http://www.boost.org/) or later and unzip to the folder which contains your cloned repository
-* Download [the dependencies suite for EMC-Core](http://www.neuravion.io/file.axd?file=/EMC/EMC%20Requirements.zip "EMC-Core Dependencies") and unzip them to your (DRIVE)/Program Files (x86)/
+* Download [Boost Version 1.58.0](http://www.boost.org/) or later and unzip to your /Program Files (x86)/ directory
+* Download [the dependencies suite for EMC-Core](http://www.neuravion.io/file.axd?file=/EMC/EMC%20Requirements.zip "EMC-Core Dependencies") and unzip to the folder containing your executable
 
 ## Changelog
 * v0.1.7.2g: Made project location agnostic (see installation)
