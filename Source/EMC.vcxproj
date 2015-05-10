@@ -461,7 +461,7 @@
     <ClInclude Include="FrequencyMaximum.h" />
     <ClInclude Include="MP3toData.h" />
     <ClInclude Include="fftw3.h" />
-    <ClInclude Include="FFTPreprocessing.h" />
+    <ClInclude Include="MusicFileOperations.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Analyzer.h" />
     <ClInclude Include="stdafx.h" />
@@ -479,7 +479,7 @@
     <ClCompile Include="IntensityAnalyzer.cpp" />
     <ClCompile Include="MP3toData.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
-    <ClCompile Include="FFTPreprocessing.cpp" />
+    <ClCompile Include="MusicFileOperations.cpp" />
     <ClCompile Include="Analyzer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "ConfigurationHandler.h"
 
-ConfigurationHandler::ConfigurationHandler(std::string configFilePath)
+ConfigurationHandler::ConfigurationHandler(std::string configFileDirectory, std::string configFileName)
 	: arfwriterMode(EMC_Mode::Read), 
-	_configurationFilePath(configFilePath)
+	_configurationDirectory(configFileDirectory),
+	_configurationFileName(configFileName)
 {
 	decodedJSON = new Json::Value();
-	loadConfigurationFile(configFilePath);
+	loadConfigurationFile(configFileDirectory + configFileName);
 }
 
 // Load in the JSON Configuration file at the specified path
@@ -40,7 +41,7 @@ std::string ConfigurationHandler::getFilename()
 // Returns the file path of the working directory
 std::string ConfigurationHandler::getDirectory()
 {
-	return workingDirectory;
+	return _configurationDirectory;
 }
 
 // TODO:  Heavy Refactoring

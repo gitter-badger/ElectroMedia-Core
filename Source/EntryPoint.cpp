@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Constants.h"
-#include "FFTPreprocessing.h"
+#include "MusicFileOperations.h"
 #include "EMCModes.h"
 
 // Signed 16-bit PCM Little-Endian
@@ -15,20 +15,19 @@ int main(int argc, char *argv[])
 	_fullpath(basePath, argv[0], sizeof(basePath));
 
 	// Get the location of the config.json, then create a Configuration Handler
-	auto configFilePath = getPath(basePath) + "config.json";
-	auto configHandler = new ConfigurationHandler(configFilePath);
+	auto configHandler = new ConfigurationHandler(getPath(basePath), "config.json");
 
 	// Determine the desired operation
 	switch (configHandler->getMode())
 	{
 	case EMC_Mode::Decode:
 		debug("Preparing to decode the file.");
-		convertMP3ToARF(*configHandler);
+		MusicFileOperations::ConvertMP3ToARF(*configHandler);
 		break;
 
 	case EMC_Mode::Read:
 		debug("Preparing to read the file.");
-		readARF(*configHandler);
+		MusicFileOperations::ReadArFile(*configHandler);
 		break;
 	}
 

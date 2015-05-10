@@ -23,8 +23,8 @@ Uses config.json and does stuff based on what's inside
 ### EntryPoint
 Main
 
-### FFTPreprocessing
-To be refactored
+### MusicFileOperations
+Static class which contains all methods used to transform the time-domain audio file into the pre-analysis spectrogram. To be refactored!
 
 ### FrequencyRangeProfile and FrequencyMaximum
 Will be removed

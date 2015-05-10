@@ -13,7 +13,7 @@ class ConfigurationHandler
 {
 public:
     // Constructors / Destructors
-	ConfigurationHandler(std::string configFilePath);
+	ConfigurationHandler(std::string configFileDirectory, std::string configFileName);
     ~ConfigurationHandler();
 
 	// Getters
@@ -31,8 +31,8 @@ private:
 	// Private Variables
 	EMC_Mode arfwriterMode;
 	Json::Value decodedJSON;
-	std::string workingDirectory;
 	
 	// PostRefactor
-	std::string _configurationFilePath;
+	std::string _configurationDirectory;
+	std::string _configurationFileName;
 };

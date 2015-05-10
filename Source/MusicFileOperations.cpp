@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Constants.h"
-#include "FFTPreprocessing.h"
+#include "MusicFileOperations.h"
 
-void convertMP3ToARF(ConfigurationHandler& configHandler)
+void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 {
     // filename stuff
 	std::string fullArgument = configHandler.getFilename();
@@ -32,7 +32,7 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
 
     // Process the raw data file and put the data into fulldata
     AudioFileData dataFromFile = std::make_shared<vector<char>>();
-    long filesize = captureFileData(nameWithoutExtension, dataFromFile);
+    long filesize = CaptureFileData(nameWithoutExtension, dataFromFile);
     int sweeps = -1;
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
@@ -56,7 +56,7 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
         preProcessData = std::make_shared<vector<double>>(windowedSubvector);
 
         // Call FFT
-        auto dataFromFFT = prepareAndExecuteFFT(preProcessData, new_plan, workingDoubleArray_, complexResults);
+        auto dataFromFFT = PrepareAndExecuteFFT(preProcessData, new_plan, workingDoubleArray_, complexResults);
         arfile.write(dataFromFFT);
     }
     debug("Process complete.");
@@ -69,7 +69,7 @@ void convertMP3ToARF(ConfigurationHandler& configHandler)
     arfile.close();
 }
 
-void readARF(ConfigurationHandler& configHandler)
+void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
 {
     std::string fullArgument = configHandler.getFilename();
     auto extensionLocation = fullArgument.find(".");
@@ -98,7 +98,7 @@ void readARF(ConfigurationHandler& configHandler)
     }
 }
 
-void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
+void MusicFileOperations::CopyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
 {
     int elements = 0;
 
@@ -122,7 +122,7 @@ void copyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
 // but right now this is the only way to do it
 //
 // Performance: O(n)
-long captureFileData(std::string songName, AudioFileData& waveformDataPoints)
+long MusicFileOperations::CaptureFileData(std::string songName, AudioFileData& waveformDataPoints)
 {
     // Read the file indicated by Filename argument
 	std::ifstream dataFileIn_((songName + EMC_FILE_EXTENSION).c_str(), std::ios::binary);
@@ -151,7 +151,7 @@ long captureFileData(std::string songName, AudioFileData& waveformDataPoints)
 // ---
 // Interface with the FFTW FOSS library. Indirectly performs the Fast Fourier
 // Transform to the data set of length (int)
-DataSet fastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
+DataSet MusicFileOperations::ExecuteFastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
 {
     // Allocate memory for the fftw_complex array and working double*
     // Generate a plan for FFTW to execute
@@ -183,7 +183,7 @@ DataSet fastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* working
 // value, and then normalizes the original data set based on that maximum.
 //
 // Performance: O(n)
-void normalize(DataSet& data)
+void MusicFileOperations::Normalize(DataSet& data)
 {
     //DataSetIterator it;
 
@@ -200,7 +200,7 @@ void normalize(DataSet& data)
 // double = hanningMultiplier(int, int)
 // ---
 // Returns an offset cosine wave of (int) width at a specific index
-double hanningMultiplier(int indexOfHanningFunction)
+double MusicFileOperations::GetHanningMultiplier(int indexOfHanningFunction)
 {
     return 0.5 * (1 - cos(2*PI * indexOfHanningFunction / (WINDOW_SIZE-1)) );
 }
@@ -212,26 +212,26 @@ double hanningMultiplier(int indexOfHanningFunction)
 // Immediately normalizes the data after the hanning window is applied.
 //
 // Performance: O(n)
-void applyHanningWindow(DataSet& data)
+void MusicFileOperations::ApplyHanningWindow(DataSet& data)
 {
     auto index = int(0);
     for (DataSetIterator it = data->begin(); it != data->end(); ++it)
     {
-        *it = double(*it * hanningMultiplier(index++));
+        *it = double(*it * GetHanningMultiplier(index++));
     }
 
-    normalize(data);
+    Normalize(data);
 }
 
 // double* = prepareAndExecuteFFT(const int*)
 // ---
 // Execute the FFT, convert the results from the complex frequency domain to the
 // frequency-vs-time spectral domain and then save the results into a debug file.
-DataSet prepareAndExecuteFFT(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
+DataSet MusicFileOperations::PrepareAndExecuteFFT(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
 {
     auto maxFrequency = convertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED);
 
     // Execute the FFT
-    applyHanningWindow(data);
-    return fastFourierTransform(data,fft_plan,workingDoubleArray_,complexResults);
+    ApplyHanningWindow(data);
+    return ExecuteFastFourierTransform(data,fft_plan,workingDoubleArray_,complexResults);
 }
