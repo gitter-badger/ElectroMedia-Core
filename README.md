@@ -12,6 +12,7 @@ Todo...
 * Download [the dependencies suite for EMC-Core](http://www.neuravion.io/file.axd?file=/EMC/EMC%20Requirements.zip "EMC-Core Dependencies") and unzip to the folder containing your executable
 
 ## Changelog
+* v0.1.7.4 -- Fixed MANY method names to be consisten with naming conventions. Added CoreMath static class and removed CommonOperations... Lots of cleanup here.
 * v0.1.7.3 -- Changed FFTPreprocessing functions to sit within a static class. Cleaned up some terminology within that new static class, and fixed a bug which prevented the ConfigurationHandler from accessing the config file in some random places
 * v0.1.7.2g: Made project location agnostic (see installation)
 * v0.1.7.2f: Improved main readme, started refactoring ConfigurationHandler and other major pieces of code
