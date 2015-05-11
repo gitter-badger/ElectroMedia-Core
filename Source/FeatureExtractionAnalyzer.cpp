@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FeatureExtractionAnalyzer.h"
 
-std::string FeatureExtractionAnalyzer::convertToBits(UniqueDataSet& processedData, const int bitLength)
+std::string FeatureExtractionAnalyzer::ConvertToBits(UniqueDataSet& processedData, const int bitLength)
 {
 	double valuesOfNotes[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	int thisNoteType = 0;
@@ -10,7 +10,7 @@ std::string FeatureExtractionAnalyzer::convertToBits(UniqueDataSet& processedDat
 	for (int freqIndex = 0; freqIndex < upperBound_; freqIndex++)
 	{
 		thisNoteAmplitude = processedData->at(freqIndex);
-		thisNoteType = toNote(convertIntToFrequency(freqIndex));
+		thisNoteType = ToNote(CoreMath::ConvertIntToFrequency(freqIndex));
 		if (thisNoteType == NoteName::NONE)
 		{
 			continue;
@@ -29,7 +29,7 @@ std::string FeatureExtractionAnalyzer::convertToBits(UniqueDataSet& processedDat
 	return buffer.str();
 }
 
-NoteName FeatureExtractionAnalyzer::toNote(double frequency)
+NoteName FeatureExtractionAnalyzer::ToNote(double frequency)
 {
 	if (frequency < 30 || frequency > 2000 || isnan(frequency))
 	{

@@ -84,7 +84,8 @@
     <Text Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonOperations.h" />
+    <ClInclude Include="CoreMath.h" />
+    <ClInclude Include="ConfigurationFileFields.h" />
     <ClInclude Include="ConfigurationHandler.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Dependencies\boost\assert.hpp" />
@@ -468,7 +469,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommonOperations.cpp" />
+    <ClCompile Include="CoreMath.cpp" />
     <ClCompile Include="ConfigurationHandler.cpp" />
     <ClCompile Include="Dependencies\jsoncpp.cpp" />
     <ClCompile Include="FeatureExtractionAnalyzer.cpp" />

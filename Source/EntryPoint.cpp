@@ -18,15 +18,15 @@ int main(int argc, char *argv[])
 	auto configHandler = new ConfigurationHandler(getPath(basePath), "config.json");
 
 	// Determine the desired operation
-	switch (configHandler->getMode())
+	switch (configHandler->GetMode())
 	{
 	case EMC_Mode::Decode:
-		debug("Preparing to decode the file.");
+		CoreMath::Debug("Preparing to decode the file.");
 		MusicFileOperations::ConvertMP3ToARF(*configHandler);
 		break;
 
 	case EMC_Mode::Read:
-		debug("Preparing to read the file.");
+		CoreMath::Debug("Preparing to read the file.");
 		MusicFileOperations::ReadArFile(*configHandler);
 		break;
 	}

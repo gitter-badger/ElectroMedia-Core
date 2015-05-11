@@ -2,55 +2,60 @@
 #include "ConfigurationHandler.h"
 
 ConfigurationHandler::ConfigurationHandler(std::string configFileDirectory, std::string configFileName)
-	: arfwriterMode(EMC_Mode::Read), 
-	_configurationDirectory(configFileDirectory),
-	_configurationFileName(configFileName)
+	: _arfwriterMode(EMC_Mode::Read), 
+	  _configurationDirectory(configFileDirectory),
+	  _configurationFileName(configFileName)
 {
-	decodedJSON = new Json::Value();
-	loadConfigurationFile(configFileDirectory + configFileName);
+	_decodedJSON = new Json::Value();
+	LoadConfigurationFile(configFileDirectory + configFileName);
 }
 
 // Load in the JSON Configuration file at the specified path
-void ConfigurationHandler::loadConfigurationFile(std::string configurationFilePath)
+void ConfigurationHandler::LoadConfigurationFile(std::string configurationFilePath)
 {	
 	std::ifstream in(configurationFilePath);
 	Json::Reader reader;
-	reader.parse(in, decodedJSON);
+	reader.parse(in, _decodedJSON);
 
 	// Default to Read Mode
-	arfwriterMode = EMC_Mode::Read;
+	_arfwriterMode = EMC_Mode::Read;
 
 	// TODO: Refactor
-	if (decodedJSON["mode"].asString().compare("write") == 0)
+	if (_decodedJSON["mode"].asString().compare("write") == 0)
 	{
-		arfwriterMode = EMC_Mode::Decode;
+		_arfwriterMode = EMC_Mode::Decode;
 	}
 }
 
-EMC_Mode ConfigurationHandler::getMode()
+void ConfigurationHandler::HashConfigField(std::string field)
 {
-	return arfwriterMode;
+	// TODO
+}
+
+EMC_Mode ConfigurationHandler::GetMode()
+{
+	return _arfwriterMode;
 }
 
 // Returns the filename of the song in the configuration file
-std::string ConfigurationHandler::getFilename()
+std::string ConfigurationHandler::GetFilename()
 {
-	return decodedJSON["filename"].asString();
+	return _decodedJSON["filename"].asString();
 }
 
 // Returns the file path of the working directory
-std::string ConfigurationHandler::getDirectory()
+std::string ConfigurationHandler::GetDirectory()
 {
 	return _configurationDirectory;
 }
 
 // TODO:  Heavy Refactoring
-void ConfigurationHandler::initializeAnalyzer(ArduinoReadableFileWriter& arf)
+void ConfigurationHandler::InitializeAnalyzer(ArduinoReadableFileWriter& arf)
 {
-    Json::Value::iterator it = decodedJSON["algorithms"].begin();
+    Json::Value::iterator it = _decodedJSON["algorithms"].begin();
 
 	// Each loop corresponds to a subnode in the "algorithms" node
-	while (it != decodedJSON["algorithms"].end())
+	while (it != _decodedJSON["algorithms"].end())
     {
         Analyzer* spa;
         auto fixedBoundaryType = 0;
@@ -84,7 +89,7 @@ void ConfigurationHandler::initializeAnalyzer(ArduinoReadableFileWriter& arf)
         else fixedBoundaryType = ADJUSTMENT_TYPE_CENTER;
 
 		// Why do frequency ranges exist again?
-        arf.addFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
+        arf.AddFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
         ++it;
     }
 }

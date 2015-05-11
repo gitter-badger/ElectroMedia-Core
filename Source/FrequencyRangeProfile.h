@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "CoreMath.h"
 #include "Analyzer.h"
 
 // Needs to be merged with Analyzer, or at least put into a static class for bound determination

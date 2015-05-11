@@ -42,9 +42,6 @@
     <ClInclude Include="ArduinoReadableFileWriter.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
-    <ClInclude Include="CommonOperations.h">
-      <Filter>Header Files\Project Source</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigurationHandler.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
@@ -1185,15 +1182,18 @@
     <ClInclude Include="MusicFileOperations.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigurationFileFields.h">
+      <Filter>Header Files\Project Source\Helpers\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreMath.h">
+      <Filter>Header Files\Project Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files\Included Source</Filter>
     </ClCompile>
     <ClCompile Include="ArduinoReadableFileWriter.cpp">
-      <Filter>Source Files\Project Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CommonOperations.cpp">
       <Filter>Source Files\Project Source</Filter>
     </ClCompile>
     <ClCompile Include="ConfigurationHandler.cpp">
@@ -1227,6 +1227,9 @@
       <Filter>Source Files\Project Source\Signal Analyzers</Filter>
     </ClCompile>
     <ClCompile Include="MusicFileOperations.cpp">
+      <Filter>Source Files\Project Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreMath.cpp">
       <Filter>Source Files\Project Source</Filter>
     </ClCompile>
   </ItemGroup>

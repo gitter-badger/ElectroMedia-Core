@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Constants.h"
-#include "CommonOperations.h"
+#include "CoreMath.h"
 
 // int = convertFrequencyToInt(double)
 // double = convertIntToFrequency(int)
@@ -8,12 +8,12 @@
 // Converts an integer index into its appropriate double frequency identifier or
 // vice versa. The OFFSET and SCALAR values are defined in stdafx.h and were
 // determined through the use of a calibration curve
-int convertFrequencyToInt(double frequencyBand)
+int CoreMath::ConvertFrequencyToInt(double frequencyBand)
 { 
     return int((frequencyBand - BOUNDARY_CONVERSION_OFFSET) / BOUNDARY_CONVERSION_SCALAR); 
 }
 
-double convertIntToFrequency(int index)
+double CoreMath::ConvertIntToFrequency(int index)
 {
     return double(index * BOUNDARY_CONVERSION_SCALAR + BOUNDARY_CONVERSION_OFFSET);
 }
@@ -30,16 +30,16 @@ double convertIntToFrequency(int index)
 
 
 // NEED NOTES; Also probably broken
-double calculateIntensityScalar(double frequency)
+double CoreMath::CalculateIntensityScalar(double frequency)
 {
     return (std::pow(0.5 * frequency + 10, 1/3)) - 1.15;
 }
 
-// debug(std::string)
+// CoreMath::Debug(std::string)
 // ---
 // Pipes a line of text into the std::cerr stream if DEBUG_ENABLED is set to true
 // in stdafx.h.
-void debug(std::string debugComment)
+void CoreMath::Debug(std::string debugComment)
 {
     if(DEBUG_ENABLED)
     {

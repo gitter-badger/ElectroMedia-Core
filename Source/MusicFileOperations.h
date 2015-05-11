@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "fftw3.h"
+#include "CoreMath.h"
 #include "FrequencyMaximum.h"
 #include "MP3toData.h"
 #include "ConfigurationHandler.h"
+#include "Constants.h"
 #include <thread>
 #include <chrono>
 

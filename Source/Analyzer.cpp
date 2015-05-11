@@ -24,7 +24,7 @@ Analyzer::~Analyzer()
 // setbounds(int,int)
 // ---
 // Redeclares the lower and upper bounds as dictated by the FrequencyRangeProfile
-void Analyzer::setBounds(const int lower, const int upper)
+void Analyzer::SetBounds(const int lower, const int upper)
 {
     lowerBound_ = lower;
     upperBound_ = upper;
@@ -40,23 +40,23 @@ void Analyzer::setBounds(const int lower, const int upper)
 // 
 // Result is by default Big Endian, but this can be changed through config by
 // setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
-std::string Analyzer::convertToBits(UniqueDataSet& dataToConvert, int noiseFloor)
+std::string Analyzer::ConvertToBits(UniqueDataSet& dataToConvert, int noiseFloor)
 {
-    preProcessForConversion(dataToConvert);
-    applyNoiseFloor(dataToConvert, noiseFloor);
-    auto resultingBits = evaluateBits(dataToConvert);
+    PreProcessForConversion(dataToConvert);
+    ApplyNoiseFloor(dataToConvert, noiseFloor);
+    auto resultingBits = EvaluateBits(dataToConvert);
 
     // By default, this result is Big Endian due to the nature of frequencies increasing 
     // left-to-right. The nature of the output can be altered by changing the 
     // OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
     if(OUTPUT_IS_BIG_ENDIAN)
     {
-        return bigEndianConvert(resultingBits);
+        return BigEndianConvert(resultingBits);
     }
-    return littleEndianConvert(resultingBits);
+    return LittleEndianConvert(resultingBits);
 }
 
-void Analyzer::preProcessForConversion(UniqueDataSet& dataToConvert)
+void Analyzer::PreProcessForConversion(UniqueDataSet& dataToConvert)
 {
     // Nothing should really happen 
 }
@@ -71,7 +71,7 @@ double checkAgainstNoiseFloor(double frequency, int noiseFloor)
     return frequency;
 }
 
-void Analyzer::applyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor)
+void Analyzer::ApplyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor)
 {
     // Replace with iterator
     DataSetIterator it = preProcesedData->begin();
@@ -82,7 +82,7 @@ void Analyzer::applyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor)
     }
 }
 
-dynamic_bitset<> Analyzer::evaluateBits(UniqueDataSet& processedData)
+dynamic_bitset<> Analyzer::EvaluateBits(UniqueDataSet& processedData)
 {
     auto bitLength = (upperBound_ - lowerBound_) / bits_;
     auto currentBitIndex = (int) 0;
@@ -106,7 +106,7 @@ dynamic_bitset<> Analyzer::evaluateBits(UniqueDataSet& processedData)
 }
 
 
-std::string Analyzer::checkBit(bool bitToCheck)
+std::string Analyzer::CheckBit(bool bitToCheck)
 {
     if(bitToCheck)
     {
@@ -116,25 +116,25 @@ std::string Analyzer::checkBit(bool bitToCheck)
     return "0";
 }
 
-std::string Analyzer::bigEndianConvert(dynamic_bitset<>& processedBits)
+std::string Analyzer::BigEndianConvert(dynamic_bitset<>& processedBits)
 {
     auto outputString = (std::string)"";
 
     for (int bit_ = 0; bit_ < processedBits.size(); bit_++)
     {
-        outputString.append( checkBit(processedBits[bit_]) );
+        outputString.append( CheckBit(processedBits[bit_]) );
     }
 
     return outputString;
 }
 
-std::string Analyzer::littleEndianConvert(dynamic_bitset<>& processedBits)
+std::string Analyzer::LittleEndianConvert(dynamic_bitset<>& processedBits)
 {
     auto outputString = (std::string)"";
 
     for (int bit_ = processedBits.size()-1; bit_ >= 0; bit_--)
     {
-        outputString.append( checkBit( processedBits[bit_] ) );
+        outputString.append( CheckBit( processedBits[bit_] ) );
     }
 
     return outputString;

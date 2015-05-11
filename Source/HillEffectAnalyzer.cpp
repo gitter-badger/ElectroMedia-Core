@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "HillEffectAnalyzer.h"
 
-dynamic_bitset<> HillEffectAnalyzer::evaluateBits(UniqueDataSet& processedData, const int bitLength)
+dynamic_bitset<> HillEffectAnalyzer::EvaluateBits(UniqueDataSet& processedData, const int bitLength)
 {
 	double maxAmplitude = -1, maxIndex = -1;
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Constants.h"
 #include "MP3toData.h"
+#include "CoreMath.h"
 #include <sstream>
 
 extern "C" 
@@ -41,7 +42,7 @@ int decodeMusic(std::string directoryName, std::string songName)
     // open the file if it exists
     if (avformat_open_input(&pFormatCtxt, mpegFileName.c_str(), NULL, NULL) != 0)
     { 
-        _tprintf(_T("No file found!\n"));
+        CoreMath::Debug("No file found!\n");
         return -2;
     }
 
@@ -77,7 +78,7 @@ int decodeMusic(std::string directoryName, std::string songName)
     if(!outfile)
     {
         av_free(aCodecCtxt);
-        debug("ERROR: No outfile! Exiting...");
+        CoreMath::Debug("ERROR: No outfile! Exiting...");
         exit(1);
     }
 

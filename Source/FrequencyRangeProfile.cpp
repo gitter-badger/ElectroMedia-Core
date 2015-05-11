@@ -30,7 +30,7 @@ FrequencyRangeProfile::~FrequencyRangeProfile()
 void FrequencyRangeProfile::setProcessor(Analyzer& processor)
 {
     this->processor_ = &processor;
-    processor.setBounds(lowerBound_,upperBound_);
+    processor.SetBounds(lowerBound_,upperBound_);
 }
 
 // format(double*,double*,enum int)
@@ -105,10 +105,10 @@ double FrequencyRangeProfile::formatChangeLower(double upperFrequency, double re
 // the first two parameters. The third parameter functions the same as in format(d,d,ei)
 void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int adjustmentType)
 {
-    initializeFrequencyBounds(convertIntToFrequency(lowerIndex),convertIntToFrequency(upperIndex),adjustmentType);
+	initializeFrequencyBounds(CoreMath::ConvertIntToFrequency(lowerIndex), CoreMath::ConvertIntToFrequency(upperIndex), adjustmentType);
 
     // Tell the processor that we updated our bounds
-    processor_->setBounds(lowerBound_,upperBound_);
+    processor_->SetBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
@@ -119,7 +119,7 @@ void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upp
     initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
 
     // Tell the processor that we updated our bounds
-    processor_->setBounds(lowerBound_,upperBound_);
+    processor_->SetBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
@@ -132,8 +132,8 @@ void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, dou
 {
     format(&lowerFrequency, &upperFrequency, adjustmentType);
 
-    lowerBound_ = convertFrequencyToInt(lowerFrequency);
-    upperBound_ = convertFrequencyToInt(upperFrequency);
+    lowerBound_ = CoreMath::ConvertFrequencyToInt(lowerFrequency);
+    upperBound_ = CoreMath::ConvertFrequencyToInt(upperFrequency);
 }
 
 // std::string = convertToBits(double*, int)
@@ -148,5 +148,5 @@ void FrequencyRangeProfile::initializeFrequencyBounds(double lowerFrequency, dou
 // Uses an algorithm specified by an enumerated int to determine which bits should be on.
 std::string FrequencyRangeProfile::convertToBits(UniqueDataSet& dataToConvert, int noiseFloor)
 {
-    return processor_->convertToBits(dataToConvert,noiseFloor);;
+    return processor_->ConvertToBits(dataToConvert,noiseFloor);;
 }

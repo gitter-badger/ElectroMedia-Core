@@ -7,7 +7,7 @@
 class HillEffectAnalyzer : public Analyzer
 {
 protected:
-	dynamic_bitset<> evaluateBits(UniqueDataSet& processedData, const int bitLength);
+	dynamic_bitset<> EvaluateBits(UniqueDataSet& processedData, const int bitLength);
 };
 
 #endif

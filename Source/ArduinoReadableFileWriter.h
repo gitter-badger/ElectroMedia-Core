@@ -10,26 +10,26 @@ public:
 
     // Add a FrequencyRangeProfile with specified characteristics; will probabyl be rewritten such
     // that the user only needs to add the processor and everything else is added automatically
-    bool addFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor);
+    bool AddFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor);
 
     // Sets the mode of the ARFWriter (Text or Byte) according to the enum writeMode
-    void setMode(int newMode);
+    void SetMode(int newMode);
 
     // Overloaded write options; only double* variant is used to write legitimate ARFs
-    void write(std::string stringToWrite);
-    void write(int intToWrite);
-    void write(DataSet& dataToWrite);
-    void close();
+    void Write(std::string stringToWrite);
+    void Write(int intToWrite);
+    void Write(DataSet& dataToWrite);
+    void Close();
 
     // Enumerated Lists
     static const enum writeMode {MODE_TEXT, MODE_ARDUINO, MODE_ARDUINO_MEGA};
 
 private:
     // Internal function for dealing with whether or not to write as BYTE or std::string
-    bool isTextWritable();
-    void addAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor);
-    void writeDoubleInTextMode(DataSet& dataToWrite);
-    int calculateDynamicNoiseFloor(DataSet& data);
+    bool IsTextWritable();
+    void AddAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor);
+    void WriteDoubleInTextMode(DataSet& dataToWrite);
+    int CalculateDynamicNoiseFloor(DataSet& data);
 
     // Private variables
     std::ofstream arfStream;

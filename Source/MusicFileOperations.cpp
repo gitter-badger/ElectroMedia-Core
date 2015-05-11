@@ -1,11 +1,10 @@
 #include "stdafx.h"
-#include "Constants.h"
 #include "MusicFileOperations.h"
 
 void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 {
     // filename stuff
-	std::string fullArgument = configHandler.getFilename();
+	std::string fullArgument = configHandler.GetFilename();
     auto extensionLocation = fullArgument.find(".");
 
     // Protection for noninclusion of extension
@@ -16,14 +15,14 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 
     // Specific filename strings
     auto nameWithoutExtension = std::string(fullArgument.begin(), extensionLocation + fullArgument.begin());
-	std::string arfilename = (configHandler.getDirectory() + nameWithoutExtension + AR_FILE_EXTENSION);
+	std::string arfilename = (configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION);
 	auto arfile = ArduinoReadableFileWriter((char*)arfilename.c_str());
 	
-	configHandler.initializeAnalyzer(arfile);
-	arfile.setMode(arfile.MODE_TEXT);
+	configHandler.InitializeAnalyzer(arfile);
+	arfile.SetMode(arfile.MODE_TEXT);
 	
     // Process the MP3 File
-    auto returnCode = decodeMusic(configHandler.getDirectory(), nameWithoutExtension);
+    auto returnCode = decodeMusic(configHandler.GetDirectory(), nameWithoutExtension);
     if (returnCode != 1)
     {
         cout << "Exiting program with code " << returnCode;
@@ -46,7 +45,7 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
     fftw_complex* complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
     fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
 
-    debug("Converting \"" + nameWithoutExtension + "\" to Arduino Readable File");
+    CoreMath::Debug("Converting \"" + nameWithoutExtension + "\" to Arduino Readable File");
     while (((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < dataFromFile->size())
     {
         // Copy out the data from the AudioFileData source into a DataSet
@@ -57,21 +56,21 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 
         // Call FFT
         auto dataFromFFT = PrepareAndExecuteFFT(preProcessData, new_plan, workingDoubleArray_, complexResults);
-        arfile.write(dataFromFFT);
+        arfile.Write(dataFromFFT);
     }
-    debug("Process complete.");
+    CoreMath::Debug("Process complete.");
     
     // Cleanup
     fftw_destroy_plan(new_plan);
     fftw_free(workingDoubleArray_);
     fftw_free(complexResults);
     fftw_cleanup();
-    arfile.close();
+    arfile.Close();
 }
 
 void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
 {
-    std::string fullArgument = configHandler.getFilename();
+    std::string fullArgument = configHandler.GetFilename();
     auto extensionLocation = fullArgument.find(".");
 
     // Protection for noninclusion of extension
@@ -81,7 +80,7 @@ void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
     }
 
     auto nameWithoutExtension = std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
-    std::string arFileName = configHandler.getDirectory() + nameWithoutExtension + AR_FILE_EXTENSION;
+    std::string arFileName = configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION;
 
     std::ifstream visualizationFile(arFileName);
     if (visualizationFile.is_open())
@@ -229,7 +228,7 @@ void MusicFileOperations::ApplyHanningWindow(DataSet& data)
 // frequency-vs-time spectral domain and then save the results into a debug file.
 DataSet MusicFileOperations::PrepareAndExecuteFFT(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
 {
-    auto maxFrequency = convertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED);
+	auto maxFrequency = CoreMath::ConvertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED);
 
     // Execute the FFT
     ApplyHanningWindow(data);

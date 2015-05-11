@@ -13,10 +13,10 @@ public:
 	~Analyzer();
 
     // Define lower and upper bounds (as indices) for this processor
-    void setBounds(const int lower, const int upper);
+    void SetBounds(const int lower, const int upper);
 
     // Heart and soul of the Signal Processing Algorithm. 
-    virtual std::string convertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
+    virtual std::string ConvertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
 
 protected:
 
@@ -29,17 +29,17 @@ protected:
     //		is not in TEXT mode.
     // 4. ___EndianConvert -- Called according to endianness as indicated in the config
     //		file, this converts a bool[] into a string
-    virtual void preProcessForConversion(UniqueDataSet& dataToConvert);
-    virtual void applyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor);
-    virtual dynamic_bitset<> evaluateBits(UniqueDataSet& processedData);
-    virtual std::string bigEndianConvert(dynamic_bitset<>& processedBits);
-    virtual std::string littleEndianConvert(dynamic_bitset<>& processedBits);
+    virtual void PreProcessForConversion(UniqueDataSet& dataToConvert);
+    virtual void ApplyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor);
+    virtual dynamic_bitset<> EvaluateBits(UniqueDataSet& processedData);
+    virtual std::string BigEndianConvert(dynamic_bitset<>& processedBits);
+    virtual std::string LittleEndianConvert(dynamic_bitset<>& processedBits);
 
     // These are used within the convertToBits methods
     int lowerBound_, upperBound_, bits_;
 
 private:
-    std::string checkBit(bool bitToCheck);
+    std::string CheckBit(bool bitToCheck);
 };
 
 #endif
