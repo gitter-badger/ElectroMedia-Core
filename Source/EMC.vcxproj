@@ -452,6 +452,7 @@
     <ClInclude Include="dev\include\libswresample\version.h" />
     <ClInclude Include="dev\include\libswscale\swscale.h" />
     <ClInclude Include="dev\include\libswscale\version.h" />
+    <ClInclude Include="EmcCore.h" />
     <ClInclude Include="HillEffectAnalyzer.h" />
     <ClInclude Include="IntensityAnalyzer.h" />
     <ClInclude Include="NoteNames.h" />
@@ -472,6 +473,7 @@
     <ClCompile Include="CoreMath.cpp" />
     <ClCompile Include="ConfigurationHandler.cpp" />
     <ClCompile Include="Dependencies\jsoncpp.cpp" />
+    <ClCompile Include="EmcCore.cpp" />
     <ClCompile Include="FeatureExtractionAnalyzer.cpp" />
     <ClCompile Include="FrequencyRangeProfile.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />

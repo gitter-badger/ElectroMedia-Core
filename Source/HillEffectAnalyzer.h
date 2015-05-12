@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Analyzer.h"
 
-#ifndef HillEffectAnalyzerDefiniton
+#ifndef HillEffectAnalyzerDefinition
 #define HillEffectAnalyzerDefinition
 
 class HillEffectAnalyzer : public Analyzer

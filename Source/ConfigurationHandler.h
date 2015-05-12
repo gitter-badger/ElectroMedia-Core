@@ -5,9 +5,8 @@
 #include "HillEffectAnalyzer.h"
 #include "Dependencies\json\json.h"
 
-/* 
- *  Being Refactored!
- */
+#ifndef ConfigurationHandlerDefinition
+#define ConfigurationHandlerDefinition
 
 class ConfigurationHandler
 {
@@ -37,3 +36,5 @@ private:
 	std::string _configurationDirectory;
 	std::string _configurationFileName;
 };
+
+#endif

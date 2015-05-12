@@ -2,6 +2,9 @@
 #include "CoreMath.h"
 #include "Analyzer.h"
 
+#ifndef FrequencyRangeProfileDefinition
+#define FrequencyRangeProfileDefinition
+
 // Needs to be merged with Analyzer, or at least put into a static class for bound determination
 class FrequencyRangeProfile
 {
@@ -35,3 +38,5 @@ private:
     Analyzer* processor_;
     std::string name_;
 };
+
+#endif

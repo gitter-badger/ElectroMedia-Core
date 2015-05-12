@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "Constants.h"
-#include "MusicFileOperations.h"
-#include "EMCModes.h"
+#include "CoreMath.h"
+#include "EmcCore.h"
 
 // Signed 16-bit PCM Little-Endian
 // Command line 
@@ -13,23 +12,10 @@ int main(int argc, char *argv[])
 	// Get the Base Path of the EMC executable
 	char basePath[255] = "";
 	_fullpath(basePath, argv[0], sizeof(basePath));
+	auto configurationFilePath = CoreMath::GetPath(basePath);
 
-	// Get the location of the config.json, then create a Configuration Handler
-	auto configHandler = new ConfigurationHandler(CoreMath::GetPath(basePath), "config.json");
-
-	// Determine the desired operation
-	switch (configHandler->GetMode())
-	{
-	case EMC_Mode::Decode:
-		CoreMath::Debug("Preparing to decode the file.");
-		MusicFileOperations::ConvertMP3ToARF(*configHandler);
-		break;
-
-	case EMC_Mode::Read:
-		CoreMath::Debug("Preparing to read the file.");
-		MusicFileOperations::ReadArFile(*configHandler);
-		break;
-	}
+	auto emc = new EmcCore(configurationFilePath);
+	emc->Run();
 
 	return 1;
 }

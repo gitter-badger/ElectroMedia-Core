@@ -2,6 +2,9 @@
 #include "EMCModes.h"
 #include "FrequencyRangeProfile.h"
 
+#ifndef ARFWriterDefinition
+#define ARFWriterDefinition
+
 class ArduinoReadableFileWriter
 {
 public:
@@ -36,3 +39,5 @@ private:
     size_t numberOfFrequencyRanges_;
     vector<FrequencyRangeProfile> frequencyRanges_;
 };
+
+#endif

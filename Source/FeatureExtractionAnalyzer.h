@@ -3,6 +3,9 @@
 #include "CoreMath.h"
 #include "NoteNames.h"
 
+#ifndef FeatureExtractionAnalyzerDefinition
+#define FeatureExtractionAnalyzerDefinition
+
 class FeatureExtractionAnalyzer : public Analyzer
 {
 public:
@@ -11,3 +14,5 @@ public:
 private:
 	NoteName ToNote(double frequency);
 };
+
+#endif
