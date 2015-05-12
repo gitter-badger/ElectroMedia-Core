@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 	_fullpath(basePath, argv[0], sizeof(basePath));
 
 	// Get the location of the config.json, then create a Configuration Handler
-	auto configHandler = new ConfigurationHandler(getPath(basePath), "config.json");
+	auto configHandler = new ConfigurationHandler(CoreMath::GetPath(basePath), "config.json");
 
 	// Determine the desired operation
 	switch (configHandler->GetMode())
@@ -32,12 +32,4 @@ int main(int argc, char *argv[])
 	}
 
 	return 1;
-}
-
-std::string getPath(char* basePath)
-{
-	std::string path = (std::string)basePath;
-
-	auto exeLocation = ((std::string)path).find("EMC.exe");
-	return std::string(path.begin(), exeLocation + path.begin());
 }

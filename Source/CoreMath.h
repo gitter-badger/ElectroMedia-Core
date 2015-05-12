@@ -20,6 +20,8 @@ public:
 
 	// Pipes out a line of text to cerr if and only if DEBUG_ENABLED == true
 	static void Debug(std::string debugComment);
+
+	static std::string GetPath(char* basePath);
 };
 
 #endif

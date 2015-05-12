@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "EMCModes.h"
 #include "FrequencyRangeProfile.h"
 
 class ArduinoReadableFileWriter
@@ -13,16 +14,13 @@ public:
     bool AddFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor);
 
     // Sets the mode of the ARFWriter (Text or Byte) according to the enum writeMode
-    void SetMode(int newMode);
+    void SetMode(EMC_Output_Mode newMode);
 
     // Overloaded write options; only double* variant is used to write legitimate ARFs
     void Write(std::string stringToWrite);
     void Write(int intToWrite);
     void Write(DataSet& dataToWrite);
     void Close();
-
-    // Enumerated Lists
-    static const enum writeMode {MODE_TEXT, MODE_ARDUINO, MODE_ARDUINO_MEGA};
 
 private:
     // Internal function for dealing with whether or not to write as BYTE or std::string
@@ -33,7 +31,8 @@ private:
 
     // Private variables
     std::ofstream arfStream;
-    int mode_, numberOfOutputs_, dynamicNoiseFloor, loopNumber_;
+	EMC_Output_Mode mode_;
+	int numberOfOutputs_, dynamicNoiseFloor, loopNumber_;
     size_t numberOfFrequencyRanges_;
     vector<FrequencyRangeProfile> frequencyRanges_;
 };

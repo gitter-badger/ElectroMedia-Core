@@ -19,7 +19,7 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 	auto arfile = ArduinoReadableFileWriter((char*)arfilename.c_str());
 	
 	configHandler.InitializeAnalyzer(arfile);
-	arfile.SetMode(arfile.MODE_TEXT);
+	arfile.SetMode(EMC_Output_Mode::Text);
 	
     // Process the MP3 File
     auto returnCode = decodeMusic(configHandler.GetDirectory(), nameWithoutExtension);

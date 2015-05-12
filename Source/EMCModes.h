@@ -1,12 +1,19 @@
 #include "stdafx.h"
 
-#ifndef EMC_MODE
-#define EMC_MODE
+#ifndef EMCModesDefinition
+#define EMCModesDefinition
 
 enum EMC_Mode
 { 
-	Decode, 
+	Decode,
 	Read
+};
+
+enum EMC_Output_Mode
+{
+	Text,
+	Binary,
+	ArduinoReadableFile
 };
 
 #endif

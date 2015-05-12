@@ -6,7 +6,7 @@
 // ---
 // Initialize our Arduino-Readable-file stream
 ArduinoReadableFileWriter::ArduinoReadableFileWriter(char nameOfARF[])
-    : arfStream(nameOfARF), mode_(MODE_ARDUINO), numberOfOutputs_(-1), numberOfFrequencyRanges_(0), loopNumber_(0)
+    : arfStream(nameOfARF), mode_(EMC_Output_Mode::Text), numberOfOutputs_(-1), numberOfFrequencyRanges_(0), loopNumber_(0)
 {
     frequencyRanges_.reserve(MAXIMUM_NUMBER_OF_FREQUENCY_RANGES);
 }
@@ -50,19 +50,19 @@ void ArduinoReadableFileWriter::AddAndInitializeFrequencyBound(double lowerFrequ
 // setMode(int)	
 // ---
 // Change the way that the write() function behaves
-void ArduinoReadableFileWriter::SetMode(int newMode)
+void ArduinoReadableFileWriter::SetMode(EMC_Output_Mode newMode)
 {
     mode_ = newMode;
 
     switch(mode_)
     {
-    case(MODE_ARDUINO):
+	case(EMC_Output_Mode::ArduinoReadableFile):
         numberOfOutputs_ = ARDUINO_UNO_IO_PINS;
         break;
 
-    case(MODE_ARDUINO_MEGA):
-        numberOfOutputs_ = ARDUINO_MEGA_IO_PINS - NUMBER_OF_PINS_DEDICATED_TO_LCD;
-        break;
+    //case(MODE_ARDUINO_MEGA):
+    //    numberOfOutputs_ = ARDUINO_MEGA_IO_PINS - NUMBER_OF_PINS_DEDICATED_TO_LCD;
+    //    break;
 
     default:
         numberOfOutputs_ = 0;
@@ -80,7 +80,7 @@ bool ArduinoReadableFileWriter::IsTextWritable()
         return false;
     }
 
-    if(mode_ != MODE_TEXT)
+    if(mode_ != EMC_Output_Mode::Text)
     {
         CoreMath::Debug("arfStream cannot write a string while not in Text Mode!");
         return false;
@@ -128,17 +128,20 @@ void ArduinoReadableFileWriter::Write(DataSet& dataToWrite)
     switch(mode_)
     {
         // Text mode is meant to be human-readable and is used for debug purposes
-    case(MODE_TEXT):
+	case(EMC_Output_Mode::Text):
         WriteDoubleInTextMode(dataToWrite);
         break;
 
         // Regular Arduino Mode uses 16 output pins
-    case(MODE_ARDUINO):
+	case(EMC_Output_Mode::ArduinoReadableFile):
         break;
 
+	case(EMC_Output_Mode::Binary) :
+		break;
+
         // Arduino MEGA Mode uses 54 output pins, 8 of which are dedicated to an LCD screen
-    case(MODE_ARDUINO_MEGA):
-        break;
+    //case(MODE_ARDUINO_MEGA):
+    //    break;
 
     default:
         CoreMath::Debug("ArduinoReadableFileWriter writer cannot write as it is in an undefined mode!");

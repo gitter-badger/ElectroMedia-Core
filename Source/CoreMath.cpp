@@ -47,4 +47,10 @@ void CoreMath::Debug(std::string debugComment)
     }
 }
 
+std::string CoreMath::GetPath(char* basePath)
+{
+	std::string path = (std::string)basePath;
 
+	auto exeLocation = ((std::string)path).find("EMC.exe");
+	return std::string(path.begin(), exeLocation + path.begin());
+}
