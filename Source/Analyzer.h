@@ -1,5 +1,6 @@
-#include <sstream>
 #include "stdafx.h"
+#include <sstream>
+#include "CoreMath.h"
 
 #ifndef AnalyzerDefinition
 #define AnalyzerDefinition
@@ -9,7 +10,10 @@ class Analyzer
 public:
     // Constructors and Destructors
 	Analyzer();
-	Analyzer(int numberOfBits);
+	Analyzer(int lowerBound, int upperBound);
+	Analyzer(int lowerBound, int upperBound, int resolution);
+	Analyzer(double lowerFrequency, double upperFrequency);
+	Analyzer(double lowerFrequency, double upperFrequency, int resolution);
 	~Analyzer();
 
     // Define lower and upper bounds (as indices) for this processor
@@ -19,7 +23,6 @@ public:
     virtual std::string ConvertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
 
 protected:
-
     // The following are part of convertToBits, which should only be modified in extreme
     // cases. The program flow is as follows
     // 1. preProcessForConversion -- does any necessary preProcessing to the data
@@ -36,7 +39,7 @@ protected:
     virtual std::string LittleEndianConvert(dynamic_bitset<>& processedBits);
 
     // These are used within the convertToBits methods
-    int lowerBound_, upperBound_, bits_;
+    int lowerBound_, upperBound_, bitResolution_;
 
 private:
     std::string CheckBit(bool bitToCheck);

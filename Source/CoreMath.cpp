@@ -49,8 +49,20 @@ void CoreMath::Debug(std::string debugComment)
 
 std::string CoreMath::GetPath(char* basePath)
 {
-	std::string path = (std::string)basePath;
-
+	auto path = (std::string)basePath;
 	auto exeLocation = ((std::string)path).find("EMC.exe");
 	return std::string(path.begin(), exeLocation + path.begin());
+}
+
+double CoreMath::AlignFrequency(double frequency)
+{
+	//double spectralResolution_ = double(*upperFrequency - *lowerFrequency) / bits_;
+	//double newResolution_ = double(ceil(spectralResolution_ / BOUNDARY_CONVERSION_SCALAR) * BOUNDARY_CONVERSION_SCALAR);
+	//auto centeredFrequencies = new double[2];
+	//
+	//centeredFrequencies = formatCenter(*lowerFrequency, *upperFrequency, newResolution_);
+	//*lowerFrequency = centeredFrequencies[0];
+	//*upperFrequency = centeredFrequencies[1];
+
+	return 0;
 }

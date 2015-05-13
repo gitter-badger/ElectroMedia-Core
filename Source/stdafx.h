@@ -22,7 +22,6 @@
 const enum adjustmentType { ADJUSTMENT_TYPE_CHANGE_UPPER, ADJUSTMENT_TYPE_CHANGE_LOWER, ADJUSTMENT_TYPE_CENTER };
 
 // NAMESPACES
-using std::cout;
 using std::vector;
 using boost::dynamic_bitset;
 

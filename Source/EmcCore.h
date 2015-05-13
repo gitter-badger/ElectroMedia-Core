@@ -12,11 +12,16 @@ public:
 	~EmcCore();
 
 	void Run();
+	void StartAnalyses();
+	void AddAnalyzer(Analyzer* analyzer);
 
-private:
+protected:
 	void Decode();
 	void Read();
 
+private:
+	
+
 	ConfigurationHandler& _configHandler;
-	vector<boost::shared_ptr<Analyzer> >* _analyzers;
+	vector<std::shared_ptr<Analyzer*> >* _analyzers;
 };

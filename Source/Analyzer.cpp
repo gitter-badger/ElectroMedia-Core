@@ -6,29 +6,33 @@
 // ---
 // ...
 Analyzer::Analyzer()
-    : lowerBound_(0), upperBound_(0), bits_(4)
-{ /* - No op - */ }
+	: Analyzer(0,0,1)
+{ }
 
-Analyzer::Analyzer(int numberOfBits)
-    : lowerBound_(0), upperBound_(0)
+Analyzer::Analyzer(int lowerBound, int upperBound)
+	: Analyzer(lowerBound, upperBound, 1)
+{ }
+
+Analyzer::Analyzer(int lowerBound, int upperBound, int resolution)
+	: lowerBound_(lowerBound),
+	  upperBound_(upperBound),
+	  bitResolution_(resolution)
+{ }
+
+Analyzer::Analyzer(double lowerFrequency, double upperFrequency)
+	: Analyzer(lowerFrequency, upperFrequency, 1)
 {
-    bits_ = numberOfBits;
 }
 
-// Analyzer Destructor
-// ---
-// If we have stuff to dealloc, do it here
-Analyzer::~Analyzer()
-{ /* - No op - */ }
-
-// setbounds(int,int)
-// ---
-// Redeclares the lower and upper bounds as dictated by the FrequencyRangeProfile
-void Analyzer::SetBounds(const int lower, const int upper)
+Analyzer::Analyzer(double lowerFrequency, double upperFrequency, int resolution)
+	: bitResolution_(resolution)
 {
-    lowerBound_ = lower;
-    upperBound_ = upper;
+	lowerBound_ = CoreMath::ConvertFrequencyToInt(lowerFrequency);
+	upperBound_ = CoreMath::ConvertFrequencyToInt(upperFrequency);
 }
+
+Analyzer::~Analyzer() { }
+
 
 // BASE
 // convertToBits(double*, int)
@@ -84,16 +88,16 @@ void Analyzer::ApplyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor)
 
 dynamic_bitset<> Analyzer::EvaluateBits(UniqueDataSet& processedData)
 {
-    auto bitLength = (upperBound_ - lowerBound_) / bits_;
+    auto bitLength = (int) floor(upperBound_ - lowerBound_) / bitResolution_;
     auto currentBitIndex = (int) 0;
-    dynamic_bitset<> outBits(bits_);
+    dynamic_bitset<> outBits(bitLength);
 
-    for (int bitIndex = 0; bitIndex < bits_; bitIndex++)
+    for (int bitIndex = 0; bitIndex < bitLength; ++bitIndex)
     {
         outBits[bitIndex] = false;
-        for (int interIndex = 0; interIndex < bitLength; interIndex++)
+        for (int interIndex = 0; interIndex < bitResolution_; interIndex++)
         {
-            currentBitIndex = lowerBound_ + (bitIndex * bitLength) + interIndex;
+			currentBitIndex = lowerBound_ + (bitIndex * bitResolution_) + interIndex;
             if (processedData->at(currentBitIndex) > 0)
             {
                 outBits[bitIndex] = true;

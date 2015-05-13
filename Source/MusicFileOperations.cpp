@@ -3,8 +3,10 @@
 
 void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 {
+	// ==== The following can be replaced by passing in an ArduinoReadableFileWriter, which has the directory and nameWithoutExtension
+	// ==== ------------------------------------------------------------------------------------------------------------------------------
     // filename stuff
-	std::string fullArgument = configHandler.GetFilename();
+	auto fullArgument = configHandler.GetFilename();
     auto extensionLocation = fullArgument.find(".");
 
     // Protection for noninclusion of extension
@@ -15,24 +17,25 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 
     // Specific filename strings
     auto nameWithoutExtension = std::string(fullArgument.begin(), extensionLocation + fullArgument.begin());
-	std::string arfilename = (configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION);
-	auto arfile = ArduinoReadableFileWriter((char*)arfilename.c_str());
+	auto arfilename = (configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION);
+	std::unique_ptr<ArduinoReadableFileWriter> arfile(new ArduinoReadableFileWriter((char*)arfilename.c_str()));
 	
-	configHandler.InitializeAnalyzer(arfile);
-	arfile.SetMode(EMC_Output_Mode::Text);
-	
+	configHandler.InitializeAnalyzer(*arfile);
+	arfile->SetMode(EMC_Output_Mode::Text);
+	// ==== ------------------------------------------------------------------------------------------------------------------------------
+
     // Process the MP3 File
     auto returnCode = decodeMusic(configHandler.GetDirectory(), nameWithoutExtension);
     if (returnCode != 1)
     {
-        cout << "Exiting program with code " << returnCode;
+        std::cerr << "Exiting program with code " << returnCode;
         return;
     }
 
     // Process the raw data file and put the data into fulldata
-    AudioFileData dataFromFile = std::make_shared<vector<char>>();
+    auto dataFromFile = std::make_shared<vector<char>>();
     long filesize = CaptureFileData(nameWithoutExtension, dataFromFile);
-    int sweeps = -1;
+    auto sweeps = -1;
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
     // It is rewritten in every loop, whereas dataFromFile is constant.
@@ -41,9 +44,9 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
     vector<char>::const_iterator last;
 
     // FFT variables
-    double* workingDoubleArray_ = (double*)fftw_malloc(sizeof(double) * WINDOW_SIZE);
-    fftw_complex* complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
-    fftw_plan new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
+    auto workingDoubleArray_ = (double*)fftw_malloc(sizeof(double) * WINDOW_SIZE);
+    auto complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
+    auto new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
 
     CoreMath::Debug("Converting \"" + nameWithoutExtension + "\" to Arduino Readable File");
     while (((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < dataFromFile->size())
@@ -56,7 +59,7 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 
         // Call FFT
         auto dataFromFFT = PrepareAndExecuteFFT(preProcessData, new_plan, workingDoubleArray_, complexResults);
-        arfile.Write(dataFromFFT);
+        arfile->Write(dataFromFFT);
     }
     CoreMath::Debug("Process complete.");
     
@@ -65,12 +68,12 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
     fftw_free(workingDoubleArray_);
     fftw_free(complexResults);
     fftw_cleanup();
-    arfile.Close();
+    arfile->Close();
 }
 
 void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
 {
-    std::string fullArgument = configHandler.GetFilename();
+    auto fullArgument = configHandler.GetFilename();
     auto extensionLocation = fullArgument.find(".");
 
     // Protection for noninclusion of extension
@@ -80,7 +83,7 @@ void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
     }
 
     auto nameWithoutExtension = std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
-    std::string arFileName = configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION;
+    auto arFileName = configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION;
 
     std::ifstream visualizationFile(arFileName);
     if (visualizationFile.is_open())
@@ -89,7 +92,7 @@ void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
         auto start = std::chrono::high_resolution_clock::now();
         while (std::getline(visualizationFile, line))
         {
-            cout << line << "\n";
+            std::cerr << line << "\n";
             std::this_thread::sleep_until(start + std::chrono::microseconds(45000));
             start = std::chrono::high_resolution_clock::now();
             //while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() < 46447);
@@ -99,14 +102,13 @@ void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
 
 void MusicFileOperations::CopyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
 {
-    int elements = 0;
+    auto elements = 0;
+    auto dataSetIterator = vectorIn->begin();
 
-    DataSetIterator it = vectorIn->begin();
-
-    while (it != vectorIn->end() && elements++ < vectorIn->size())
+	while (dataSetIterator != vectorIn->end() && elements++ < vectorIn->size())
     {
-        arrayOut[elements] = *it;
-        ++it;
+		arrayOut[elements] = *dataSetIterator;
+		++dataSetIterator;
     }
 }
 
@@ -161,7 +163,7 @@ DataSet MusicFileOperations::ExecuteFastFourierTransform(DataSet& data, fftw_pla
    // std::ofstream fftResultsFile("Results.csv");
     vector<double> resultsVector;
     resultsVector.reserve(180);
-    DataSet dataOut = std::make_shared<vector<double>>(resultsVector);
+    auto dataOut = std::make_shared<vector<double>>(resultsVector);
 
     auto frequency = 0.0;
     for(int i=0; i < 180; i++)
@@ -184,16 +186,9 @@ DataSet MusicFileOperations::ExecuteFastFourierTransform(DataSet& data, fftw_pla
 // Performance: O(n)
 void MusicFileOperations::Normalize(DataSet& data)
 {
-    //DataSetIterator it;
-
     auto maxValue = *std::max_element(data->begin(), data->end());
 
     std::for_each(data->begin(), data->end(), [maxValue](double& x){ x /= maxValue; });
-
-    //for (it = data->begin(); it != data->end(); ++it)
-    //{
-    //    *it = double(*it / maxValue);
-    //}
 }
 
 // double = hanningMultiplier(int, int)

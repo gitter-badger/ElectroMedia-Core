@@ -9,10 +9,6 @@
 class FrequencyRangeProfile
 {
 public:
-    // Constructors and Destructors
-    FrequencyRangeProfile();
-    FrequencyRangeProfile(Analyzer processor);
-    ~FrequencyRangeProfile();
 
     // Setters
     void setProcessor(Analyzer& processor);

@@ -45,19 +45,10 @@
     <ClInclude Include="ConfigurationHandler.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
-    <ClInclude Include="fftw3.h">
-      <Filter>Header Files\Project Source</Filter>
-    </ClInclude>
     <ClInclude Include="FrequencyMaximum.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
     <ClInclude Include="FrequencyRangeProfile.h">
-      <Filter>Header Files\Project Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\json\json.h">
-      <Filter>Header Files\Project Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\json\json-forwards.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
     <ClInclude Include="MP3toData.h">
@@ -1191,6 +1182,15 @@
     <ClInclude Include="EmcCore.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\json\json.h">
+      <Filter>Header Files\Included Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\json\json-forwards.h">
+      <Filter>Header Files\Included Source</Filter>
+    </ClInclude>
+    <ClInclude Include="fftw3.h">
+      <Filter>Header Files\Included Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1209,9 +1209,6 @@
       <Filter>Source Files\Project Source</Filter>
     </ClCompile>
     <ClCompile Include="FrequencyRangeProfile.cpp">
-      <Filter>Source Files\Project Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\jsoncpp.cpp">
       <Filter>Source Files\Project Source</Filter>
     </ClCompile>
     <ClCompile Include="MP3toData.cpp">
@@ -1237,6 +1234,9 @@
     </ClCompile>
     <ClCompile Include="EmcCore.cpp">
       <Filter>Source Files\Project Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\jsoncpp.cpp">
+      <Filter>Source Files\Included Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

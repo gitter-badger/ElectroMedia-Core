@@ -6,6 +6,8 @@
 static class CoreMath
 {
 public:
+	static double AlignFrequency(double frequency);
+
 	// Basic methods which convert an integer index to a frequency value, or vice versa
 	static int ConvertFrequencyToInt(double frequencyBand);
 	static double ConvertIntToFrequency(int index);

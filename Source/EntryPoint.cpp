@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 	_fullpath(basePath, argv[0], sizeof(basePath));
 	auto configurationFilePath = CoreMath::GetPath(basePath);
 
+	// Start up EMC and run it
 	auto emc = new EmcCore(configurationFilePath);
 	emc->Run();
 

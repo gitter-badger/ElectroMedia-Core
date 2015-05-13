@@ -2,27 +2,6 @@
 #include "Constants.h"
 #include "FrequencyRangeProfile.h"
 
-// Empty FrequencyRangeProfile Constructor 
-// ---
-// ...
-FrequencyRangeProfile::FrequencyRangeProfile()
-    : lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range")
-{ }
-
-// FrequencyRangeProfile Constructor with Analyzer param
-// ---
-// ...
-FrequencyRangeProfile::FrequencyRangeProfile(Analyzer processor)
-    : lowerBound_(0), upperBound_(0), bits_(8), name_("Untitled Range"), processor_(&processor)
-{ }
-
-// FrequencyRangeProfile Destructor
-// ---
-// If we have stuff to dealloc, do it here
-FrequencyRangeProfile::~FrequencyRangeProfile()
-{
-    delete processor_;
-}
 
 // setProcessor(Analyzer)
 // ---
@@ -30,7 +9,7 @@ FrequencyRangeProfile::~FrequencyRangeProfile()
 void FrequencyRangeProfile::setProcessor(Analyzer& processor)
 {
     this->processor_ = &processor;
-    processor.SetBounds(lowerBound_,upperBound_);
+    //processor.SetBounds(lowerBound_,upperBound_);
 }
 
 // format(double*,double*,enum int)
@@ -108,7 +87,7 @@ void FrequencyRangeProfile::setIndexBounds(int lowerIndex, int upperIndex, int a
 	initializeFrequencyBounds(CoreMath::ConvertIntToFrequency(lowerIndex), CoreMath::ConvertIntToFrequency(upperIndex), adjustmentType);
 
     // Tell the processor that we updated our bounds
-    processor_->SetBounds(lowerBound_,upperBound_);
+    //processor_->SetBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)
@@ -119,7 +98,7 @@ void FrequencyRangeProfile::setFrequencyBounds(double lowerFrequency, double upp
     initializeFrequencyBounds(lowerFrequency,upperFrequency,adjustmentType);
 
     // Tell the processor that we updated our bounds
-    processor_->SetBounds(lowerBound_,upperBound_);
+    //processor_->SetBounds(lowerBound_,upperBound_);
 }
 
 // setIndexBounds(double, double, enum int)

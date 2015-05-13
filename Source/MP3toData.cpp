@@ -23,10 +23,10 @@ extern "C"
 // several functions from FFMPEG.
 int decodeMusic(std::string directoryName, std::string songName)
 {
-    int audioStream = -1;
-    std::string name = songName;
-    std::string mpegFileName = directoryName + name + ".mp3";
-    std::string emcFileName = name + EMC_FILE_EXTENSION;
+    auto audioStream = -1;
+    auto name = songName;
+    auto mpegFileName = directoryName + name + ".mp3";
+    auto emcFileName = name + EMC_FILE_EXTENSION;
 
     AVCodec         *aCodec;
     AVPacket        avPkt;
@@ -55,9 +55,13 @@ int decodeMusic(std::string directoryName, std::string songName)
     AVStream *stream = NULL;
 
     //Find Audio Stream
-    for (int i = 0;  i < pFormatCtxt->nb_streams ; i++) 
-        if (pFormatCtxt->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
-            audioStream = i;
+	for (int i = 0; i < pFormatCtxt->nb_streams; i++)
+	{
+		if (pFormatCtxt->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+		{
+			audioStream = i;
+		}
+	}
 
     aCodecCtxt = pFormatCtxt ->streams [audioStream]->codec; // opening decoder   
     aCodec = avcodec_find_decoder( pFormatCtxt->streams [audioStream] ->codec->codec_id);
@@ -68,7 +72,7 @@ int decodeMusic(std::string directoryName, std::string songName)
     if (avcodec_open2(aCodecCtxt,aCodec,NULL)!=0)
         return -9; 
 
-    int cnt = 0;
+    auto cnt = 0;
     static uint8_t **audio_dst_data = NULL;
     static int       audio_dst_linesize;
     uint8_t inbuf[AUDIO_INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];

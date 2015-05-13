@@ -52,7 +52,7 @@ std::string ConfigurationHandler::GetDirectory()
 // TODO:  Heavy Refactoring
 void ConfigurationHandler::InitializeAnalyzer(ArduinoReadableFileWriter& arf)
 {
-    Json::Value::iterator it = _decodedJSON["algorithms"].begin();
+    auto it = _decodedJSON["algorithms"].begin();
 
 	// Each loop corresponds to a subnode in the "algorithms" node
 	while (it != _decodedJSON["algorithms"].end())
@@ -66,7 +66,7 @@ void ConfigurationHandler::InitializeAnalyzer(ArduinoReadableFileWriter& arf)
 		// Change the following to something like Spring
         if (type == "direct")
         {
-            spa = new Analyzer(bits);
+            spa = new Analyzer();
         }
 		else if (type == "pca")
 		{

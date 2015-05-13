@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "EmcCore.h"
 
-
 EmcCore::EmcCore(std::string configurationFilePath)
 	: _configHandler( *(new ConfigurationHandler(configurationFilePath,"config.json")) )
 {
@@ -9,11 +8,9 @@ EmcCore::EmcCore(std::string configurationFilePath)
 
 EmcCore::~EmcCore()
 {
-	delete &_configHandler;
 	delete _analyzers;
 	_analyzers = NULL;
 }
-
 
 void EmcCore::Run()
 {
@@ -32,13 +29,24 @@ void EmcCore::Run()
 	}
 }
 
+void EmcCore::AddAnalyzer(Analyzer* analyzer)
+{
+	_analyzers->push_back( std::make_shared<Analyzer*>(analyzer) );
+}
+
+void EmcCore::StartAnalyses()
+{
+	// Spin off a thread for each of the analyses
+}
+
+// Decode Workflow
 void EmcCore::Decode()
 {
 	MusicFileOperations::ConvertMP3ToARF(_configHandler);
-
-	// Do stuff with Analyzers here
+	StartAnalyses();
 }
 
+// Read Workflow
 void EmcCore::Read()
 {
 	MusicFileOperations::ReadArFile(_configHandler);

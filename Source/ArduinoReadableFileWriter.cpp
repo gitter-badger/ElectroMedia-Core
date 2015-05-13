@@ -41,7 +41,7 @@ bool ArduinoReadableFileWriter::AddFrequencyRange(double lowerFrequency, double 
 
 void ArduinoReadableFileWriter::AddAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor)
 {
-    auto newFreq = new FrequencyRangeProfile();
+	std::shared_ptr<FrequencyRangeProfile> (newFreq); // Reference-counted pointer (EK notes)
     newFreq->initializeFrequencyBounds(lowerFrequency, upperFrequency, adjustment);
     newFreq->setProcessor(processor);
     frequencyRanges_.push_back(*newFreq);
@@ -136,7 +136,7 @@ void ArduinoReadableFileWriter::Write(DataSet& dataToWrite)
 	case(EMC_Output_Mode::ArduinoReadableFile):
         break;
 
-	case(EMC_Output_Mode::Binary) :
+	case(EMC_Output_Mode::Binary):
 		break;
 
         // Arduino MEGA Mode uses 54 output pins, 8 of which are dedicated to an LCD screen
@@ -157,12 +157,12 @@ int ArduinoReadableFileWriter::CalculateDynamicNoiseFloor(DataSet& data)
 
 void ArduinoReadableFileWriter::WriteDoubleInTextMode(DataSet& dataToWrite)
 {
-    int dynamicNoiseFloor = NOISE_FLOOR;
+    auto dynamicNoiseFloor = NOISE_FLOOR;
 
     for (vector<FrequencyRangeProfile>::iterator it = frequencyRanges_.begin(); it != frequencyRanges_.end(); it++)
     {
         vector<double> dataSubvector(dataToWrite->begin(), dataToWrite->end());
-        UniqueDataSet conversionDuplicate = std::make_unique<vector<double>>(dataSubvector);
+        auto conversionDuplicate = std::make_unique<vector<double>>(dataSubvector);
         auto outputString = (it->convertToBits(conversionDuplicate, dynamicNoiseFloor));
 
         ArduinoReadableFileWriter::arfStream << outputString;
