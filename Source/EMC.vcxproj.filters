@@ -37,6 +37,15 @@
     <Filter Include="Header Files\Project Source\Helpers\Enums">
       <UniqueIdentifier>{90bb906a-878a-4930-9591-de2a2045ee87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Project Source\Helpers\Factories">
+      <UniqueIdentifier>{07af5920-6ad9-499d-b137-1eb51e9b5a9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Project Source\Helpers">
+      <UniqueIdentifier>{5189f88f-26b7-4b67-a14f-fe0aefa3d6b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Project Source\Helpers\Factories">
+      <UniqueIdentifier>{5697134e-7c4a-46bc-a8c1-2a1f6512794e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArduinoReadableFileWriter.h">
@@ -1191,6 +1200,9 @@
     <ClInclude Include="fftw3.h">
       <Filter>Header Files\Included Source</Filter>
     </ClInclude>
+    <ClInclude Include="AnalyzerFactory.h">
+      <Filter>Header Files\Project Source\Helpers\Factories</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1237,6 +1249,9 @@
     </ClCompile>
     <ClCompile Include="Dependencies\jsoncpp.cpp">
       <Filter>Source Files\Included Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnalyzerFactory.cpp">
+      <Filter>Source Files\Project Source\Helpers\Factories</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

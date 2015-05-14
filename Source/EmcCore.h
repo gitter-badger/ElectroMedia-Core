@@ -3,8 +3,6 @@
 #include "CoreMath.h"
 #include "MusicFileOperations.h"
 
-// Need cleanup functions!
-
 class EmcCore
 {
 public:
@@ -20,8 +18,6 @@ protected:
 	void Read();
 
 private:
-	
-
 	ConfigurationHandler& _configHandler;
-	vector<std::shared_ptr<Analyzer*> >* _analyzers;
+	vector< std::shared_ptr<Analyzer*> >* _analyzers;
 };

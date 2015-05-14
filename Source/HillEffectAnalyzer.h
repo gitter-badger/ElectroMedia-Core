@@ -6,6 +6,9 @@
 
 class HillEffectAnalyzer : public Analyzer
 {
+public: 
+	HillEffectAnalyzer(int lowerBound, int upperBound, int resolution);
+
 protected:
 	dynamic_bitset<> EvaluateBits(UniqueDataSet& processedData, const int bitLength);
 };

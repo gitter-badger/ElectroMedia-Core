@@ -17,6 +17,7 @@
 #include <memory>
 #include <algorithm>
 #include "boost\dynamic_bitset\dynamic_bitset.hpp"
+#include "boost\function\function0.hpp"
 
 // ENUMS
 const enum adjustmentType { ADJUSTMENT_TYPE_CHANGE_UPPER, ADJUSTMENT_TYPE_CHANGE_LOWER, ADJUSTMENT_TYPE_CENTER };

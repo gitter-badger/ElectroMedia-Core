@@ -7,6 +7,7 @@
 class IntensityAnalyzer : public Analyzer
 {
 public:
+	IntensityAnalyzer(int lowerBound, int upperBound, int resolution);
 	std::string ConvertToBits(const double dataToConvert[], int noiseFloor);
 };
 

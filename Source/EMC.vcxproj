@@ -84,6 +84,7 @@
     <Text Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnalyzerFactory.h" />
     <ClInclude Include="CoreMath.h" />
     <ClInclude Include="ConfigurationFileFields.h" />
     <ClInclude Include="ConfigurationHandler.h" />
@@ -470,6 +471,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnalyzerFactory.cpp" />
     <ClCompile Include="CoreMath.cpp" />
     <ClCompile Include="ConfigurationHandler.cpp" />
     <ClCompile Include="Dependencies\jsoncpp.cpp" />

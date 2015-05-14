@@ -9,6 +9,7 @@
 class FeatureExtractionAnalyzer : public Analyzer
 {
 public:
+	FeatureExtractionAnalyzer(int lowerBound, int upperBound, int resolution);
 	std::string ConvertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
 
 private:

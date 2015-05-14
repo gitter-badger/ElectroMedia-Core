@@ -2,9 +2,9 @@
 #include "ConfigurationHandler.h"
 
 ConfigurationHandler::ConfigurationHandler(std::string configFileDirectory, std::string configFileName)
-	: _arfwriterMode(EMC_Mode::Read), 
-	  _configurationDirectory(configFileDirectory),
-	  _configurationFileName(configFileName)
+	: _arfwriterMode(EMC_Mode::Read),
+	_configurationDirectory(configFileDirectory),
+	_configurationFileName(configFileName)
 {
 	_decodedJSON = new Json::Value();
 	LoadConfigurationFile(configFileDirectory + configFileName);
@@ -49,6 +49,22 @@ std::string ConfigurationHandler::GetDirectory()
 	return _configurationDirectory;
 }
 
+vector< std::shared_ptr<Analyzer*> >* ConfigurationHandler::GetAnalyzers()
+{
+	vector < std::shared_ptr<Analyzer*> > analyzers;
+
+	auto it = _decodedJSON["Analyzers"].begin();
+	
+	// Each loop corresponds to a subnode in the "algorithms" node
+	while (it != _decodedJSON["Analyzers"].end())
+	{
+	//	analyzers.push_back(std::make_shared<Analyzer*>( _analyzerFactory.Create((*it)["type"].asString()) ));
+		std::string something;
+	}
+
+	return &analyzers;
+}
+
 // TODO:  Heavy Refactoring
 void ConfigurationHandler::InitializeAnalyzer(ArduinoReadableFileWriter& arf)
 {
@@ -68,14 +84,14 @@ void ConfigurationHandler::InitializeAnalyzer(ArduinoReadableFileWriter& arf)
         {
             spa = new Analyzer();
         }
-		else if (type == "pca")
-		{
-			spa = new FeatureExtractionAnalyzer();
-		}
-        else
-        {
-            spa = new HillEffectAnalyzer();
-        }
+		//else if (type == "pca")
+		//{
+		//	spa = new FeatureExtractionAnalyzer();
+		//}
+        //else
+        //{
+        //    spa = new HillEffectAnalyzer();
+        //}
 
 		// This really just shouldn't exist 
         if (fixedBoundary == "upper")
@@ -89,7 +105,7 @@ void ConfigurationHandler::InitializeAnalyzer(ArduinoReadableFileWriter& arf)
         else fixedBoundaryType = ADJUSTMENT_TYPE_CENTER;
 
 		// Why do frequency ranges exist again?
-        arf.AddFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
+        //arf.AddFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
         ++it;
     }
 }

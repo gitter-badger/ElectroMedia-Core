@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "FeatureExtractionAnalyzer.h"
 
+FeatureExtractionAnalyzer::FeatureExtractionAnalyzer(int lowerBound, int upperBound, int resolution)
+	: Analyzer(lowerBound, upperBound, resolution)
+{
+
+}
+
 std::string FeatureExtractionAnalyzer::ConvertToBits(UniqueDataSet& processedData, const int bitLength)
 {
 	double valuesOfNotes[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
