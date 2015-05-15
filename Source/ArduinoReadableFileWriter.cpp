@@ -1,14 +1,12 @@
 #include "stdafx.h"
-#include "Constants.h"
 #include "ArduinoReadableFileWriter.h"
 
 // ArduinoReadableFileWriter Constructor
 // ---
 // Initialize our Arduino-Readable-file stream
 ArduinoReadableFileWriter::ArduinoReadableFileWriter(char nameOfARF[])
-    : arfStream(nameOfARF), mode_(EMC_Output_Mode::Text), numberOfOutputs_(-1), numberOfFrequencyRanges_(0), loopNumber_(0)
+    : arfStream(nameOfARF), mode_(EMC_Output_Mode::Text), numberOfOutputs_(-1)
 {
-    frequencyRanges_.reserve(MAXIMUM_NUMBER_OF_FREQUENCY_RANGES);
 }
 
 // ArduinoReadableFileWriter Destructor
@@ -19,32 +17,6 @@ ArduinoReadableFileWriter::~ArduinoReadableFileWriter()
     // For safety, check to see if the user closed the stream. If not, close it
     if(arfStream.is_open())
         Close();
-
-    frequencyRanges_.clear();
-}
-
-// bool = addFrequencyRange(double,double,int)
-// ---
-// Adds a frequency range to our dynamic array of Frequency Ranges. Will return
-// true if addition was successful.
-bool ArduinoReadableFileWriter::AddFrequencyRange(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor)
-{
-    // If we have an available frequencyRange_, initialize its bounds, add it, and then set its processor
-    if(numberOfFrequencyRanges_ < MAXIMUM_NUMBER_OF_FREQUENCY_RANGES)
-    {
-        AddAndInitializeFrequencyBound(lowerFrequency,upperFrequency,adjustment,processor);
-        return true;
-    }
-
-    return false;
-}
-
-void ArduinoReadableFileWriter::AddAndInitializeFrequencyBound(double lowerFrequency, double upperFrequency, int adjustment, Analyzer& processor)
-{
-	std::shared_ptr<FrequencyRangeProfile> (newFreq); // Reference-counted pointer (EK notes)
-    newFreq->initializeFrequencyBounds(lowerFrequency, upperFrequency, adjustment);
-    newFreq->setProcessor(processor);
-    frequencyRanges_.push_back(*newFreq);
 }
 
 // setMode(int)	
@@ -59,10 +31,6 @@ void ArduinoReadableFileWriter::SetMode(EMC_Output_Mode newMode)
 	case(EMC_Output_Mode::ArduinoReadableFile):
         numberOfOutputs_ = ARDUINO_UNO_IO_PINS;
         break;
-
-    //case(MODE_ARDUINO_MEGA):
-    //    numberOfOutputs_ = ARDUINO_MEGA_IO_PINS - NUMBER_OF_PINS_DEDICATED_TO_LCD;
-    //    break;
 
     default:
         numberOfOutputs_ = 0;
@@ -139,10 +107,6 @@ void ArduinoReadableFileWriter::Write(DataSet& dataToWrite)
 	case(EMC_Output_Mode::Binary):
 		break;
 
-        // Arduino MEGA Mode uses 54 output pins, 8 of which are dedicated to an LCD screen
-    //case(MODE_ARDUINO_MEGA):
-    //    break;
-
     default:
         CoreMath::Debug("ArduinoReadableFileWriter writer cannot write as it is in an undefined mode!");
     }
@@ -159,14 +123,8 @@ void ArduinoReadableFileWriter::WriteDoubleInTextMode(DataSet& dataToWrite)
 {
     auto dynamicNoiseFloor = NOISE_FLOOR;
 
-    for (vector<FrequencyRangeProfile>::iterator it = frequencyRanges_.begin(); it != frequencyRanges_.end(); it++)
-    {
-        vector<double> dataSubvector(dataToWrite->begin(), dataToWrite->end());
-        auto conversionDuplicate = std::make_unique<vector<double>>(dataSubvector);
-        auto outputString = (it->convertToBits(conversionDuplicate, dynamicNoiseFloor));
+		// TODO
 
-        ArduinoReadableFileWriter::arfStream << outputString;
-    }
     ArduinoReadableFileWriter::arfStream << "\n";
 }
 

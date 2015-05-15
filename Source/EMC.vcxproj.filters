@@ -57,9 +57,6 @@
     <ClInclude Include="FrequencyMaximum.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
-    <ClInclude Include="FrequencyRangeProfile.h">
-      <Filter>Header Files\Project Source</Filter>
-    </ClInclude>
     <ClInclude Include="MP3toData.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
@@ -1218,9 +1215,6 @@
       <Filter>Source Files\Project Source</Filter>
     </ClCompile>
     <ClCompile Include="FrequencyMaximum.cpp">
-      <Filter>Source Files\Project Source</Filter>
-    </ClCompile>
-    <ClCompile Include="FrequencyRangeProfile.cpp">
       <Filter>Source Files\Project Source</Filter>
     </ClCompile>
     <ClCompile Include="MP3toData.cpp">

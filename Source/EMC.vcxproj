@@ -459,7 +459,6 @@
     <ClInclude Include="NoteNames.h" />
     <ClInclude Include="EMCModes.h" />
     <ClInclude Include="FeatureExtractionAnalyzer.h" />
-    <ClInclude Include="FrequencyRangeProfile.h" />
     <ClInclude Include="ArduinoReadableFileWriter.h" />
     <ClInclude Include="FrequencyMaximum.h" />
     <ClInclude Include="MP3toData.h" />
@@ -477,7 +476,6 @@
     <ClCompile Include="Dependencies\jsoncpp.cpp" />
     <ClCompile Include="EmcCore.cpp" />
     <ClCompile Include="FeatureExtractionAnalyzer.cpp" />
-    <ClCompile Include="FrequencyRangeProfile.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />
     <ClCompile Include="FrequencyMaximum.cpp" />
     <ClCompile Include="HillEffectAnalyzer.cpp" />
