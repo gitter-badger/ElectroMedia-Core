@@ -15,6 +15,9 @@ public:
 	Analyzer* Create(std::string type, int lowerBound, int upperBound, int resolution);
 	Analyzer* Create(std::string type, double lowerFrequency, double upperFrequency);
 	Analyzer* Create(std::string type, double lowerFrequency, double upperFrequency, int resolution);
+
+private: 
+	void Validate(int& lowerBound, int& upperBound, int& resolution);
 };
 
 #endif

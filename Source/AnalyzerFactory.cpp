@@ -3,6 +3,8 @@
 
 Analyzer* AnalyzerFactory::Create(std::string type, int lowerBound, int upperBound, int resolution)
 {
+	Validate(lowerBound, upperBound, resolution);
+
 	if (type.compare("Analyzer") == 0)
 	{
 		return new Analyzer(lowerBound, upperBound, resolution);
@@ -49,4 +51,18 @@ Analyzer* AnalyzerFactory::Create(std::string type, double lowerFrequency, doubl
 	auto upperBound = CoreMath::ConvertFrequencyToInt(upperFrequency);
 
 	return Create(type, lowerBound, upperBound, resolution);
+}
+
+void AnalyzerFactory::Validate(int& lowerBound, int& upperBound, int& resolution)
+{
+	// Analyzer has an absolute minimum index of 0
+	lowerBound = std::max(0, lowerBound);
+
+	// Analyzer must have a band of at least one bit
+	upperBound = std::min(lowerBound + 1, upperBound);
+
+	// Resolution is not unreasonable (e.g. at least 1 and no more than the width of indices
+	auto maximumResolution = upperBound - lowerBound;
+	resolution = std::max(1, resolution);
+	resolution = std::min(resolution, maximumResolution);
 }
