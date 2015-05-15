@@ -12,6 +12,7 @@ Todo...
 * Download [the dependencies suite for EMC-Core](http://www.neuravion.io/file.axd?file=/EMC/EMC%20Requirements.zip "EMC-Core Dependencies") and unzip to the folder containing your executable
 
 ## Changelog
+* v0.1.9.3 -- Removed FrequencyRangeProfile completely in response to Issue #7 on Github.
 * v0.1.9.2 -- Added validation to AnalyzerFactory in response to Issue #6 "AnalyzerFactory should be fleshed out more (e.g. Validation)"
 * v0.1.9.1 -- Added AnalyzerFactory as part of my efforts to root out FrequencyRangeProfile. FRP may actually be irrelevant at this point, I will investigate for 0.1.9.2
 * v0.1.9.0 -- Start of work to factor out FrequencyRangeProfile class and move all Analysis work to EmcCore. Moved a ton of code out of FrequencyRangeProfile, particularly the boundary encoding, to Analyzer itself. Changed a large percentage of code to use smart pointers and other C++14 paradigms. Once this update cycle is complete, we will be at 0.2.0.0 EMC-Core Alpha Release.
