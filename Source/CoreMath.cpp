@@ -8,9 +8,9 @@
 // Converts an integer index into its appropriate double frequency identifier or
 // vice versa. The OFFSET and SCALAR values are defined in stdafx.h and were
 // determined through the use of a calibration curve
-int CoreMath::ConvertFrequencyToInt(double frequencyBand)
+int CoreMath::ConvertFrequencyToInt(double frequency_bound)
 { 
-    return int((frequencyBand - BOUNDARY_CONVERSION_OFFSET) / BOUNDARY_CONVERSION_SCALAR); 
+	return int((frequency_bound - BOUNDARY_CONVERSION_OFFSET) / BOUNDARY_CONVERSION_SCALAR);
 }
 
 double CoreMath::ConvertIntToFrequency(int index)
@@ -39,36 +39,36 @@ double CoreMath::CalculateIntensityScalar(double frequency)
 // ---
 // Pipes a line of text into the std::cerr stream if DEBUG_ENABLED is set to true
 // in stdafx.h.
-void CoreMath::Debug(std::string debugComment)
+void CoreMath::Debug(std::string debug_comment)
 {
     if(DEBUG_ENABLED)
     {
-        std::cerr << debugComment << "\n";
+		std::cerr << debug_comment << "\n";
     }
 }
 
-std::string CoreMath::GetPath(char* basePath)
+std::string CoreMath::GetPath(char* base_path)
 {
-	auto path = (std::string)basePath;
-	auto exeLocation = ((std::string)path).find("EMC.exe");
-	return std::string(path.begin(), exeLocation + path.begin());
+	auto path = (std::string)base_path;
+	auto executable_location = ((std::string)path).find("EMC.exe");
+	return std::string(path.begin(), executable_location + path.begin());
 }
 
-std::string CoreMath::GetFilenameWithoutExtension(std::string fullPath)
+std::string CoreMath::GetFilenameWithoutExtension(std::string full_path)
 {
-	auto fullArgument = fullPath;
-	auto extensionLocation = fullArgument.find(".");
+	auto full_argument = full_path;
+	auto extension_location = full_argument.find(".");
 
 	// Protection for noninclusion of extension
-	if (extensionLocation > fullArgument.size())
+	if (extension_location > full_argument.size())
 	{
-		extensionLocation = fullArgument.size();
+		extension_location = full_argument.size();
 	}
 
-	return std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
+	return std::string(full_argument.begin(), full_argument.begin() + extension_location);
 }
 
-std::string CoreMath::ChangeFileExtension(std::string fullPath, std::string newExtension)
+std::string CoreMath::ChangeFileExtension(std::string full_path, std::string new_extension)
 {
-	return CoreMath::GetFilenameWithoutExtension(fullPath) + newExtension;
+	return CoreMath::GetFilenameWithoutExtension(full_path) + new_extension;
 }

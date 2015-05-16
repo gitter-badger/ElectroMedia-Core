@@ -4,14 +4,14 @@
 #include "AnalyzerFactory.h"
 #include "Dependencies\json\json.h"
 
-#ifndef ConfigurationHandlerDefinition
-#define ConfigurationHandlerDefinition
+#ifndef EMC_ConfigurationHandler_H_
+#define EMC_ConfigurationHandler_H_
 
 class ConfigurationHandler
 {
 public:
     // Constructors / Destructors
-	ConfigurationHandler(std::string configFileDirectory, std::string configFileName);
+	ConfigurationHandler(std::string configuration_file_directory, std::string configuration_file_name);
     ~ConfigurationHandler();
 
 	// Getters
@@ -20,25 +20,22 @@ public:
 	std::string GetFullPath();
 	EMC_Mode GetMode();
 
-	// Initialize the ArduinoReadableFileWriter object with the SPAs declared in the JSON
-	void InitializeAnalyzer(ArduinoReadableFileWriter& arf); // DEPRECATED
-
 	vector< std::shared_ptr<Analyzer*> >* GetAnalyzers();
 
 private:
 	// Load in the configuration JSON at specified file path
-	void LoadConfigurationFile(std::string configurationFilePath);
+	void LoadConfigurationFile(std::string configuration_file_path);
 	void HashConfigField(std::string field);
 	
 	// Private Variables
-	EMC_Mode	_arfwriterMode;
-	Json::Value _decodedJSON;
+	EMC_Mode	arfwriter_mode_;
+	Json::Value decoded_json_;
 	
 	// PostRefactor
-	std::string _configurationDirectory;
-	std::string _configurationFileName;
+	std::string configuration_directory_;
+	std::string configuration_filename_;
 
-	AnalyzerFactory _factory;
+	AnalyzerFactory analyzer_factory_;
 };
 
 #endif

@@ -2,25 +2,25 @@
 #include <sstream>
 #include "CoreMath.h"
 
-#ifndef AnalyzerDefinition
-#define AnalyzerDefinition
+#ifndef EMC_Analyzer_H_
+#define EMC_Analyzer_H_
 
 class Analyzer
 {
 public:
     // Constructors and Destructors
 	Analyzer();
-	Analyzer(int lowerBound, int upperBound);
-	Analyzer(int lowerBound, int upperBound, int resolution);
-	Analyzer(double lowerFrequency, double upperFrequency);
-	Analyzer(double lowerFrequency, double upperFrequency, int resolution);
+	Analyzer(int lower_bound, int upper_bound);
+	Analyzer(int lower_bound, int upper_bound, int resolution);
+	Analyzer(double lower_frequency, double upper_frequency);
+	Analyzer(double lower_frequency, double upper_frequency, int resolution);
 	~Analyzer();
 
     // Define lower and upper bounds (as indices) for this processor
     void SetBounds(const int lower, const int upper);
 
     // Heart and soul of the Signal Processing Algorithm. 
-    virtual std::string ConvertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
+    virtual std::string ConvertToBits(UniqueDataSet& data_to_convert, int noiseFloor);
 
 protected:
     // The following are part of convertToBits, which should only be modified in extreme
@@ -32,14 +32,14 @@ protected:
     //		is not in TEXT mode.
     // 4. ___EndianConvert -- Called according to endianness as indicated in the config
     //		file, this converts a bool[] into a string
-    virtual void PreProcessForConversion(UniqueDataSet& dataToConvert);
-    virtual void ApplyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor);
-    virtual dynamic_bitset<> EvaluateBits(UniqueDataSet& processedData);
-    virtual std::string BigEndianConvert(dynamic_bitset<>& processedBits);
-    virtual std::string LittleEndianConvert(dynamic_bitset<>& processedBits);
+	virtual void PreProcessForConversion(UniqueDataSet& data_to_convert);
+    virtual void ApplyNoiseFloor(UniqueDataSet& preprocessed_data, int noise_floor);
+	virtual dynamic_bitset<> EvaluateBits(UniqueDataSet& processed_bits);
+	virtual std::string BigEndianConvert(dynamic_bitset<>& processed_bits);
+	virtual std::string LittleEndianConvert(dynamic_bitset<>& processed_bits);
 
     // These are used within the convertToBits methods
-    int lowerBound_, upperBound_, bitResolution_;
+    int lower_bound_, upper_bound_, bit_resolution_;
 
 private:
     std::string CheckBit(bool bitToCheck);

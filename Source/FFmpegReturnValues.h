@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#ifndef FFmpegReturnValuesDefinition
-#define FFmpegReturnValuesDefinition
+#ifndef EMC_FFmpegReturnValues_H_
+#define EMC_FFmpegReturnValues_H_
 
 enum FFmpegReturnValue
 {

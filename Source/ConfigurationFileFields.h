@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#ifndef ConfigurationFileFieldsDefinition
-#define ConfigurationFileFieldsDefinition
+#ifndef EMC_ConfigurationFileFields_H_
+#define EMC_ConfigurationFileFields_H_
 
 enum ConfigurationFileFields
 {

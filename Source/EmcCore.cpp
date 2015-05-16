@@ -1,21 +1,21 @@
 #include "stdafx.h"
 #include "EmcCore.h"
 
-EmcCore::EmcCore(std::string configurationFilePath)
-	: _configHandler( *(new ConfigurationHandler(configurationFilePath,"config.json")) )
+EmcCore::EmcCore(std::string configuration_file_path)
+	: configuration_handler_(new ConfigurationHandler(configuration_file_path, EmcCore::kConfigurationFileName))
 {
 }
 
 EmcCore::~EmcCore()
 {
-	delete _analyzers;
-	_analyzers = NULL;
+	delete analyzer_collection_;
+	analyzer_collection_ = NULL;
 }
 
 void EmcCore::Run()
 {
 	// Call the appropriate static functions
-	switch (_configHandler.GetMode())
+	switch (configuration_handler_->GetMode())
 	{
 	case EMC_Mode::Decode:
 		CoreMath::Debug("Preparing to decode the file.");
@@ -31,7 +31,7 @@ void EmcCore::Run()
 
 void EmcCore::AddAnalyzer(Analyzer* analyzer)
 {
-	_analyzers->push_back( std::make_shared<Analyzer*>(analyzer) );
+	analyzer_collection_->push_back(std::make_shared<Analyzer*>(analyzer));
 }
 
 void EmcCore::StartAnalyses()
@@ -42,14 +42,14 @@ void EmcCore::StartAnalyses()
 // Decode Workflow
 void EmcCore::Decode()
 {
-	MusicFileOperations::ConvertMP3ToARF(_configHandler.GetDirectory(), _configHandler.GetFilename());
+	MusicFileOperations::ConvertMP3ToARF(configuration_handler_->GetDirectory(), configuration_handler_->GetFilename());
 	StartAnalyses();
 }
 
 // Read Workflow
 void EmcCore::Read()
 {
-	auto arFileName = CoreMath::ChangeFileExtension(_configHandler.GetFullPath(), AR_FILE_EXTENSION);
+	auto arFileName = CoreMath::ChangeFileExtension(configuration_handler_->GetFullPath(), AR_FILE_EXTENSION);
 
 	std::ifstream visualizationFile(arFileName);
 	if (visualizationFile.is_open())

@@ -21,12 +21,12 @@ extern "C"
 
 // This is the primary decoding mechanism. DubstepCannon.cpp calls this function to invoke
 // several functions from FFMPEG.
-FFmpegReturnValue decodeMusic(std::string directoryName, std::string songName)
+FFmpegReturnValue decodeMusic(std::string directory_name, std::string song_name)
 {
-    auto audioStream = -1;
-    auto name = songName;
-    auto mpegFileName = directoryName + name + ".mp3";
-    auto emcFileName = name + EMC_FILE_EXTENSION;
+    auto audio_stream = -1;
+	auto name = song_name;
+	auto mpeg_filename = directory_name + name + ".mp3";
+    auto emc_filename = name + EMC_FILE_EXTENSION;
 
     AVCodec         *aCodec;
     AVPacket        avPkt;
@@ -40,7 +40,7 @@ FFmpegReturnValue decodeMusic(std::string directoryName, std::string songName)
     av_init_packet (&avPkt);
 
     // open the file if it exists
-    if (avformat_open_input(&pFormatCtxt, mpegFileName.c_str(), NULL, NULL) != 0)
+	if (avformat_open_input(&pFormatCtxt, mpeg_filename.c_str(), NULL, NULL) != 0)
     { 
         CoreMath::Debug("No file found!\n");
 		return FFmpegReturnValue::NoFileFound;
@@ -59,12 +59,12 @@ FFmpegReturnValue decodeMusic(std::string directoryName, std::string songName)
 	{
 		if (pFormatCtxt->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
 		{
-			audioStream = i;
+			audio_stream = i;
 		}
 	}
 
-    aCodecCtxt = pFormatCtxt ->streams [audioStream]->codec; // opening decoder   
-    aCodec = avcodec_find_decoder( pFormatCtxt->streams [audioStream] ->codec->codec_id);
+	aCodecCtxt = pFormatCtxt->streams[audio_stream]->codec; // opening decoder   
+	aCodec = avcodec_find_decoder(pFormatCtxt->streams[audio_stream]->codec->codec_id);
 
     if (!aCodec)
         return FFmpegReturnValue::NoCodec;
@@ -78,7 +78,7 @@ FFmpegReturnValue decodeMusic(std::string directoryName, std::string songName)
     uint8_t inbuf[AUDIO_INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
     FILE *f, *outfile;
 
-    outfile = fopen(emcFileName.c_str(), "wb");
+	outfile = fopen(emc_filename.c_str(), "wb");
     if(!outfile)
     {
         av_free(aCodecCtxt);
@@ -88,7 +88,7 @@ FFmpegReturnValue decodeMusic(std::string directoryName, std::string songName)
 
     while(av_read_frame(pFormatCtxt, &avPkt) >= 0 )
     {
-        if (avPkt.stream_index == audioStream)
+		if (avPkt.stream_index == audio_stream)
         {
             int check = 0; 
             int result = avcodec_decode_audio4 (aCodecCtxt, decode_frame, &check, &avPkt);

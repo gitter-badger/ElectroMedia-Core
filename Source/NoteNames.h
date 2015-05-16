@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#ifndef NoteNameDefinition
-#define NoteNameDefinition
+#ifndef EMC_NoteName_H_
+#define EMC_NoteName_H_
 
 enum NoteName
 {

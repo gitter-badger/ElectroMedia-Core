@@ -3,14 +3,14 @@
 #include "CoreMath.h"
 #include "NoteNames.h"
 
-#ifndef FeatureExtractionAnalyzerDefinition
-#define FeatureExtractionAnalyzerDefinition
+#ifndef EMC_FeatureExtractionAnalyzer_H_
+#define EMC_FeatureExtractionAnalyzer_H_
 
 class FeatureExtractionAnalyzer : public Analyzer
 {
 public:
-	FeatureExtractionAnalyzer(int lowerBound, int upperBound, int resolution);
-	std::string ConvertToBits(UniqueDataSet& dataToConvert, int noiseFloor);
+	FeatureExtractionAnalyzer(int lower_bound, int upper_bound, int resolution);
+	std::string ConvertToBits(UniqueDataSet& processed_data, int noise_floor);
 
 private:
 	NoteName ToNote(double frequency);

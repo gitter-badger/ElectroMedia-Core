@@ -9,26 +9,26 @@ Analyzer::Analyzer()
 	: Analyzer(0,0,1)
 { }
 
-Analyzer::Analyzer(int lowerBound, int upperBound)
-	: Analyzer(lowerBound, upperBound, 1)
+Analyzer::Analyzer(int lower_bound, int upper_bound)
+	: Analyzer(lower_bound, upper_bound, 1)
 { }
 
-Analyzer::Analyzer(int lowerBound, int upperBound, int resolution)
-	: lowerBound_(lowerBound),
-	  upperBound_(upperBound),
-	  bitResolution_(resolution)
+Analyzer::Analyzer(int lower_bound, int upper_bound, int resolution)
+	: lower_bound_(lower_bound),
+	  upper_bound_(upper_bound),
+	  bit_resolution_(resolution)
 { }
 
-Analyzer::Analyzer(double lowerFrequency, double upperFrequency)
-	: Analyzer(lowerFrequency, upperFrequency, 1)
+Analyzer::Analyzer(double lower_frequency, double upper_frequency)
+	: Analyzer(lower_frequency, upper_frequency, 1)
 {
 }
 
-Analyzer::Analyzer(double lowerFrequency, double upperFrequency, int resolution)
-	: bitResolution_(resolution)
+Analyzer::Analyzer(double lower_frequency, double upper_frequency, int resolution)
+	: bit_resolution_(resolution)
 {
-	lowerBound_ = CoreMath::ConvertFrequencyToInt(lowerFrequency);
-	upperBound_ = CoreMath::ConvertFrequencyToInt(upperFrequency);
+	lower_bound_ = CoreMath::ConvertFrequencyToInt(lower_frequency);
+	upper_bound_ = CoreMath::ConvertFrequencyToInt(upper_frequency);
 }
 
 Analyzer::~Analyzer() { }
@@ -44,30 +44,30 @@ Analyzer::~Analyzer() { }
 // 
 // Result is by default Big Endian, but this can be changed through config by
 // setting OUTPUT_IS_BIG_ENDIAN to false in "stdafx.h"
-std::string Analyzer::ConvertToBits(UniqueDataSet& dataToConvert, int noiseFloor)
+std::string Analyzer::ConvertToBits(UniqueDataSet& data_to_convert, int noise_floor)
 {
-    PreProcessForConversion(dataToConvert);
-    ApplyNoiseFloor(dataToConvert, noiseFloor);
-    auto resultingBits = EvaluateBits(dataToConvert);
+	PreProcessForConversion(data_to_convert);
+	ApplyNoiseFloor(data_to_convert, noise_floor);
+	auto resulting_bits = EvaluateBits(data_to_convert);
 
     // By default, this result is Big Endian due to the nature of frequencies increasing 
     // left-to-right. The nature of the output can be altered by changing the 
     // OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
     if(OUTPUT_IS_BIG_ENDIAN)
     {
-        return BigEndianConvert(resultingBits);
+		return BigEndianConvert(resulting_bits);
     }
-    return LittleEndianConvert(resultingBits);
+	return LittleEndianConvert(resulting_bits);
 }
 
-void Analyzer::PreProcessForConversion(UniqueDataSet& dataToConvert)
+void Analyzer::PreProcessForConversion(UniqueDataSet& data_to_convert)
 {
     // Nothing should really happen 
 }
 
-double checkAgainstNoiseFloor(double frequency, int noiseFloor)
+double checkAgainstNoiseFloor(double frequency, int noise_floor)
 {
-    if(frequency < noiseFloor)
+	if (frequency < noise_floor)
     {
         return 0;
     }
@@ -75,44 +75,44 @@ double checkAgainstNoiseFloor(double frequency, int noiseFloor)
     return frequency;
 }
 
-void Analyzer::ApplyNoiseFloor(UniqueDataSet& preProcesedData, int noiseFloor)
+void Analyzer::ApplyNoiseFloor(UniqueDataSet& preprocessed_data, int noise_floor)
 {
     // Replace with iterator
-    DataSetIterator it = preProcesedData->begin();
-    while (it != preProcesedData->end())
+	DataSetIterator it = preprocessed_data->begin();
+	while (it != preprocessed_data->end())
     {
-        *it = checkAgainstNoiseFloor(*it, noiseFloor);
+		*it = checkAgainstNoiseFloor(*it, noise_floor);
         ++it;
     }
 }
 
-dynamic_bitset<> Analyzer::EvaluateBits(UniqueDataSet& processedData)
+dynamic_bitset<> Analyzer::EvaluateBits(UniqueDataSet& processed_data)
 {
-    auto bitLength = (int) floor(upperBound_ - lowerBound_) / bitResolution_;
-    auto currentBitIndex = (int) 0;
-    dynamic_bitset<> outBits(bitLength);
+	auto bit_length = (int)floor(upper_bound_ - lower_bound_) / bit_resolution_;
+    auto current_bit = (int) 0;
+	dynamic_bitset<> out_bits(bit_length);
 
-    for (int bitIndex = 0; bitIndex < bitLength; ++bitIndex)
+	for (int bitIndex = 0; bitIndex < bit_length; ++bitIndex)
     {
-        outBits[bitIndex] = false;
-        for (int interIndex = 0; interIndex < bitResolution_; interIndex++)
+		out_bits[bitIndex] = false;
+		for (int interIndex = 0; interIndex < bit_resolution_; interIndex++)
         {
-			currentBitIndex = lowerBound_ + (bitIndex * bitResolution_) + interIndex;
-            if (processedData->at(currentBitIndex) > 0)
+			current_bit = lower_bound_ + (bitIndex * bit_resolution_) + interIndex;
+			if (processed_data->at(current_bit) > 0)
             {
-                outBits[bitIndex] = true;
+				out_bits[bitIndex] = true;
                 break;
             }
         }
     }
 
-    return outBits;
+	return out_bits;
 }
 
 
-std::string Analyzer::CheckBit(bool bitToCheck)
+std::string Analyzer::CheckBit(bool bit_to_check)
 {
-    if(bitToCheck)
+	if (bit_to_check)
     {
         return "1";
     }
@@ -120,26 +120,26 @@ std::string Analyzer::CheckBit(bool bitToCheck)
     return "0";
 }
 
-std::string Analyzer::BigEndianConvert(dynamic_bitset<>& processedBits)
+std::string Analyzer::BigEndianConvert(dynamic_bitset<>& processed_bits)
 {
-    auto outputString = (std::string)"";
+	auto output_string = (std::string)"";
 
-    for (int bit_ = 0; bit_ < processedBits.size(); bit_++)
+	for (int bit = 0; bit < processed_bits.size(); bit++)
     {
-        outputString.append( CheckBit(processedBits[bit_]) );
+		output_string.append(CheckBit(processed_bits[bit]));
     }
 
-    return outputString;
+	return output_string;
 }
 
-std::string Analyzer::LittleEndianConvert(dynamic_bitset<>& processedBits)
+std::string Analyzer::LittleEndianConvert(dynamic_bitset<>& processed_bits)
 {
-    auto outputString = (std::string)"";
+    auto output_string = (std::string)"";
 
-    for (int bit_ = processedBits.size()-1; bit_ >= 0; bit_--)
+	for (int bit = processed_bits.size() - 1; bit >= 0; bit--)
     {
-        outputString.append( CheckBit( processedBits[bit_] ) );
+		output_string.append(CheckBit(processed_bits[bit]));
     }
 
-    return outputString;
+	return output_string;
 }

@@ -4,8 +4,8 @@
 #include "FeatureExtractionAnalyzer.h"
 #include "IntensityAnalyzer.h"
 
-#ifndef AnalyzerFactoryDefinition
-#define AnalyzerFactoryDefinition
+#ifndef EMC_AnalyzerFactory_H_
+#define EMC_AnalyzerFactory_H_
 
 class AnalyzerFactory
 {

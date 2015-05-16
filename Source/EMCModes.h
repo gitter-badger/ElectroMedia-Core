@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#ifndef EMCModesDefinition
-#define EMCModesDefinition
+#ifndef EMC_EMCModes_H_
+#define EMC_EMCModes_H_
 
 enum EMC_Mode
 { 

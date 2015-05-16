@@ -1,29 +1,29 @@
 #include "stdafx.h"
 #include "ConfigurationHandler.h"
 
-ConfigurationHandler::ConfigurationHandler(std::string configFileDirectory, std::string configFileName)
-	: _arfwriterMode(EMC_Mode::Read),
-	_configurationDirectory(configFileDirectory),
-	_configurationFileName(configFileName)
+ConfigurationHandler::ConfigurationHandler(std::string configuration_file_directory, std::string configuration_file_name)
+	: arfwriter_mode_(EMC_Mode::Read),
+	configuration_directory_(configuration_file_directory),
+	configuration_filename_(configuration_file_name)
 {
-	_decodedJSON = new Json::Value();
-	LoadConfigurationFile(configFileDirectory + configFileName);
+	decoded_json_ = new Json::Value();
+	LoadConfigurationFile(configuration_file_directory + configuration_file_name);
 }
 
 // Load in the JSON Configuration file at the specified path
-void ConfigurationHandler::LoadConfigurationFile(std::string configurationFilePath)
+void ConfigurationHandler::LoadConfigurationFile(std::string configuration_file_path)
 {	
-	std::ifstream in(configurationFilePath);
+	std::ifstream in(configuration_file_path);
 	Json::Reader reader;
-	reader.parse(in, _decodedJSON);
+	reader.parse(in, decoded_json_);
 
 	// Default to Read Mode
-	_arfwriterMode = EMC_Mode::Read;
+	arfwriter_mode_ = EMC_Mode::Read;
 
 	// TODO: Refactor
-	if (_decodedJSON["mode"].asString().compare("write") == 0)
+	if (decoded_json_["mode"].asString().compare("write") == 0)
 	{
-		_arfwriterMode = EMC_Mode::Decode;
+		arfwriter_mode_ = EMC_Mode::Decode;
 	}
 }
 
@@ -34,19 +34,19 @@ void ConfigurationHandler::HashConfigField(std::string field)
 
 EMC_Mode ConfigurationHandler::GetMode()
 {
-	return _arfwriterMode;
+	return arfwriter_mode_;
 }
 
 // Returns the filename of the song in the configuration file
 std::string ConfigurationHandler::GetFilename()
 {
-	return _decodedJSON["filename"].asString();
+	return decoded_json_["filename"].asString();
 }
 
 // Returns the file path of the working directory
 std::string ConfigurationHandler::GetDirectory()
 {
-	return _configurationDirectory;
+	return configuration_directory_;
 }
 
 std::string ConfigurationHandler::GetFullPath()
@@ -59,59 +59,14 @@ vector< std::shared_ptr<Analyzer*> >* ConfigurationHandler::GetAnalyzers()
 {
 	vector < std::shared_ptr<Analyzer*> > analyzers;
 
-	auto it = _decodedJSON["Analyzers"].begin();
+	auto it = decoded_json_["Analyzers"].begin();
 	
 	// Each loop corresponds to a subnode in the "algorithms" node
-	while (it != _decodedJSON["Analyzers"].end())
+	while (it != decoded_json_["Analyzers"].end())
 	{
 	//	analyzers.push_back(std::make_shared<Analyzer*>( _analyzerFactory.Create((*it)["type"].asString()) ));
 		std::string something;
 	}
 
 	return &analyzers;
-}
-
-// TODO:  Heavy Refactoring
-void ConfigurationHandler::InitializeAnalyzer(ArduinoReadableFileWriter& arf)
-{
-    auto it = _decodedJSON["algorithms"].begin();
-
-	// Each loop corresponds to a subnode in the "algorithms" node
-	while (it != _decodedJSON["algorithms"].end())
-    {
-        Analyzer* spa;
-        auto fixedBoundaryType = 0;
-        auto fixedBoundary = (*it)["fixed_boundary"].asString();
-        auto type = (*it)["type"].asString();
-        auto bits = (*it)["bits"].asInt();
-
-		// Change the following to something like Spring
-        if (type == "direct")
-        {
-            spa = new Analyzer();
-        }
-		//else if (type == "pca")
-		//{
-		//	spa = new FeatureExtractionAnalyzer();
-		//}
-        //else
-        //{
-        //    spa = new HillEffectAnalyzer();
-        //}
-
-		// This really just shouldn't exist 
-        if (fixedBoundary == "upper")
-        {
-            fixedBoundaryType = ADJUSTMENT_TYPE_CHANGE_LOWER;
-        }
-        else if (fixedBoundary == "lower")
-        {
-            fixedBoundaryType = ADJUSTMENT_TYPE_CHANGE_UPPER;
-        }
-        else fixedBoundaryType = ADJUSTMENT_TYPE_CENTER;
-
-		// Why do frequency ranges exist again?
-        //arf.AddFrequencyRange((*it)["range"][0].asInt(), (*it)["range"][1].asInt(), fixedBoundaryType, *spa);
-        ++it;
-    }
 }

@@ -6,4 +6,9 @@
 
 // The Decoder uses FFMPEG, an Open-Source Library available via GPL.
 
-FFmpegReturnValue decodeMusic(std::string directoryName, std::string songName);
+#ifndef EMC_MP3toData_H_
+#define EMC_MP3toData_H_
+
+FFmpegReturnValue decodeMusic(std::string directory_name, std::string song_name);
+
+#endif

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#ifndef ConstantsDefinition
-#define ConstantsDefinition
+#ifndef EMC_Constants_H_
+#define EMC_Constants_H_
 
 // CONSTANT FLAGS
 const bool DEBUG_ENABLED = true;

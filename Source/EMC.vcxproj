@@ -461,7 +461,6 @@
     <ClInclude Include="EMCModes.h" />
     <ClInclude Include="FeatureExtractionAnalyzer.h" />
     <ClInclude Include="ArduinoReadableFileWriter.h" />
-    <ClInclude Include="FrequencyMaximum.h" />
     <ClInclude Include="MP3toData.h" />
     <ClInclude Include="fftw3.h" />
     <ClInclude Include="MusicFileOperations.h" />
@@ -478,7 +477,6 @@
     <ClCompile Include="EmcCore.cpp" />
     <ClCompile Include="FeatureExtractionAnalyzer.cpp" />
     <ClCompile Include="ArduinoReadableFileWriter.cpp" />
-    <ClCompile Include="FrequencyMaximum.cpp" />
     <ClCompile Include="HillEffectAnalyzer.cpp" />
     <ClCompile Include="IntensityAnalyzer.cpp" />
     <ClCompile Include="MP3toData.cpp" />

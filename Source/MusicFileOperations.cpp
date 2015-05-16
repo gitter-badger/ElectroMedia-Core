@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "MusicFileOperations.h"
 
-MusicFileOperations::MP3FileData MusicFileOperations::GetDataFromMP3(std::string directory, std::string nameWithoutExtension)
+MusicFileOperations::MP3FileData MusicFileOperations::GetDataFromMP3(std::string directory, std::string name_without_extension)
 {
-	auto returnCode = decodeMusic(directory, nameWithoutExtension);
-	
+	auto returnCode = decodeMusic(directory, name_without_extension);
+
 	if (returnCode != FFmpegReturnValue::Success)
 	{
 		std::cerr << "Exiting program with code " << returnCode;
@@ -12,13 +12,14 @@ MusicFileOperations::MP3FileData MusicFileOperations::GetDataFromMP3(std::string
 	}
 
 	// Process the raw data file and put the data into fulldata
-	auto dataFromFile = std::make_shared<vector<char>>();
-	MusicFileOperations::CaptureFileData(nameWithoutExtension, dataFromFile);
+	auto data_from_file = std::make_shared<vector<char>>();
+	
+	MusicFileOperations::CaptureFileData(name_without_extension, data_from_file);
 
-	return dataFromFile;
+	return data_from_file;
 }
 
-void MusicFileOperations::ConvertMP3ToARF(std::string directory, std::string nameWithoutExtension)
+void MusicFileOperations::ConvertMP3ToARF(std::string directory, std::string name_without_extension)
 {
 	// ==== The following shouldn't be passed here. This should be handled by configuration handler I think
 	// ==== ------------------------------------------------------------------------------------------------------------------------------
@@ -27,7 +28,7 @@ void MusicFileOperations::ConvertMP3ToARF(std::string directory, std::string nam
 	//configHandler.InitializeAnalyzer(*arfile);
 	//arfile->SetMode(EMC_Output_Mode::Text);
 	// ==== ------------------------------------------------------------------------------------------------------------------------------
-	auto dataFromFile = MusicFileOperations::GetDataFromMP3(directory, nameWithoutExtension);
+	auto data_from_file = MusicFileOperations::GetDataFromMP3(directory, name_without_extension);
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
     // It is rewritten in every loop, whereas dataFromFile is constant.
@@ -41,12 +42,12 @@ void MusicFileOperations::ConvertMP3ToARF(std::string directory, std::string nam
     auto complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
     auto new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
 
-    CoreMath::Debug("Converting \"" + nameWithoutExtension + "\" to Arduino Readable File");
-    while (((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < dataFromFile->size())
+	CoreMath::Debug("Converting \"" + name_without_extension + "\" to Arduino Readable File");
+	while (((++sweeps)*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE) < data_from_file->size())
     {
         // Copy out the data from the AudioFileData source into a DataSet
-        first = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT;
-        last = dataFromFile->begin() + sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE;
+		first = data_from_file->begin() + sweeps*WINDOW_SHIFT_AMOUNT;
+		last = data_from_file->begin() + sweeps*WINDOW_SHIFT_AMOUNT + WINDOW_SIZE;
         vector<double> windowedSubvector(first, last);
         preProcessData = std::make_shared<vector<double>>(windowedSubvector);
 
@@ -67,14 +68,14 @@ void MusicFileOperations::ConvertMP3ToARF(std::string directory, std::string nam
 // Should probably be moved into EmcCore
 
 
-void MusicFileOperations::CopyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
+void MusicFileOperations::CopyVectorToPointerArray(DataSet& vector_in, double* array_out)
 {
     auto elements = 0;
-    auto dataSetIterator = vectorIn->begin();
+	auto dataSetIterator = vector_in->begin();
 
-	while (dataSetIterator != vectorIn->end() && elements++ < vectorIn->size())
+	while (dataSetIterator != vector_in->end() && elements++ < vector_in->size())
     {
-		arrayOut[elements] = *dataSetIterator;
+		array_out[elements] = *dataSetIterator;
 		++dataSetIterator;
     }
 }
@@ -90,58 +91,59 @@ void MusicFileOperations::CopyVectorToPointerArray(DataSet& vectorIn, double* ar
 // but right now this is the only way to do it
 //
 // Performance: O(n)
-long MusicFileOperations::CaptureFileData(std::string songName, AudioFileData& waveformDataPoints)
+long MusicFileOperations::CaptureFileData(std::string song_name, AudioFileData& waveform_data)
 {
     // Read the file indicated by Filename argument
-	std::ifstream dataFileIn_((songName + EMC_FILE_EXTENSION).c_str(), std::ios::binary);
+	std::ifstream data_file_stream((song_name + EMC_FILE_EXTENSION).c_str(), std::ios::binary);
 
-    long counted_ = 0;
-    while (dataFileIn_)
+    long counted_points = 0;
+	while (data_file_stream)
     {
         // Get the next line from the FFTW file
         char c;
-        dataFileIn_.get(c);
+		data_file_stream.get(c);
 
         // If it exists, push it into the dataOut array
-        if (dataFileIn_)
+		if (data_file_stream)
         {
-            waveformDataPoints->push_back(double(c));
-            counted_++;
+			waveform_data->push_back(double(c));
+			++counted_points;
         }
     }
 
     // Close the file and then return the filesize
-    dataFileIn_.close();
-    return counted_;
+	data_file_stream.close();
+	return counted_points;
 }
 
 // fftw_complex* =  startFFT (double*, int)
 // ---
 // Interface with the FFTW FOSS library. Indirectly performs the Fast Fourier
 // Transform to the data set of length (int)
-DataSet MusicFileOperations::ExecuteFastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
+DataSet MusicFileOperations::ExecuteFastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* working_array, fftw_complex* complex_results)
 {
     // Allocate memory for the fftw_complex array and working double*
     // Generate a plan for FFTW to execute
-    memcpy(workingDoubleArray_, &data->at(0), data->size() * sizeof(double));
-    // Execute the plan
+	memcpy(working_array, &data->at(0), data->size() * sizeof(double));
+    
+	// Execute the plan
     fftw_execute(fft_plan);
 
    // std::ofstream fftResultsFile("Results.csv");
-    vector<double> resultsVector;
-    resultsVector.reserve(180);
-    auto dataOut = std::make_shared<vector<double>>(resultsVector);
+    vector<double> results_vector;
+	results_vector.reserve(180);
+	auto data_out = std::make_shared<vector<double>>(results_vector);
 
     auto frequency = 0.0;
     for(int i=0; i < 180; i++)
     {
-        frequency = double(sqrt(complexResults[i][0] * complexResults[i][0] + complexResults[i][1] * complexResults[i][1]));
-        dataOut->push_back( frequency );
+		frequency = double(sqrt(complex_results[i][0] * complex_results[i][0] + complex_results[i][1] * complex_results[i][1]));
+        data_out->push_back( frequency );
     }
 
 
   //  fftResultsFile.close();
-    return dataOut;
+	return data_out;
 }
 
 // normalize(double*, int)
@@ -152,17 +154,17 @@ DataSet MusicFileOperations::ExecuteFastFourierTransform(DataSet& data, fftw_pla
 // Performance: O(n)
 void MusicFileOperations::Normalize(DataSet& data)
 {
-    auto maxValue = *std::max_element(data->begin(), data->end());
+    auto max_value = *std::max_element(data->begin(), data->end());
 
-    std::for_each(data->begin(), data->end(), [maxValue](double& x){ x /= maxValue; });
+	std::for_each(data->begin(), data->end(), [max_value](double& x){ x /= max_value; });
 }
 
 // double = hanningMultiplier(int, int)
 // ---
 // Returns an offset cosine wave of (int) width at a specific index
-double MusicFileOperations::GetHanningMultiplier(int indexOfHanningFunction)
+double MusicFileOperations::GetHanningMultiplier(int index_at)
 {
-    return 0.5 * (1 - cos(2*PI * indexOfHanningFunction / (WINDOW_SIZE-1)) );
+	return 0.5 * (1 - cos(2 * PI * index_at / (WINDOW_SIZE - 1)));
 }
 
 // applyHanningWindow(int*, double*, int)
@@ -187,11 +189,11 @@ void MusicFileOperations::ApplyHanningWindow(DataSet& data)
 // ---
 // Execute the FFT, convert the results from the complex frequency domain to the
 // frequency-vs-time spectral domain and then save the results into a debug file.
-DataSet MusicFileOperations::PrepareAndExecuteFFT(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults)
+DataSet MusicFileOperations::PrepareAndExecuteFFT(DataSet& data, fftw_plan& fft_plan, double* working_array, fftw_complex* complex_results)
 {
 	auto maxFrequency = CoreMath::ConvertFrequencyToInt(MAXIMUM_FREQUENCY_ACCOUNTED);
 
     // Execute the FFT
     ApplyHanningWindow(data);
-    return ExecuteFastFourierTransform(data,fft_plan,workingDoubleArray_,complexResults);
+	return ExecuteFastFourierTransform(data, fft_plan, working_array, complex_results);
 }

@@ -4,8 +4,8 @@
 // ArduinoReadableFileWriter Constructor
 // ---
 // Initialize our Arduino-Readable-file stream
-ArduinoReadableFileWriter::ArduinoReadableFileWriter(char nameOfARF[])
-    : arfStream(nameOfARF), mode_(EMC_Output_Mode::Text), numberOfOutputs_(-1)
+ArduinoReadableFileWriter::ArduinoReadableFileWriter(char name_of_arf[])
+	: arf_stream_(name_of_arf), mode_(EMC_Output_Mode::Text), number_of_outputs_(-1)
 {
 }
 
@@ -15,42 +15,44 @@ ArduinoReadableFileWriter::ArduinoReadableFileWriter(char nameOfARF[])
 ArduinoReadableFileWriter::~ArduinoReadableFileWriter()
 {
     // For safety, check to see if the user closed the stream. If not, close it
-    if(arfStream.is_open())
-        Close();
+	if (arf_stream_.is_open())
+	{
+		Close();
+	}
 }
 
 // setMode(int)	
 // ---
 // Change the way that the write() function behaves
-void ArduinoReadableFileWriter::SetMode(EMC_Output_Mode newMode)
+void ArduinoReadableFileWriter::SetMode(EMC_Output_Mode new_mode)
 {
-    mode_ = newMode;
+    mode_ = new_mode;
 
     switch(mode_)
     {
 	case(EMC_Output_Mode::ArduinoReadableFile):
-        numberOfOutputs_ = ARDUINO_UNO_IO_PINS;
+        number_of_outputs_ = ARDUINO_UNO_IO_PINS;
         break;
 
     default:
-        numberOfOutputs_ = 0;
+        number_of_outputs_ = 0;
     }
 }
 
 // bool = isTextWritable()
 // ---
-// Checks to see that the arfStream is open and that mode_ == MODE_TEXT.
+// Checks to see that the arf_stream_ is open and that mode_ == MODE_TEXT.
 bool ArduinoReadableFileWriter::IsTextWritable()
 {
-    if(!arfStream.is_open())
+    if(!arf_stream_.is_open())
     {
-        CoreMath::Debug("arfStream is not initialized -- cannot write strings to an unopen file!");
+        CoreMath::Debug("arf_stream_ is not initialized -- cannot write strings to an unopen file!");
         return false;
     }
 
     if(mode_ != EMC_Output_Mode::Text)
     {
-        CoreMath::Debug("arfStream cannot write a string while not in Text Mode!");
+        CoreMath::Debug("arf_stream_ cannot write a string while not in Text Mode!");
         return false;
     }
 
@@ -61,11 +63,11 @@ bool ArduinoReadableFileWriter::IsTextWritable()
 // ---
 // Writes a single line of text to the output file if and only if the mode is set to
 // MODE_TEXT. This function is ignored when writing a *.arf
-void ArduinoReadableFileWriter::Write(std::string stringToWrite)
+void ArduinoReadableFileWriter::Write(std::string string_to_write)
 {
     if(IsTextWritable())
     {
-        ArduinoReadableFileWriter::arfStream << stringToWrite.c_str() << "\n";
+		ArduinoReadableFileWriter::arf_stream_ << string_to_write.c_str() << "\n";
     }
 }
 
@@ -73,11 +75,11 @@ void ArduinoReadableFileWriter::Write(std::string stringToWrite)
 // ---
 // Writes a single line of text to the output file if and only if the mode is set to
 // MODE_TEXT. This function is ignored when writing a *.arf
-void ArduinoReadableFileWriter::Write(int intToWrite)
+void ArduinoReadableFileWriter::Write(int int_to_write)
 {
     if(IsTextWritable())
     {
-        ArduinoReadableFileWriter::arfStream << intToWrite << "\n";
+		ArduinoReadableFileWriter::arf_stream_ << int_to_write << "\n";
     }
 }
 
@@ -85,11 +87,11 @@ void ArduinoReadableFileWriter::Write(int intToWrite)
 // ---
 // Deciphers the data and transforms it into byte format; writes bytes to the output file
 // [WIP]
-void ArduinoReadableFileWriter::Write(DataSet& dataToWrite)
+void ArduinoReadableFileWriter::Write(DataSet& data_to_write)
 {
-    if(!arfStream.is_open())
+    if(!arf_stream_.is_open())
     {
-        CoreMath::Debug("arfStream is not initialized -- cannot write data to an unopen file!");
+        CoreMath::Debug("arf_stream_ is not initialized -- cannot write data to an unopen file!");
         return;
     }
 
@@ -97,7 +99,7 @@ void ArduinoReadableFileWriter::Write(DataSet& dataToWrite)
     {
         // Text mode is meant to be human-readable and is used for debug purposes
 	case(EMC_Output_Mode::Text):
-        WriteDoubleInTextMode(dataToWrite);
+		WriteDoubleInTextMode(data_to_write);
         break;
 
         // Regular Arduino Mode uses 16 output pins
@@ -114,18 +116,18 @@ void ArduinoReadableFileWriter::Write(DataSet& dataToWrite)
 
 int ArduinoReadableFileWriter::CalculateDynamicNoiseFloor(DataSet& data)
 {
-    auto preNFMaximum_ = *std::max_element(data->begin(), data->end());
+    auto pre_noise_floor_maximum = *std::max_element(data->begin(), data->end());
 
-    return int(preNFMaximum_ * (double(NOISE_FLOOR_PCT) / 100));
+	return int(pre_noise_floor_maximum * (double(NOISE_FLOOR_PCT) / 100));
 }
 
-void ArduinoReadableFileWriter::WriteDoubleInTextMode(DataSet& dataToWrite)
+void ArduinoReadableFileWriter::WriteDoubleInTextMode(DataSet& data_to_write)
 {
-    auto dynamicNoiseFloor = NOISE_FLOOR;
+    auto dynamic_noise_floor = NOISE_FLOOR;
 
 		// TODO
 
-    ArduinoReadableFileWriter::arfStream << "\n";
+    ArduinoReadableFileWriter::arf_stream_ << "\n";
 }
 
 
@@ -135,5 +137,5 @@ void ArduinoReadableFileWriter::WriteDoubleInTextMode(DataSet& dataToWrite)
 // Close the output file. Not a destructor!
 void ArduinoReadableFileWriter::Close()
 {
-    ArduinoReadableFileWriter::arfStream.close();
+    ArduinoReadableFileWriter::arf_stream_.close();
 }

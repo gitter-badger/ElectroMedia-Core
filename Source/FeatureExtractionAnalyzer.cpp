@@ -1,35 +1,35 @@
 #include "stdafx.h"
 #include "FeatureExtractionAnalyzer.h"
 
-FeatureExtractionAnalyzer::FeatureExtractionAnalyzer(int lowerBound, int upperBound, int resolution)
-	: Analyzer(lowerBound, upperBound, resolution)
+FeatureExtractionAnalyzer::FeatureExtractionAnalyzer(int lower_bound, int upper_bound, int resolution)
+	: Analyzer(lower_bound, upper_bound, resolution)
 {
 
 }
 
-std::string FeatureExtractionAnalyzer::ConvertToBits(UniqueDataSet& processedData, const int bitLength)
+std::string FeatureExtractionAnalyzer::ConvertToBits(UniqueDataSet& processed_data, const int noise_floor)
 {
-	double valuesOfNotes[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	int thisNoteType = 0;
-	double thisNoteAmplitude = 0;
+	double values_of_notes[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	int note_type = 0;
+	double note_amplitude = 0;
 
-	for (int freqIndex = 0; freqIndex < upperBound_; freqIndex++)
+	for (int freqIndex = 0; freqIndex < upper_bound_; freqIndex++)
 	{
-		thisNoteAmplitude = processedData->at(freqIndex);
-		thisNoteType = ToNote(CoreMath::ConvertIntToFrequency(freqIndex));
-		if (thisNoteType == NoteName::NONE)
+		note_amplitude = processed_data->at(freqIndex);
+		note_type = ToNote(CoreMath::ConvertIntToFrequency(freqIndex));
+		if (note_type == NoteName::NONE)
 		{
 			continue;
 		}
-		valuesOfNotes[thisNoteType] += thisNoteAmplitude;
+		values_of_notes[note_type] += note_amplitude;
 	}
 
 	std::ostringstream buffer;
-	buffer << valuesOfNotes[0];
+	buffer << values_of_notes[0];
 
-	for (int noteIndex = 1; noteIndex < 12; noteIndex++)
+	for (int note_index = 1; note_index < 12; note_index++)
 	{
-		buffer << ", " << valuesOfNotes[noteIndex];
+		buffer << ", " << values_of_notes[note_index];
 	}
 
 	return buffer.str();
@@ -42,62 +42,62 @@ NoteName FeatureExtractionAnalyzer::ToNote(double frequency)
 		return NoteName::NONE;
 	}
 
-	double evalFrequency = frequency;
-	while (evalFrequency < 440)
+	double evaluated_frequency = frequency;
+	while (evaluated_frequency < 440)
 	{
-		evalFrequency *= 2;
+		evaluated_frequency *= 2;
 	}
-	while (evalFrequency > 880)
+	while (evaluated_frequency > 880)
 	{
-		evalFrequency /= 2;
+		evaluated_frequency /= 2;
 	}
 
 	// GROSS but it works for now
-	if (evalFrequency < 466.16)
+	if (evaluated_frequency < 466.16)
 	{
 		return NoteName::A;
 	}
-	if (evalFrequency < 466.16)
+	if (evaluated_frequency < 466.16)
 	{
 		return NoteName::Asharp;
 	}
-	if (evalFrequency < 493.88)
+	if (evaluated_frequency < 493.88)
 	{
 		return NoteName::B;
 	}
-	if (evalFrequency < 523.25)
+	if (evaluated_frequency < 523.25)
 	{
 		return NoteName::C;
 	}
-	if (evalFrequency < 554.37)
+	if (evaluated_frequency < 554.37)
 	{
 		return NoteName::Csharp;
 	}
-	if (evalFrequency < 587.33)
+	if (evaluated_frequency < 587.33)
 	{
 		return NoteName::D;
 	}
-	if (evalFrequency < 622.25)
+	if (evaluated_frequency < 622.25)
 	{
 		return NoteName::Dsharp;
 	}
-	if (evalFrequency < 659.25)
+	if (evaluated_frequency < 659.25)
 	{
 		return NoteName::E;
 	}
-	if (evalFrequency < 698.46)
+	if (evaluated_frequency < 698.46)
 	{
 		return NoteName::F;
 	}
-	if (evalFrequency < 739.99)
+	if (evaluated_frequency < 739.99)
 	{
 		return NoteName::Fsharp;
 	}
-	if (evalFrequency < 783.99)
+	if (evaluated_frequency < 783.99)
 	{
 		return NoteName::G;
 	}
-	/*	if (evalFrequency < 830.61)
+	/*	if (evaluated_frequency < 830.61)
 	{*/
 	return NoteName::Gsharp;
 	//}

@@ -1,14 +1,14 @@
 #include "stdafx.h"
 
-#ifndef CoreMathDefinition
-#define CoreMathDefinition
+#ifndef EMC_CoreMath_H_
+#define EMC_CoreMath_H_
 
 static class CoreMath
 {
 public:
 
 	// Basic methods which convert an integer index to a frequency value, or vice versa
-	static int ConvertFrequencyToInt(double frequencyBand);
+	static int ConvertFrequencyToInt(double frequency_bound);
 	static double ConvertIntToFrequency(int index);
 
 	// Used to calculate a dynamic noise floor, taking fluctuations in signal noise
@@ -20,11 +20,11 @@ public:
 	static double CalculateIntensityScalar(double frequency);
 
 	// Pipes out a line of text to cerr if and only if DEBUG_ENABLED == true
-	static void Debug(std::string debugComment);
+	static void Debug(std::string debug_comment);
 
-	static std::string GetPath(char* basePath);
-	static std::string GetFilenameWithoutExtension(std::string fullPath);
-	static std::string ChangeFileExtension(std::string fullPath, std::string newExtension);
+	static std::string GetPath(char* base_path);
+	static std::string GetFilenameWithoutExtension(std::string full_path);
+	static std::string ChangeFileExtension(std::string full_path, std::string new_extension);
 };
 
 #endif

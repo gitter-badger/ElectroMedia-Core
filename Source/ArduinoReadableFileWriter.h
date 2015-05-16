@@ -3,14 +3,14 @@
 #include "CoreMath.h"
 #include "EMCModes.h"
 
-#ifndef ARFWriterDefinition
-#define ARFWriterDefinition
+#ifndef EMC_ArduinoReadableFileWriter_H_
+#define EMC_ArduinoReadableFileWriter_H_
 
 class ArduinoReadableFileWriter
 {
 public:
     // Constructors / Destructors
-    ArduinoReadableFileWriter(char nameOfARF[]);
+	ArduinoReadableFileWriter(char name_of_arf[]);
     ~ArduinoReadableFileWriter();
 	
     // Sets the mode of the ARFWriter (Text or Byte) according to the enum writeMode
@@ -29,9 +29,9 @@ private:
     int CalculateDynamicNoiseFloor(DataSet& data);
 
     // Private variables
-    std::ofstream arfStream;
+    std::ofstream arf_stream_;
 	EMC_Output_Mode mode_;
-	int numberOfOutputs_, dynamicNoiseFloor;
+	int number_of_outputs_;
 };
 
 #endif
