@@ -17,6 +17,7 @@ public:
 	// Getters
 	std::string GetFilename();
 	std::string GetDirectory();
+	std::string GetFullPath();
 	EMC_Mode GetMode();
 
 	// Initialize the ArduinoReadableFileWriter object with the SPAs declared in the JSON

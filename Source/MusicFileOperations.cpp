@@ -1,49 +1,42 @@
 #include "stdafx.h"
 #include "MusicFileOperations.h"
 
-void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
+MusicFileOperations::MP3FileData MusicFileOperations::GetDataFromMP3(std::string directory, std::string nameWithoutExtension)
 {
-	// ==== The following can be replaced by passing in an ArduinoReadableFileWriter, which has the directory and nameWithoutExtension
-	// ==== ------------------------------------------------------------------------------------------------------------------------------
-    // filename stuff
-	auto fullArgument = configHandler.GetFilename();
-    auto extensionLocation = fullArgument.find(".");
-
-    // Protection for noninclusion of extension
-    if (extensionLocation > fullArgument.size())
-    {
-        extensionLocation = fullArgument.size();
-    }
-
-    // Specific filename strings
-    auto nameWithoutExtension = std::string(fullArgument.begin(), extensionLocation + fullArgument.begin());
-	auto arfilename = (configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION);
-	std::unique_ptr<ArduinoReadableFileWriter> arfile(new ArduinoReadableFileWriter((char*)arfilename.c_str()));
+	auto returnCode = decodeMusic(directory, nameWithoutExtension);
 	
-	configHandler.InitializeAnalyzer(*arfile);
-	arfile->SetMode(EMC_Output_Mode::Text);
+	if (returnCode != FFmpegReturnValue::Success)
+	{
+		std::cerr << "Exiting program with code " << returnCode;
+		throw;
+	}
+
+	// Process the raw data file and put the data into fulldata
+	auto dataFromFile = std::make_shared<vector<char>>();
+	MusicFileOperations::CaptureFileData(nameWithoutExtension, dataFromFile);
+
+	return dataFromFile;
+}
+
+void MusicFileOperations::ConvertMP3ToARF(std::string directory, std::string nameWithoutExtension)
+{
+	// ==== The following shouldn't be passed here. This should be handled by configuration handler I think
 	// ==== ------------------------------------------------------------------------------------------------------------------------------
-
-    // Process the MP3 File
-    auto returnCode = decodeMusic(configHandler.GetDirectory(), nameWithoutExtension);
-    if (returnCode != 1)
-    {
-        std::cerr << "Exiting program with code " << returnCode;
-        return;
-    }
-
-    // Process the raw data file and put the data into fulldata
-    auto dataFromFile = std::make_shared<vector<char>>();
-    long filesize = CaptureFileData(nameWithoutExtension, dataFromFile);
-    auto sweeps = -1;
+	//std::unique_ptr<ArduinoReadableFileWriter> arfile(new ArduinoReadableFileWriter((char*)arfilename.c_str()));
+	//
+	//configHandler.InitializeAnalyzer(*arfile);
+	//arfile->SetMode(EMC_Output_Mode::Text);
+	// ==== ------------------------------------------------------------------------------------------------------------------------------
+	auto dataFromFile = MusicFileOperations::GetDataFromMP3(directory, nameWithoutExtension);
 
     // preProcessData is an empty integer array that is used to receive data via memcpy.
     // It is rewritten in every loop, whereas dataFromFile is constant.
     DataSet preProcessData = DataSet();
-    vector<char>::const_iterator first;
-    vector<char>::const_iterator last;
+    vector<char>::const_iterator first, last;
+	auto sweeps = -1;
 
     // FFT variables
+	// MOST of this should be refactored into LinearAnalyzer
     auto workingDoubleArray_ = (double*)fftw_malloc(sizeof(double) * WINDOW_SIZE);
     auto complexResults = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * WINDOW_SIZE);
     auto new_plan = fftw_plan_dft_r2c_1d(WINDOW_SIZE, workingDoubleArray_, complexResults, FFTW_MEASURE);
@@ -59,7 +52,7 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
 
         // Call FFT
         auto dataFromFFT = PrepareAndExecuteFFT(preProcessData, new_plan, workingDoubleArray_, complexResults);
-        arfile->Write(dataFromFFT);
+        //arfile->Write(dataFromFFT);
     }
     CoreMath::Debug("Process complete.");
     
@@ -68,37 +61,11 @@ void MusicFileOperations::ConvertMP3ToARF(ConfigurationHandler& configHandler)
     fftw_free(workingDoubleArray_);
     fftw_free(complexResults);
     fftw_cleanup();
-    arfile->Close();
+    //arfile->Close();
 }
 
-void MusicFileOperations::ReadArFile(ConfigurationHandler& configHandler)
-{
-    auto fullArgument = configHandler.GetFilename();
-    auto extensionLocation = fullArgument.find(".");
+// Should probably be moved into EmcCore
 
-    // Protection for noninclusion of extension
-    if (extensionLocation > fullArgument.size())
-    {
-        extensionLocation = fullArgument.size();
-    }
-
-    auto nameWithoutExtension = std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
-    auto arFileName = configHandler.GetDirectory() + nameWithoutExtension + AR_FILE_EXTENSION;
-
-    std::ifstream visualizationFile(arFileName);
-    if (visualizationFile.is_open())
-    {
-        std::string line;
-        auto start = std::chrono::high_resolution_clock::now();
-        while (std::getline(visualizationFile, line))
-        {
-            std::cerr << line << "\n";
-            std::this_thread::sleep_until(start + std::chrono::microseconds(45000));
-            start = std::chrono::high_resolution_clock::now();
-            //while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() < 46447);
-        }
-    }
-}
 
 void MusicFileOperations::CopyVectorToPointerArray(DataSet& vectorIn, double* arrayOut)
 {
@@ -170,7 +137,6 @@ DataSet MusicFileOperations::ExecuteFastFourierTransform(DataSet& data, fftw_pla
     {
         frequency = double(sqrt(complexResults[i][0] * complexResults[i][0] + complexResults[i][1] * complexResults[i][1]));
         dataOut->push_back( frequency );
-      //  fftResultsFile << (BOUNDARY_CONVERSION_SCALAR*i - BOUNDARY_CONVERSION_OFFSET) << "," << frequency << endl;
     }
 
 

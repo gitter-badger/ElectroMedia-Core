@@ -5,13 +5,16 @@
 #include "MP3toData.h"
 #include "ConfigurationHandler.h"
 #include "Constants.h"
+#include "FFmpegReturnValues.h"
 #include <thread>
 #include <chrono>
 
 static class MusicFileOperations
 {
+	typedef std::shared_ptr<std::vector<char>> MP3FileData;
+
 public:
-	static void ConvertMP3ToARF(ConfigurationHandler& configHandler);
+	static void ConvertMP3ToARF(std::string directory, std::string nameWithoutExtension);
 	static void ReadArFile(ConfigurationHandler& configHandler);
 	
 private:
@@ -25,6 +28,7 @@ private:
 	// Fast Fourier Transform
 	static DataSet ExecuteFastFourierTransform(DataSet& data, fftw_plan& fft_plan, double* workingDoubleArray_, fftw_complex* complexResults);
 
-	// ? What is this
+
+	static MP3FileData GetDataFromMP3(std::string directory, std::string nameWithoutExtension);
 	static long CaptureFileData(std::string songName, AudioFileData& waveformDataPoints);
 };

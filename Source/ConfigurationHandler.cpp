@@ -49,6 +49,12 @@ std::string ConfigurationHandler::GetDirectory()
 	return _configurationDirectory;
 }
 
+std::string ConfigurationHandler::GetFullPath()
+{
+	return ConfigurationHandler::GetDirectory() + ConfigurationHandler::GetFilename();
+}
+
+
 vector< std::shared_ptr<Analyzer*> >* ConfigurationHandler::GetAnalyzers()
 {
 	vector < std::shared_ptr<Analyzer*> > analyzers;

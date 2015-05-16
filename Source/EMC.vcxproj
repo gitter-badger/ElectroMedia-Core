@@ -454,6 +454,7 @@
     <ClInclude Include="dev\include\libswscale\swscale.h" />
     <ClInclude Include="dev\include\libswscale\version.h" />
     <ClInclude Include="EmcCore.h" />
+    <ClInclude Include="FFmpegReturnValues.h" />
     <ClInclude Include="HillEffectAnalyzer.h" />
     <ClInclude Include="IntensityAnalyzer.h" />
     <ClInclude Include="NoteNames.h" />

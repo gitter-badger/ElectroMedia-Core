@@ -1200,6 +1200,9 @@
     <ClInclude Include="AnalyzerFactory.h">
       <Filter>Header Files\Project Source\Helpers\Factories</Filter>
     </ClInclude>
+    <ClInclude Include="FFmpegReturnValues.h">
+      <Filter>Header Files\Project Source\Helpers\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

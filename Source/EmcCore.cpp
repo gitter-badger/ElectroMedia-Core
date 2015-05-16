@@ -42,12 +42,26 @@ void EmcCore::StartAnalyses()
 // Decode Workflow
 void EmcCore::Decode()
 {
-	MusicFileOperations::ConvertMP3ToARF(_configHandler);
+	MusicFileOperations::ConvertMP3ToARF(_configHandler.GetDirectory(), _configHandler.GetFilename());
 	StartAnalyses();
 }
 
 // Read Workflow
 void EmcCore::Read()
 {
-	MusicFileOperations::ReadArFile(_configHandler);
+	auto arFileName = CoreMath::ChangeFileExtension(_configHandler.GetFullPath(), AR_FILE_EXTENSION);
+
+	std::ifstream visualizationFile(arFileName);
+	if (visualizationFile.is_open())
+	{
+		std::string line;
+		auto start = std::chrono::high_resolution_clock::now();
+		while (std::getline(visualizationFile, line))
+		{
+			std::cerr << line << "\n";
+			std::this_thread::sleep_until(start + std::chrono::microseconds(45000));
+			start = std::chrono::high_resolution_clock::now();
+			//while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() < 46447);
+		}
+	}
 }

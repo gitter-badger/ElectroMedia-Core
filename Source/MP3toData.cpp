@@ -21,7 +21,7 @@ extern "C"
 
 // This is the primary decoding mechanism. DubstepCannon.cpp calls this function to invoke
 // several functions from FFMPEG.
-int decodeMusic(std::string directoryName, std::string songName)
+FFmpegReturnValue decodeMusic(std::string directoryName, std::string songName)
 {
     auto audioStream = -1;
     auto name = songName;
@@ -43,13 +43,13 @@ int decodeMusic(std::string directoryName, std::string songName)
     if (avformat_open_input(&pFormatCtxt, mpegFileName.c_str(), NULL, NULL) != 0)
     { 
         CoreMath::Debug("No file found!\n");
-        return -2;
+		return FFmpegReturnValue::NoFileFound;
     }
 
     //Get Streams Info 
     if(avformat_find_stream_info (pFormatCtxt,NULL) < 0)
     { 
-        return -3; 
+        return FFmpegReturnValue::NoStreamAvailable;
     }
     //Testing the transfer.
     AVStream *stream = NULL;
@@ -67,10 +67,10 @@ int decodeMusic(std::string directoryName, std::string songName)
     aCodec = avcodec_find_decoder( pFormatCtxt->streams [audioStream] ->codec->codec_id);
 
     if (!aCodec)
-        return -8;
+        return FFmpegReturnValue::NoCodec;
 
-    if (avcodec_open2(aCodecCtxt,aCodec,NULL)!=0)
-        return -9; 
+	if (avcodec_open2(aCodecCtxt, aCodec, NULL) != 0)
+		return FFmpegReturnValue::CodecCannotBeOpened;
 
     auto cnt = 0;
     static uint8_t **audio_dst_data = NULL;
@@ -83,7 +83,7 @@ int decodeMusic(std::string directoryName, std::string songName)
     {
         av_free(aCodecCtxt);
         CoreMath::Debug("ERROR: No outfile! Exiting...");
-        exit(1);
+		FFmpegReturnValue::NoOutputFileAvailable;
     }
 
     while(av_read_frame(pFormatCtxt, &avPkt) >= 0 )
@@ -103,5 +103,5 @@ int decodeMusic(std::string directoryName, std::string songName)
 
     avcodec_close(aCodecCtxt);
     av_free(aCodecCtxt);
-    return 1;
+    return FFmpegReturnValue::Success;
 }

@@ -6,7 +6,6 @@
 static class CoreMath
 {
 public:
-	static double AlignFrequency(double frequency);
 
 	// Basic methods which convert an integer index to a frequency value, or vice versa
 	static int ConvertFrequencyToInt(double frequencyBand);
@@ -24,6 +23,8 @@ public:
 	static void Debug(std::string debugComment);
 
 	static std::string GetPath(char* basePath);
+	static std::string GetFilenameWithoutExtension(std::string fullPath);
+	static std::string ChangeFileExtension(std::string fullPath, std::string newExtension);
 };
 
 #endif

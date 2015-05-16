@@ -54,15 +54,21 @@ std::string CoreMath::GetPath(char* basePath)
 	return std::string(path.begin(), exeLocation + path.begin());
 }
 
-double CoreMath::AlignFrequency(double frequency)
+std::string CoreMath::GetFilenameWithoutExtension(std::string fullPath)
 {
-	//double spectralResolution_ = double(*upperFrequency - *lowerFrequency) / bits_;
-	//double newResolution_ = double(ceil(spectralResolution_ / BOUNDARY_CONVERSION_SCALAR) * BOUNDARY_CONVERSION_SCALAR);
-	//auto centeredFrequencies = new double[2];
-	//
-	//centeredFrequencies = formatCenter(*lowerFrequency, *upperFrequency, newResolution_);
-	//*lowerFrequency = centeredFrequencies[0];
-	//*upperFrequency = centeredFrequencies[1];
+	auto fullArgument = fullPath;
+	auto extensionLocation = fullArgument.find(".");
 
-	return 0;
+	// Protection for noninclusion of extension
+	if (extensionLocation > fullArgument.size())
+	{
+		extensionLocation = fullArgument.size();
+	}
+
+	return std::string(fullArgument.begin(), fullArgument.begin() + extensionLocation);
+}
+
+std::string CoreMath::ChangeFileExtension(std::string fullPath, std::string newExtension)
+{
+	return CoreMath::GetFilenameWithoutExtension(fullPath) + newExtension;
 }

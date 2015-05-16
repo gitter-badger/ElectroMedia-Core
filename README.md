@@ -12,6 +12,7 @@ Todo...
 * Download [the dependencies suite for EMC-Core](http://www.neuravion.io/file.axd?file=/EMC/EMC%20Requirements.zip "EMC-Core Dependencies") and unzip to the folder containing your executable
 
 ## Changelog
+* v0.1.9.4 -- Added enumerated Return values for FFmpeg function, added some QoL improvements to ConfigurationHandler and CoreMath for dealing with file extensions and the like. Started tearing apart the ConvertMP3ToARF stuff. Moved ReadARF to EmcCore.
 * v0.1.9.3 -- Removed FrequencyRangeProfile completely in response to Issue #7 on Github.
 * v0.1.9.2 -- Added validation to AnalyzerFactory in response to Issue #6 "AnalyzerFactory should be fleshed out more (e.g. Validation)"
 * v0.1.9.1 -- Added AnalyzerFactory as part of my efforts to root out FrequencyRangeProfile. FRP may actually be irrelevant at this point, I will investigate for 0.1.9.2
