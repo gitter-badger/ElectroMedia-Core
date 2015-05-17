@@ -1,12 +1,12 @@
 #Electromedia Cipher (EMC) Core
 
 ## Preface
-Public usage of EMC before release is expressly prohibited, NDA pending.
+EMC-Core! This is a basic version of the ElectroMedia Cipher without new functionalities. This is Pre-Alpha and I'm currently heavily reworking the program flow, so it is not stable at all at the moment.
 
 ## Capabilities of EMC-Core
-Todo...
+TODO
 
-## Installation
+## Contributing
 * Fork EMC-Core to a repository of your own
 * Download [Boost Version 1.58.0](http://www.boost.org/) or later and unzip to your /Program Files (x86)/ directory
 * Download [the dependencies suite for EMC-Core](http://www.neuravion.io/file.axd?file=/EMC/EMC%20Requirements.zip "EMC-Core Dependencies") and unzip to the folder containing your executable
