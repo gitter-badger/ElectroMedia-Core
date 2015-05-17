@@ -1,9 +1,9 @@
-#Electromedia Cipher (EMC) Core
+#ElectroMedia Core (EMC)
 
 ## Preface
-EMC-Core! This is a basic version of the ElectroMedia Cipher without new functionalities. This is Pre-Alpha and I'm currently heavily reworking the program flow, so it is not stable at all at the moment.
+EMC! This is a basic version of the ElectroMedia Core without new functionalities. This is Pre-Alpha and I'm currently heavily reworking the program flow, so it is not stable at all at the moment.
 
-## Capabilities of EMC-Core
+## Capabilities of EMC
 TODO
 
 ## Contributing
