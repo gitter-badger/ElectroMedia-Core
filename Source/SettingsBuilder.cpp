@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "ConfigurationHandler.h"
+#include "SettingsBuilder.h"
 
-ConfigurationHandler::ConfigurationHandler(std::string configuration_file_directory, std::string configuration_file_name)
+SettingsBuilder::SettingsBuilder(std::string configuration_file_directory, std::string configuration_file_name)
 	: arfwriter_mode_(EMC_Mode::Read),
 	configuration_directory_(configuration_file_directory),
 	configuration_filename_(configuration_file_name)
@@ -11,7 +11,7 @@ ConfigurationHandler::ConfigurationHandler(std::string configuration_file_direct
 }
 
 // Load in the JSON Configuration file at the specified path
-void ConfigurationHandler::LoadConfigurationFile(std::string configuration_file_path)
+void SettingsBuilder::LoadConfigurationFile(std::string configuration_file_path)
 {	
 	std::ifstream in(configuration_file_path);
 	Json::Reader reader;
@@ -27,35 +27,17 @@ void ConfigurationHandler::LoadConfigurationFile(std::string configuration_file_
 	}
 }
 
-void ConfigurationHandler::HashConfigField(std::string field)
+void SettingsBuilder::HashConfigField(std::string field)
 {
 	// TODO
 }
 
-EMC_Mode ConfigurationHandler::GetMode()
+EMC_Mode SettingsBuilder::GetMode()
 {
 	return arfwriter_mode_;
 }
 
-// Returns the filename of the song in the configuration file
-std::string ConfigurationHandler::GetFilename()
-{
-	return decoded_json_["filename"].asString();
-}
-
-// Returns the file path of the working directory
-std::string ConfigurationHandler::GetDirectory()
-{
-	return configuration_directory_;
-}
-
-std::string ConfigurationHandler::GetFullPath()
-{
-	return ConfigurationHandler::GetDirectory() + ConfigurationHandler::GetFilename();
-}
-
-
-vector< std::shared_ptr<Analyzer*> >* ConfigurationHandler::GetAnalyzers()
+vector< std::shared_ptr<Analyzer*> >* SettingsBuilder::GetAnalyzers()
 {
 	vector < std::shared_ptr<Analyzer*> > analyzers;
 
@@ -69,4 +51,9 @@ vector< std::shared_ptr<Analyzer*> >* ConfigurationHandler::GetAnalyzers()
 	}
 
 	return &analyzers;
+}
+
+EmcSettings* SettingsBuilder::Create()
+{
+	return new EmcSettings();
 }

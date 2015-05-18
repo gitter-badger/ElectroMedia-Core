@@ -2,8 +2,9 @@
 #include "EmcCore.h"
 
 EmcCore::EmcCore(std::string configuration_file_path)
-	: configuration_handler_(new ConfigurationHandler(configuration_file_path, EmcCore::kConfigurationFileName))
 {
+	auto settings_builder = new SettingsBuilder(configuration_file_path, "config.json");
+	configuration_settings_ = settings_builder->Create();
 }
 
 EmcCore::~EmcCore()
@@ -42,14 +43,14 @@ void EmcCore::StartAnalyses()
 // Decode Workflow
 void EmcCore::Decode()
 {
-	MusicFileOperations::ConvertMP3ToARF(configuration_handler_->GetDirectory(), configuration_handler_->GetFilename());
+	MusicFileOperations::ConvertMP3ToARF(configuration_settings_->GetDirectory(), configuration_handler_->GetFilename());
 	StartAnalyses();
 }
 
 // Read Workflow
 void EmcCore::Read()
 {
-	auto arFileName = CoreMath::ChangeFileExtension(configuration_handler_->GetFullPath(), AR_FILE_EXTENSION);
+	auto arFileName = CoreMath::ChangeFileExtension(configuration_handler_->GetFullPath(), EmcCore::kArFileExtension);
 
 	std::ifstream visualizationFile(arFileName);
 	if (visualizationFile.is_open())

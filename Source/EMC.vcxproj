@@ -87,7 +87,7 @@
     <ClInclude Include="AnalyzerFactory.h" />
     <ClInclude Include="CoreMath.h" />
     <ClInclude Include="ConfigurationFileFields.h" />
-    <ClInclude Include="ConfigurationHandler.h" />
+    <ClInclude Include="SettingsBuilder.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Dependencies\boost\assert.hpp" />
     <ClInclude Include="Dependencies\boost\checked_delete.hpp" />
@@ -454,6 +454,7 @@
     <ClInclude Include="dev\include\libswscale\swscale.h" />
     <ClInclude Include="dev\include\libswscale\version.h" />
     <ClInclude Include="EmcCore.h" />
+    <ClInclude Include="EmcSettings.h" />
     <ClInclude Include="FFmpegReturnValues.h" />
     <ClInclude Include="HillEffectAnalyzer.h" />
     <ClInclude Include="IntensityAnalyzer.h" />
@@ -472,7 +473,7 @@
   <ItemGroup>
     <ClCompile Include="AnalyzerFactory.cpp" />
     <ClCompile Include="CoreMath.cpp" />
-    <ClCompile Include="ConfigurationHandler.cpp" />
+    <ClCompile Include="SettingsBuilder.cpp" />
     <ClCompile Include="Dependencies\jsoncpp.cpp" />
     <ClCompile Include="EmcCore.cpp" />
     <ClCompile Include="FeatureExtractionAnalyzer.cpp" />

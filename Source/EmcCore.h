@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "ConfigurationHandler.h"
+#include "SettingsBuilder.h"
+#include "EmcSettings.h"
 #include "CoreMath.h"
 #include "MusicFileOperations.h"
 #include <thread>
@@ -9,7 +10,7 @@
 
 class EmcCore
 {
-	const std::string kConfigurationFileName = "config.json";
+public:
 	typedef vector< std::shared_ptr<Analyzer*> >* AnalyzerCollection;
 
 public:
@@ -25,7 +26,7 @@ protected:
 	void Read();
 
 private:
-	ConfigurationHandler* configuration_handler_;
+	EmcSettings* configuration_settings_;
 	AnalyzerCollection analyzer_collection_;
 };
 

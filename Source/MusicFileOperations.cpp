@@ -19,7 +19,7 @@ MusicFileOperations::MP3FileData MusicFileOperations::GetDataFromMP3(std::string
 	return data_from_file;
 }
 
-void MusicFileOperations::ConvertMP3ToARF(std::string directory, std::string name_without_extension)
+void MusicFileOperations::ConvertMP3ToARF(EmcSettings configuration_settings)
 {
 	// ==== The following shouldn't be passed here. This should be handled by configuration handler I think
 	// ==== ------------------------------------------------------------------------------------------------------------------------------

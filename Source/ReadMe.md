@@ -14,7 +14,7 @@ Shepherds the Analyzers...
 ### CommonOperations
 To be refactored
 
-### ConfigurationHandler
+### SettingsBuilder
 Uses config.json and does stuff based on what's inside
 
 ### Constants and Enums

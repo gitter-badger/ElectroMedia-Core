@@ -10,13 +10,13 @@ FeatureExtractionAnalyzer::FeatureExtractionAnalyzer(int lower_bound, int upper_
 std::string FeatureExtractionAnalyzer::ConvertToBits(UniqueDataSet& processed_data, const int noise_floor)
 {
 	double values_of_notes[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	int note_type = 0;
-	double note_amplitude = 0;
+	auto note_type = (int) 0;
+	auto note_amplitude = (double) 0.0;
 
-	for (int freqIndex = 0; freqIndex < upper_bound_; freqIndex++)
+	for (auto frequency_index = 0; frequency_index < upper_bound_; ++frequency_index)
 	{
-		note_amplitude = processed_data->at(freqIndex);
-		note_type = ToNote(CoreMath::ConvertIntToFrequency(freqIndex));
+		note_amplitude = processed_data->at(frequency_index);
+		note_type = ToNote(CoreMath::ConvertIntToFrequency(frequency_index));
 		if (note_type == NoteName::NONE)
 		{
 			continue;
@@ -42,7 +42,7 @@ NoteName FeatureExtractionAnalyzer::ToNote(double frequency)
 		return NoteName::NONE;
 	}
 
-	double evaluated_frequency = frequency;
+	auto evaluated_frequency = frequency;
 	while (evaluated_frequency < 440)
 	{
 		evaluated_frequency *= 2;

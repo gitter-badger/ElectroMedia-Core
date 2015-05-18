@@ -1,23 +1,21 @@
 #include "stdafx.h"
 #include "ArduinoReadableFileWriter.h"
 #include "EMCModes.h"
+#include "EmcSettings.h"
 #include "AnalyzerFactory.h"
 #include "Dependencies\json\json.h"
 
-#ifndef EMC_ConfigurationHandler_H_
-#define EMC_ConfigurationHandler_H_
+#ifndef EMC_SettingsBuilder_H_
+#define EMC_SettingsBuilder_H_
 
-class ConfigurationHandler
+class SettingsBuilder
 {
 public:
     // Constructors / Destructors
-	ConfigurationHandler(std::string configuration_file_directory, std::string configuration_file_name);
-    ~ConfigurationHandler();
+	SettingsBuilder(std::string configuration_file_directory, std::string configuration_file_name);
+    ~SettingsBuilder();
 
-	// Getters
-	std::string GetFilename();
-	std::string GetDirectory();
-	std::string GetFullPath();
+	EmcSettings* Create();
 	EMC_Mode GetMode();
 
 	vector< std::shared_ptr<Analyzer*> >* GetAnalyzers();
@@ -28,12 +26,10 @@ private:
 	void HashConfigField(std::string field);
 	
 	// Private Variables
-	EMC_Mode	arfwriter_mode_;
 	Json::Value decoded_json_;
 	
 	// PostRefactor
-	std::string configuration_directory_;
-	std::string configuration_filename_;
+
 
 	AnalyzerFactory analyzer_factory_;
 };
