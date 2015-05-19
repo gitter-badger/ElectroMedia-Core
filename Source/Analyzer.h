@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <sstream>
 #include "CoreMath.h"
+#include "ConfigurationFileFields.h"
 
 #ifndef EMC_Analyzer_H_
 #define EMC_Analyzer_H_

@@ -29,8 +29,8 @@ void MusicFileOperations::ConvertMP3ToARF()
     vector<char>::const_iterator first, last;
 	auto sweeps = -1;
 
-	auto window_size = EmcSettings::GetInstance().window_size_;
-	auto window_shift = EmcSettings::GetInstance().window_shift_amount_;
+	auto window_size = Settings.window_size_;
+	auto window_shift = Settings.window_shift_amount_;
 
 
     // FFT variables
@@ -91,7 +91,7 @@ void MusicFileOperations::CopyVectorToPointerArray(DataSet& vector_in, double* a
 long MusicFileOperations::CaptureFileData(AudioFileData& waveform_data)
 {
     // Read the file indicated by Filename argument
-	std::ifstream data_file_stream((EmcSettings::GetInstance().song_filename_ + EmcSettings::GetInstance().kEmcFileExtension).c_str(), std::ios::binary);
+	std::ifstream data_file_stream((Settings.song_filename_ + Settings.kEmcFileExtension).c_str(), std::ios::binary);
 
     long counted_points = 0;
 	while (data_file_stream)
@@ -161,7 +161,7 @@ void MusicFileOperations::Normalize(DataSet& data)
 // Returns an offset cosine wave of (int) width at a specific index
 double MusicFileOperations::GetHanningMultiplier(int index_at)
 {
-	return 0.5 * (1 - cos(2 * 3.14 * index_at / (EmcSettings::GetInstance().window_size_ - 1)));
+	return 0.5 * (1 - cos(2 * 3.14 * index_at / (Settings.window_size_ - 1)));
 }
 
 // applyHanningWindow(int*, double*, int)
@@ -188,7 +188,7 @@ void MusicFileOperations::ApplyHanningWindow(DataSet& data)
 // frequency-vs-time spectral domain and then save the results into a debug file.
 DataSet MusicFileOperations::PrepareAndExecuteFFT(DataSet& data, fftw_plan& fft_plan, double* working_array, fftw_complex* complex_results)
 {
-	auto maxFrequency = CoreMath::ConvertFrequencyToInt(EmcSettings::GetInstance().maximum_frequency_accounted_);
+	auto maxFrequency = CoreMath::ConvertFrequencyToInt(Settings.maximum_frequency_accounted_);
 
     // Execute the FFT
     ApplyHanningWindow(data);

@@ -10,12 +10,12 @@
 // determined through the use of a calibration curve
 int CoreMath::ConvertFrequencyToInt(double frequency_bound)
 {
-	return int((frequency_bound - EmcSettings::GetInstance().kBoundaryConversionOffset) / EmcSettings::GetInstance().kBoundaryConversionScalar);
+	return int((frequency_bound - Settings.kBoundaryConversionOffset) / Settings.kBoundaryConversionScalar);
 }
 
 double CoreMath::ConvertIntToFrequency(int index)
 {
-	return int((index * EmcSettings::GetInstance().kBoundaryConversionScalar + EmcSettings::GetInstance().kBoundaryConversionOffset));
+	return int((index * Settings.kBoundaryConversionScalar + Settings.kBoundaryConversionOffset));
 }
 
 // int = calculateDynamicNoiseFloor(double*, int, int)
@@ -41,7 +41,7 @@ double CoreMath::CalculateIntensityScalar(double frequency)
 // in stdafx.h.
 void CoreMath::Debug(std::string debug_comment)
 {
-	if (EmcSettings::GetInstance().debug_mode_)
+	if (Settings.debug_mode_)
     {
 		std::cerr << debug_comment << "\n";
     }

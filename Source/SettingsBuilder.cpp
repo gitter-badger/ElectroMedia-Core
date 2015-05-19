@@ -3,7 +3,7 @@
 
 SettingsBuilder::SettingsBuilder(std::string configuration_file_directory, std::string configuration_file_name)
 	: configuration_directory_(configuration_file_directory),
-	configuration_filename_(configuration_file_name)
+	  configuration_filename_(configuration_file_name)
 {
 }
 
@@ -15,19 +15,23 @@ void SettingsBuilder::Load()
 	Json::Value decoded_json;
 	reader.parse(in, decoded_json);
 
-	// Default to Read Mode
-	EmcSettings::GetInstance().emc_mode_ = EMC_Mode::Read;
-
-	// TODO: Refactor
-	if (decoded_json["mode"].asString().compare("write") == 0)
+	// Decode "mode"
+	if (JsonString("mode").Equals("write"))
 	{
-		EmcSettings::GetInstance().emc_mode_ = EMC_Mode::Decode;
+		Settings.emc_mode_ = EMC_Mode::Decode;
 	}
-}
 
-void SettingsBuilder::HashConfigField(std::string field)
-{
-	// TODO
+	Settings.song_filename_ = JsonString("filename");
+	Settings.noise_floor_percentage_ = JsonInt("noise_floor_amplitude");
+	Settings.window_size_ = JsonInt("window_size");
+	Settings.window_shift_amount_ = JsonInt("window_shift_size");
+	Settings.maximum_frequency_accounted_ = JsonDouble("max_frequency");
+
+	// Decode Endianness
+	if (JsonString("endianness").Equals("little"))
+	{
+		Settings.endianness_of_output_ = Endianness::LittleEndian;
+	}
 }
 
 vector< std::shared_ptr<Analyzer*> >* SettingsBuilder::GetAnalyzers()

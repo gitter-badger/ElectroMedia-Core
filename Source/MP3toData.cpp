@@ -24,9 +24,9 @@ extern "C"
 FFmpegReturnValue DecodeMusic()
 {
     auto audio_stream = -1;
-	auto name = EmcSettings::GetInstance().song_filename_;
-	auto mpeg_filename = EmcSettings::GetInstance().configuration_directory_ + name + ".mp3";
-	auto emc_filename = name + EmcSettings::GetInstance().kEmcFileExtension;
+	auto name = Settings.song_filename_;
+	auto mpeg_filename = Settings.configuration_directory_ + name + ".mp3";
+	auto emc_filename = name + Settings.kEmcFileExtension;
 
     AVCodec         *aCodec;
     AVPacket        avPkt;

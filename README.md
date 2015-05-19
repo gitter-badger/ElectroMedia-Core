@@ -1,10 +1,10 @@
 #ElectroMedia Core (EMC)
 
 ## Preface
-EMC! This is a basic version of the ElectroMedia Core without new functionalities. This is Pre-Alpha and I'm currently heavily reworking the program flow, so it is not stable at all at the moment.
+This is a basic version of the ElectroMedia Core without new functionalities. This is Pre-Alpha and I'm currently heavily reworking the program flow, so it is not stable at all at the moment.
 
 ## Capabilities of EMC
-TODO
+An analysis suite in C++ dedicated to decoding signals within music files.
 
 ## Contributing
 * Fork EMC-Core to a repository of your own
@@ -12,6 +12,7 @@ TODO
 * Download [the dependencies suite for EMC-Core](http://www.neuravion.io/file.axd?file=/EMC/EMC%20Requirements.zip "EMC-Core Dependencies") and unzip to the folder containing your executable
 
 ## Changelog
+* **v0.1.9.6** -- Changed the way that EMC handles Settings with config.json. Now, EMC has a global singleton "Settings" which is loaded into memory by the "SettingsBuilder" (formerly ConfigurationHandler). Further, major improvements have been added to the structure of EMC in preparation for the addition of the Analyzer package.
 * **v0.1.9.5** -- Major improvements to nomenclature. Changed many variable names and header guards to fit Google's C++ Style Guide. Also fixed up header inclusions and removed vestigial FrequencyMaximum class.
 * **v0.1.9.4** -- Added enumerated Return values for FFmpeg function, added some QoL improvements to ConfigurationHandler and CoreMath for dealing with file extensions and the like. Started tearing apart the ConvertMP3ToARF stuff. Moved ReadARF to EmcCore.
 * **v0.1.9.3** -- Removed FrequencyRangeProfile completely in response to Issue #7 on Github.
@@ -21,4 +22,3 @@ TODO
 * **v0.1.8.0** -- Added EmcCore class, which is going to be responsible for handling the program's workflow and every single component (mostly Analyzers)
 * **v0.1.7.4c** -- Removed an enum from ArduinoReadableFileWriter and fixed some stuff in CorrMath/EntryPoint
 * **v0.1.7.4** -- Fixed MANY method names to be consisten with naming conventions. Added CoreMath static class and removed CommonOperations... Lots of cleanup here.
-* **v0.1.7.3** -- Changed FFTPreprocessing functions to sit within a static class. Cleaned up some terminology within that new static class, and fixed a bug which prevented the ConfigurationHandler from accessing the config file in some random places

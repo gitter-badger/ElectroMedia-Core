@@ -1,8 +1,11 @@
 #include "stdafx.h"
+#include "ConfigurationFileFields.h"
 #include "EMCModes.h"
 
 #ifndef EMC_EmcSettings_H_
 #define EMC_EmcSettings_H_ 
+
+#define Settings EmcSettings::GetInstance()
 
 class EmcSettings
 {
@@ -24,19 +27,12 @@ public:
 	const double kBoundaryConversionScalar = 10.91;
 	const double kBoundaryConversionOffset = 7.33;
 
-	enum Endianness
-	{
-		BigEndian,
-		LittleEndian,
-		Either
-	};
-
 	int window_size_ = 8192;
 	int window_shift_amount_ = 4096;
 	double maximum_frequency_accounted_ = 2000;
 	double temporal_shift_width_ = 0.02334;
 	double noise_floor_percentage_ = 30.0;
-	Endianness endianness_of_output_ = BigEndian;
+	Endianness endianness_of_output_ = Endianness::BigEndian;
 	bool debug_mode_;
 
 	std::string configuration_directory_;

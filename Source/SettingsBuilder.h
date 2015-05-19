@@ -1,6 +1,7 @@
-#include "stdafx.h"
+#include "stdafx.h"	
 #include "ArduinoReadableFileWriter.h"
 #include "EMCModes.h"
+#include "ConfigurationFileFields.h"
 #include "EmcSettings.h"
 #include "AnalyzerFactory.h"
 #include "Dependencies\json\json.h"
@@ -10,24 +11,20 @@
 
 class SettingsBuilder
 {
+	#define JsonString(a) decoded_json[a].asString()
+	#define JsonInt(a) decoded_json[a].asInt()
+	#define JsonDouble(a) decoded_json[a].asDouble()
+	#define Equals(b) compare(b) == 0
+
+	std::string configuration_directory_, configuration_filename_;
+
 public:
     // Constructors / Destructors
 	SettingsBuilder(std::string configuration_file_directory, std::string configuration_file_name);
     ~SettingsBuilder();
 
 	void Load();
-	EMC_Mode GetMode();
-
 	vector< std::shared_ptr<Analyzer*> >* GetAnalyzers();
-
-private:
-	// Load in the configuration JSON at specified file path
-	void LoadConfigurationFile(std::string configuration_file_directory, std::string configuration_file_name);
-	void HashConfigField(std::string field);
-	
-	AnalyzerFactory analyzer_factory_;
-
-	std::string configuration_directory_, configuration_filename_;
 };
 
 #endif
