@@ -16,7 +16,7 @@ EmcCore::~EmcCore()
 void EmcCore::Run()
 {
 	// Call the appropriate static functions
-	switch (configuration_handler_->GetMode())
+	switch (configuration_settings_->emc_mode_)
 	{
 	case EMC_Mode::Decode:
 		CoreMath::Debug("Preparing to decode the file.");
@@ -43,14 +43,14 @@ void EmcCore::StartAnalyses()
 // Decode Workflow
 void EmcCore::Decode()
 {
-	MusicFileOperations::ConvertMP3ToARF(configuration_settings_->GetDirectory(), configuration_handler_->GetFilename());
+	MusicFileOperations::ConvertMP3ToARF(configuration_settings_);
 	StartAnalyses();
 }
 
 // Read Workflow
 void EmcCore::Read()
 {
-	auto arFileName = CoreMath::ChangeFileExtension(configuration_handler_->GetFullPath(), EmcCore::kArFileExtension);
+	auto arFileName = CoreMath::ChangeFileExtension(configuration_settings_->configuration_directory_, configuration_settings_->kArFileExtension);
 
 	std::ifstream visualizationFile(arFileName);
 	if (visualizationFile.is_open())

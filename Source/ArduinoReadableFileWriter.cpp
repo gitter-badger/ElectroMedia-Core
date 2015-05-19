@@ -4,8 +4,9 @@
 // ArduinoReadableFileWriter Constructor
 // ---
 // Initialize our Arduino-Readable-file stream
-ArduinoReadableFileWriter::ArduinoReadableFileWriter(char name_of_arf[])
-	: arf_stream_(name_of_arf), mode_(EMC_Output_Mode::Text), number_of_outputs_(-1)
+ArduinoReadableFileWriter::ArduinoReadableFileWriter(EmcSettings* configuration_settings)
+	: configuration_settings_(configuration_settings),
+	arf_stream_(configuration_settings->song_filename_)
 {
 }
 
@@ -26,17 +27,17 @@ ArduinoReadableFileWriter::~ArduinoReadableFileWriter()
 // Change the way that the write() function behaves
 void ArduinoReadableFileWriter::SetMode(EMC_Output_Mode new_mode)
 {
-    mode_ = new_mode;
-
-    switch(mode_)
-    {
-	case(EMC_Output_Mode::ArduinoReadableFile):
-        number_of_outputs_ = ARDUINO_UNO_IO_PINS;
-        break;
-
-    default:
-        number_of_outputs_ = 0;
-    }
+	//configuration_settings_->emc_mode_ = new_mode;
+	//
+    //switch(mode_)
+    //{
+	//case(EMC_Output_Mode::ArduinoReadableFile):
+    //    number_of_outputs_ = ARDUINO_UNO_IO_PINS;
+    //    break;
+	//
+    //default:
+    //    number_of_outputs_ = 0;
+    //}
 }
 
 // bool = isTextWritable()
@@ -50,11 +51,11 @@ bool ArduinoReadableFileWriter::IsTextWritable()
         return false;
     }
 
-    if(mode_ != EMC_Output_Mode::Text)
-    {
-        CoreMath::Debug("arf_stream_ cannot write a string while not in Text Mode!");
-        return false;
-    }
+    //if(mode_ != EMC_Output_Mode::Text)
+    //{
+    //    CoreMath::Debug("arf_stream_ cannot write a string while not in Text Mode!");
+    //    return false;
+    //}
 
     return true;
 }
@@ -95,35 +96,35 @@ void ArduinoReadableFileWriter::Write(DataSet& data_to_write)
         return;
     }
 
-    switch(mode_)
-    {
-        // Text mode is meant to be human-readable and is used for debug purposes
-	case(EMC_Output_Mode::Text):
-		WriteDoubleInTextMode(data_to_write);
-        break;
-
-        // Regular Arduino Mode uses 16 output pins
-	case(EMC_Output_Mode::ArduinoReadableFile):
-        break;
-
-	case(EMC_Output_Mode::Binary):
-		break;
-
-    default:
-        CoreMath::Debug("ArduinoReadableFileWriter writer cannot write as it is in an undefined mode!");
-    }
+    //switch(mode_)
+    //{
+    //    // Text mode is meant to be human-readable and is used for debug purposes
+	//case(EMC_Output_Mode::Text):
+	//	WriteDoubleInTextMode(data_to_write);
+    //    break;
+	//
+    //    // Regular Arduino Mode uses 16 output pins
+	//case(EMC_Output_Mode::ArduinoReadableFile):
+    //    break;
+	//
+	//case(EMC_Output_Mode::Binary):
+	//	break;
+	//
+    //default:
+    //    CoreMath::Debug("ArduinoReadableFileWriter writer cannot write as it is in an undefined mode!");
+    //}
 }
 
 int ArduinoReadableFileWriter::CalculateDynamicNoiseFloor(DataSet& data)
 {
     auto pre_noise_floor_maximum = *std::max_element(data->begin(), data->end());
 
-	return int(pre_noise_floor_maximum * (double(NOISE_FLOOR_PCT) / 100));
+	return int(pre_noise_floor_maximum * (double(configuration_settings_->noise_floor_percentage_) / 100));
 }
 
 void ArduinoReadableFileWriter::WriteDoubleInTextMode(DataSet& data_to_write)
 {
-    auto dynamic_noise_floor = NOISE_FLOOR;
+    //auto dynamic_noise_floor = NOISE_FLOOR;
 
 		// TODO
 

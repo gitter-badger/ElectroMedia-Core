@@ -22,16 +22,12 @@ public:
 
 private:
 	// Load in the configuration JSON at specified file path
-	void LoadConfigurationFile(std::string configuration_file_path);
+	void LoadConfigurationFile(std::string configuration_file_directory, std::string configuration_file_name);
 	void HashConfigField(std::string field);
 	
-	// Private Variables
-	Json::Value decoded_json_;
-	
-	// PostRefactor
-
-
 	AnalyzerFactory analyzer_factory_;
+
+	std::string configuration_directory_, configuration_filename_;
 };
 
 #endif

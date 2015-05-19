@@ -10,12 +10,22 @@
 // determined through the use of a calibration curve
 int CoreMath::ConvertFrequencyToInt(double frequency_bound)
 { 
-	return int((frequency_bound - BOUNDARY_CONVERSION_OFFSET) / BOUNDARY_CONVERSION_SCALAR);
+	return int((frequency_bound - 7.33) / 10.91);
+}
+
+int CoreMath::ConvertFrequencyToInt(EmcSettings* configuration_settings, double frequency_bound)
+{
+	return int((frequency_bound - configuration_settings->kBoundaryConversionOffset) / configuration_settings->kBoundaryConversionScalar);
 }
 
 double CoreMath::ConvertIntToFrequency(int index)
 {
-    return double(index * BOUNDARY_CONVERSION_SCALAR + BOUNDARY_CONVERSION_OFFSET);
+	return double(index * 10.91 + 7.33);
+}
+
+double CoreMath::ConvertIntToFrequency(EmcSettings* configuration_settings, int index)
+{
+	return int((index * configuration_settings->kBoundaryConversionScalar + configuration_settings->kBoundaryConversionOffset) );
 }
 
 // int = calculateDynamicNoiseFloor(double*, int, int)

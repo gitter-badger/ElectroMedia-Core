@@ -10,7 +10,7 @@ class ArduinoReadableFileWriter
 {
 public:
     // Constructors / Destructors
-	ArduinoReadableFileWriter(char name_of_arf[]);
+	ArduinoReadableFileWriter(EmcSettings* configuration_settings);
     ~ArduinoReadableFileWriter();
 	
     // Sets the mode of the ARFWriter (Text or Byte) according to the enum writeMode
@@ -30,8 +30,7 @@ private:
 
     // Private variables
     std::ofstream arf_stream_;
-	EMC_Output_Mode mode_;
-	int number_of_outputs_;
+	EmcSettings* configuration_settings_;
 };
 
 #endif

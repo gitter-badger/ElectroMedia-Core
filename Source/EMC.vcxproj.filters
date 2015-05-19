@@ -1197,10 +1197,10 @@
     <ClInclude Include="FFmpegReturnValues.h">
       <Filter>Header Files\Project Source\Helpers\Enums</Filter>
     </ClInclude>
-    <ClInclude Include="EmcSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SettingsBuilder.h">
+      <Filter>Header Files\Project Source</Filter>
+    </ClInclude>
+    <ClInclude Include="EmcSettings.h">
       <Filter>Header Files\Project Source</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "EmcSettings.h"
 
 #ifndef EMC_CoreMath_H_
 #define EMC_CoreMath_H_
@@ -9,7 +10,9 @@ public:
 
 	// Basic methods which convert an integer index to a frequency value, or vice versa
 	static int ConvertFrequencyToInt(double frequency_bound);
+	int CoreMath::ConvertFrequencyToInt(EmcSettings* configuration_settings, double frequency_bound);
 	static double ConvertIntToFrequency(int index);
+	static double ConvertIntToFrequency(EmcSettings* configuration_settings, int index);
 
 	// Used to calculate a dynamic noise floor, taking fluctuations in signal noise
 	// and amplitude changes into consideration. Returns an integer value which 

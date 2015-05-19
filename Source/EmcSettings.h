@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "EMCModes.h"
+
+#ifndef EMC_EmcSettings_H_
+#define EMC_EmcSettings_H_ 
 
 class EmcSettings
 {
@@ -26,11 +30,13 @@ public:
 	Endianness endianness_of_output_ = BigEndian;
 
 	std::string configuration_directory_;
-	std::string configuration_filename_;
-	EMC_Mode	arfwriter_mode_;
+	std::string song_filename_;
+	EMC_Mode	emc_mode_;
 
 	void CalculateTemporalShiftWidth()
 	{
 		temporal_shift_width_ = (double)window_shift_amount_ * 0.01140 / 1000;
 	}
 };
+
+#endif
