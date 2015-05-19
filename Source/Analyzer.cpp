@@ -53,7 +53,7 @@ std::string Analyzer::ConvertToBits(UniqueDataSet& data_to_convert, int noise_fl
     // By default, this result is Big Endian due to the nature of frequencies increasing 
     // left-to-right. The nature of the output can be altered by changing the 
     // OUTPUT_IS_BIG_ENDIAN setting in "stdafx.h" which will then reverse the output.
-    if(true)
+	if (EmcSettings::GetInstance().endianness_of_output_ == EmcSettings::BigEndian)
     {
 		return BigEndianConvert(resulting_bits);
     }

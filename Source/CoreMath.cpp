@@ -9,23 +9,13 @@
 // vice versa. The OFFSET and SCALAR values are defined in stdafx.h and were
 // determined through the use of a calibration curve
 int CoreMath::ConvertFrequencyToInt(double frequency_bound)
-{ 
-	return int((frequency_bound - 7.33) / 10.91);
-}
-
-int CoreMath::ConvertFrequencyToInt(EmcSettings* configuration_settings, double frequency_bound)
 {
-	return int((frequency_bound - configuration_settings->kBoundaryConversionOffset) / configuration_settings->kBoundaryConversionScalar);
+	return int((frequency_bound - EmcSettings::GetInstance().kBoundaryConversionOffset) / EmcSettings::GetInstance().kBoundaryConversionScalar);
 }
 
 double CoreMath::ConvertIntToFrequency(int index)
 {
-	return double(index * 10.91 + 7.33);
-}
-
-double CoreMath::ConvertIntToFrequency(EmcSettings* configuration_settings, int index)
-{
-	return int((index * configuration_settings->kBoundaryConversionScalar + configuration_settings->kBoundaryConversionOffset) );
+	return int((index * EmcSettings::GetInstance().kBoundaryConversionScalar + EmcSettings::GetInstance().kBoundaryConversionOffset));
 }
 
 // int = calculateDynamicNoiseFloor(double*, int, int)
@@ -51,7 +41,7 @@ double CoreMath::CalculateIntensityScalar(double frequency)
 // in stdafx.h.
 void CoreMath::Debug(std::string debug_comment)
 {
-    if(DEBUG_ENABLED)
+	if (EmcSettings::GetInstance().debug_mode_)
     {
 		std::cerr << debug_comment << "\n";
     }

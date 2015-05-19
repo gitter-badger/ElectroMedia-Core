@@ -10,6 +10,6 @@
 #ifndef EMC_MP3toData_H_
 #define EMC_MP3toData_H_
 
-FFmpegReturnValue decodeMusic(EmcSettings* configuration_settings);
+FFmpegReturnValue DecodeMusic();
 
 #endif

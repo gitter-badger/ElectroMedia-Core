@@ -7,6 +7,15 @@
 class EmcSettings
 {
 public:
+	static EmcSettings& GetInstance()
+	{
+		static EmcSettings instance;
+		return instance;
+	}
+	EmcSettings() { }
+	EmcSettings(EmcSettings const&) = delete;
+	void operator=(EmcSettings const&) = delete;
+
 	const std::string kConfigurationFileName = "config.json";
 	const std::string kEmcFileExtension = ".emc";
 	const std::string kArFileExtension = ".arf";
@@ -28,6 +37,7 @@ public:
 	double temporal_shift_width_ = 0.02334;
 	double noise_floor_percentage_ = 30.0;
 	Endianness endianness_of_output_ = BigEndian;
+	bool debug_mode_;
 
 	std::string configuration_directory_;
 	std::string song_filename_;

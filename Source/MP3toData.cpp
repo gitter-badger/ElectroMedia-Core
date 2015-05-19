@@ -21,12 +21,12 @@ extern "C"
 
 // This is the primary decoding mechanism. DubstepCannon.cpp calls this function to invoke
 // several functions from FFMPEG.
-FFmpegReturnValue decodeMusic(EmcSettings* configuration_settings)
+FFmpegReturnValue DecodeMusic()
 {
     auto audio_stream = -1;
-	auto name = configuration_settings->song_filename_;
-	auto mpeg_filename = configuration_settings->configuration_directory_ + name + ".mp3";
-    auto emc_filename = name + configuration_settings->kEmcFileExtension;
+	auto name = EmcSettings::GetInstance().song_filename_;
+	auto mpeg_filename = EmcSettings::GetInstance().configuration_directory_ + name + ".mp3";
+	auto emc_filename = name + EmcSettings::GetInstance().kEmcFileExtension;
 
     AVCodec         *aCodec;
     AVPacket        avPkt;

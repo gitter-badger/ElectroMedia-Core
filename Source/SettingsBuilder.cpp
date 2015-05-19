@@ -8,25 +8,21 @@ SettingsBuilder::SettingsBuilder(std::string configuration_file_directory, std::
 }
 
 // Load in the JSON Configuration file at the specified path
-EmcSettings* SettingsBuilder::Create()
+void SettingsBuilder::Load()
 {	
-	auto settings = new EmcSettings();
-
 	std::ifstream in(configuration_directory_ + configuration_filename_);
 	Json::Reader reader;
 	Json::Value decoded_json;
 	reader.parse(in, decoded_json);
 
 	// Default to Read Mode
-	settings->emc_mode_ = EMC_Mode::Read;
+	EmcSettings::GetInstance().emc_mode_ = EMC_Mode::Read;
 
 	// TODO: Refactor
 	if (decoded_json["mode"].asString().compare("write") == 0)
 	{
-		settings->emc_mode_ = EMC_Mode::Decode;
+		EmcSettings::GetInstance().emc_mode_ = EMC_Mode::Decode;
 	}
-
-	return settings;
 }
 
 void SettingsBuilder::HashConfigField(std::string field)

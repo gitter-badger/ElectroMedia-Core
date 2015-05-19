@@ -4,9 +4,8 @@
 // ArduinoReadableFileWriter Constructor
 // ---
 // Initialize our Arduino-Readable-file stream
-ArduinoReadableFileWriter::ArduinoReadableFileWriter(EmcSettings* configuration_settings)
-	: configuration_settings_(configuration_settings),
-	arf_stream_(configuration_settings->song_filename_)
+ArduinoReadableFileWriter::ArduinoReadableFileWriter()
+	: arf_stream_(EmcSettings::GetInstance().song_filename_)
 {
 }
 
@@ -119,7 +118,7 @@ int ArduinoReadableFileWriter::CalculateDynamicNoiseFloor(DataSet& data)
 {
     auto pre_noise_floor_maximum = *std::max_element(data->begin(), data->end());
 
-	return int(pre_noise_floor_maximum * (double(configuration_settings_->noise_floor_percentage_) / 100));
+	return int(pre_noise_floor_maximum * (double(EmcSettings::GetInstance().noise_floor_percentage_) / 100));
 }
 
 void ArduinoReadableFileWriter::WriteDoubleInTextMode(DataSet& data_to_write)

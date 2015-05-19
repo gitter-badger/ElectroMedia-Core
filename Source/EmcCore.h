@@ -26,7 +26,6 @@ protected:
 	void Read();
 
 private:
-	EmcSettings* configuration_settings_;
 	AnalyzerCollection analyzer_collection_;
 };
 

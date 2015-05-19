@@ -4,7 +4,7 @@
 EmcCore::EmcCore(std::string configuration_file_path)
 {
 	auto settings_builder = new SettingsBuilder(configuration_file_path, "config.json");
-	configuration_settings_ = settings_builder->Create();
+	settings_builder->Load();
 }
 
 EmcCore::~EmcCore()
@@ -16,7 +16,7 @@ EmcCore::~EmcCore()
 void EmcCore::Run()
 {
 	// Call the appropriate static functions
-	switch (configuration_settings_->emc_mode_)
+	switch (EmcSettings::GetInstance().emc_mode_)
 	{
 	case EMC_Mode::Decode:
 		CoreMath::Debug("Preparing to decode the file.");
@@ -43,14 +43,14 @@ void EmcCore::StartAnalyses()
 // Decode Workflow
 void EmcCore::Decode()
 {
-	MusicFileOperations::ConvertMP3ToARF(configuration_settings_);
+	MusicFileOperations::ConvertMP3ToARF();
 	StartAnalyses();
 }
 
 // Read Workflow
 void EmcCore::Read()
 {
-	auto arFileName = CoreMath::ChangeFileExtension(configuration_settings_->configuration_directory_, configuration_settings_->kArFileExtension);
+	auto arFileName = CoreMath::ChangeFileExtension(EmcSettings::GetInstance().configuration_directory_, EmcSettings::GetInstance().kArFileExtension);
 
 	std::ifstream visualizationFile(arFileName);
 	if (visualizationFile.is_open())

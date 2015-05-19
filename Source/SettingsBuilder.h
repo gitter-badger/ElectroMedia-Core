@@ -15,7 +15,7 @@ public:
 	SettingsBuilder(std::string configuration_file_directory, std::string configuration_file_name);
     ~SettingsBuilder();
 
-	EmcSettings* Create();
+	void Load();
 	EMC_Mode GetMode();
 
 	vector< std::shared_ptr<Analyzer*> >* GetAnalyzers();
