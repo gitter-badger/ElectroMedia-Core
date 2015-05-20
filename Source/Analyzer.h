@@ -20,6 +20,8 @@ public:
     // Define lower and upper bounds (as indices) for this processor
     void SetBounds(const int lower, const int upper);
 
+	virtual void Analyze(vector<double> spectral_data);
+
     // Heart and soul of the Signal Processing Algorithm. 
     virtual std::string ConvertToBits(UniqueDataSet& data_to_convert, int noiseFloor);
 

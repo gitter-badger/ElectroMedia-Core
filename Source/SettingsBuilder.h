@@ -2,7 +2,6 @@
 #include "ArduinoReadableFileWriter.h"
 #include "EMCModes.h"
 #include "ConfigurationFileFields.h"
-#include "EmcSettings.h"
 #include "AnalyzerFactory.h"
 #include "Dependencies\json\json.h"
 
@@ -19,12 +18,14 @@ class SettingsBuilder
 	std::string configuration_directory_, configuration_filename_;
 
 public:
+	typedef vector< std::shared_ptr<Analyzer*> > AnalyzerCollection;
+
     // Constructors / Destructors
 	SettingsBuilder(std::string configuration_file_directory, std::string configuration_file_name);
     ~SettingsBuilder();
 
 	void Load();
-	vector< std::shared_ptr<Analyzer*> >* GetAnalyzers();
+	AnalyzerCollection* CreateAnalyzers();
 };
 
 #endif

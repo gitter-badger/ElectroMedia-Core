@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "EmcSettings.h"
 
 #ifndef EMC_CoreMath_H_
 #define EMC_CoreMath_H_

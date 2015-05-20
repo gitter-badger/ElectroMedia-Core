@@ -34,18 +34,23 @@ void SettingsBuilder::Load()
 	}
 }
 
-vector< std::shared_ptr<Analyzer*> >* SettingsBuilder::GetAnalyzers()
+SettingsBuilder::AnalyzerCollection* SettingsBuilder::CreateAnalyzers()
 {
-	vector < std::shared_ptr<Analyzer*> > analyzers;
+	std::ifstream in(configuration_directory_ + configuration_filename_);
+	Json::Reader reader;
+	Json::Value decoded_json;
+	reader.parse(in, decoded_json);
 
-	//auto it = decoded_json_["Analyzers"].begin();
-	//
-	//// Each loop corresponds to a subnode in the "algorithms" node
-	//while (it != decoded_json_["Analyzers"].end())
-	//{
-	////	analyzers.push_back(std::make_shared<Analyzer*>( _analyzerFactory.Create((*it)["type"].asString()) ));
-	//	std::string something;
-	//}
-	//
-	return &analyzers;
+	auto analyzers = new SettingsBuilder::AnalyzerCollection;
+
+	auto it = decoded_json["Analyzers"].begin();
+	
+	// Each loop corresponds to a subnode in the "algorithms" node
+	while (it != decoded_json["Analyzers"].end())
+	{
+		auto new_analyzer = std::make_shared<Analyzer*>(AnalyzerFactory::Create((*it)["type"].asString()));
+		analyzers->push_back(new_analyzer);
+	}
+	
+	return analyzers;
 }

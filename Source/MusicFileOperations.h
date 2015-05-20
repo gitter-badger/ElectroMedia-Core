@@ -3,7 +3,6 @@
 #include "CoreMath.h"
 #include "MP3toData.h"
 #include "Constants.h"
-#include "EmcSettings.h"
 #include <chrono>
 
 #ifndef EMC_MusicFileOperations_H_

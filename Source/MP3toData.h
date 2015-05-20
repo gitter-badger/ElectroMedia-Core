@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "EmcSettings.h"
 #include "FFmpegReturnValues.h"
 
 // HEADER file for all MP3 decoding operations

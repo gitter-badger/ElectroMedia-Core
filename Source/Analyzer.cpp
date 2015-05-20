@@ -33,6 +33,11 @@ Analyzer::Analyzer(double lower_frequency, double upper_frequency, int resolutio
 
 Analyzer::~Analyzer() { }
 
+void Analyzer::Analyze(vector<double> spectral_data)
+{
+
+}
+
 
 // BASE
 // convertToBits(double*, int)

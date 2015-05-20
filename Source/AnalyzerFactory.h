@@ -10,14 +10,14 @@
 class AnalyzerFactory
 {
 public:
-	Analyzer* Create(std::string type);
-	Analyzer* Create(std::string type, int lowerBound, int upperBound);
-	Analyzer* Create(std::string type, int lowerBound, int upperBound, int resolution);
-	Analyzer* Create(std::string type, double lowerFrequency, double upperFrequency);
-	Analyzer* Create(std::string type, double lowerFrequency, double upperFrequency, int resolution);
+	static Analyzer* Create(std::string type);
+	static Analyzer* Create(std::string type, int lowerBound, int upperBound);
+	static Analyzer* Create(std::string type, int lowerBound, int upperBound, int resolution);
+	static Analyzer* Create(std::string type, double lowerFrequency, double upperFrequency);
+	static Analyzer* Create(std::string type, double lowerFrequency, double upperFrequency, int resolution);
 
 private: 
-	void Validate(int& lowerBound, int& upperBound, int& resolution);
+	static void Validate(int& lowerBound, int& upperBound, int& resolution);
 };
 
 #endif

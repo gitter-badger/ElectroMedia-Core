@@ -16,6 +16,7 @@
 #include <bitset>
 #include <memory>
 #include <algorithm>
+#include "EmcSettings.h"
 #include "boost\dynamic_bitset\dynamic_bitset.hpp"
 #include "boost\function\function0.hpp"
 

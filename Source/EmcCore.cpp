@@ -5,6 +5,7 @@ EmcCore::EmcCore(std::string configuration_file_path)
 {
 	auto settings_builder = new SettingsBuilder(configuration_file_path, "config.json");
 	settings_builder->Load();
+	analyzer_collection_ = settings_builder->CreateAnalyzers();
 }
 
 EmcCore::~EmcCore()
@@ -37,7 +38,15 @@ void EmcCore::AddAnalyzer(Analyzer* analyzer)
 
 void EmcCore::StartAnalyses()
 {
+	vector<double> spectral_data; // Get from FFT
+
+	auto analysis = [spectral_data](std::shared_ptr<Analyzer*> analyzer)
+	{
+		(*analyzer)->Analyze(spectral_data);
+	};
+
 	// Spin off a thread for each of the analyses
+	std::for_each(analyzer_collection_->begin(), analyzer_collection_->end(), analysis);
 }
 
 // Decode Workflow

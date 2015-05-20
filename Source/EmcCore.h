@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "SettingsBuilder.h"
-#include "EmcSettings.h"
 #include "CoreMath.h"
 #include "MusicFileOperations.h"
+#include <algorithm>
 #include <thread>
 
 #ifndef EMC_EmcCore_H_
@@ -10,9 +10,6 @@
 
 class EmcCore
 {
-public:
-	typedef vector< std::shared_ptr<Analyzer*> >* AnalyzerCollection;
-
 public:
 	EmcCore(std::string configuration_file_path);
 	~EmcCore();
@@ -26,7 +23,7 @@ protected:
 	void Read();
 
 private:
-	AnalyzerCollection analyzer_collection_;
+	SettingsBuilder::AnalyzerCollection* analyzer_collection_;
 };
 
 #endif
