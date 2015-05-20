@@ -1,5 +1,7 @@
 #ElectroMedia Core (EMC)
 
+[![Join the chat at https://gitter.im/etkirsch/ElectroMedia-Core](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/etkirsch/ElectroMedia-Core?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Preface
 This is a basic version of the ElectroMedia Core without new functionalities. This is Pre-Alpha and I'm currently heavily reworking the program flow, so it is not stable at all at the moment.
 
